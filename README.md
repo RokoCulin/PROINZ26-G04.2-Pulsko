@@ -6,7 +6,7 @@ komentare s uputama i ogledne <details> blokove te prije predaje izbrišite ovu
 napomenu. Nemojte kopirati nastavni primjer kao rezultat svojeg projekta.
 -->
 
-# [Naziv aplikacije]
+# Pulsko
 
 <details>
 <summary>Zašto je ovaj odjeljak važan</summary>
@@ -15,16 +15,27 @@ Započnite README nazivom svojeg projekta i sažetim opisom njegove svrhe. Naziv
 
 </details>
 
-[U jednoj rečenici navedite što aplikacija omogućuje svojim korisnicima.]
+Pulsko omogućuje pacijentima da na jednom mjestu prate svoje zdravstvene nalaze i vrijednosti te ih dijele sa svojim liječnikom, a liječnicima da prate stanje pacijenata i reagiraju na vrijeme.
 
 **Projekt na kolegiju:** Ovu je aplikaciju razvio studentski tim u sklopu kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu (FER).
 
 ## Opis aplikacije
 
-[U dvije ili tri rečenice objasnite problem, ciljane korisnike i glavnu korist svoje aplikacije. Trenutačne funkcionalnosti navedite odvojeno od planiranih; opišite stvarni opseg umjesto obećanih mogućnosti.]
+Pacijenti s kroničnim ili dugotrajnim zdravstvenim stanjima svoje nalaze najčešće čuvaju dijelom na papiru, a dijelom u PDF-ovima i e-porukama, pa su razbacani i nepregledni. Papirnati nalazi mogu se izgubiti ili oštetiti, e-poruke slučajno obrisati, a liječnik između dva pregleda nema uvid u stanje pacijenta. Pulsko je namijenjena pacijentima i njihovim liječnicima: pacijent na jednom mjestu sigurno pohranjuje i prati svoje nalaze i vrijednosti, a liječnik ih pregledava i na vrijeme reagira. Glavna korist je cjelovita i pregledna povijest zdravlja te brža komunikacija pacijenta i liječnika
+
+Trenutne funkcionalnosti: Projekt je još uvijek u fazi analize zahtjeva pa aplikacija još nema implementiranih funkcionalnosti
+
+Planirane funkcionalnosti: 
+ - registracija i prijava pacijenata i liječnika, uz provjeru liječnika
+ - unos i pregled nalaza i zdravstvenih vrijednosti
+ - povezivanje pacijenta s liječnikom i dijeljenje podataka
+ - pregled stanja pacijenata za liječnika
+ - obavijesti unutar aplikacije
+ - AI pomoć pri tumačenju nalaza (U ovom projektu ograničit ćemo se samo na kompletnu krvnu sliku)
 
 **Ključne funkcionalnosti**
 
+Za sada nema još funkcionalnosti što bi korisnici mogli isprobati.
 - [Reprezentativna funkcionalnost koju korisnici mogu isprobati]
 - [Druga reprezentativna funkcionalnost]
 - [Po želji dodatna funkcionalnost; nemojte kopirati cijeli popis zahtjeva]
@@ -95,8 +106,13 @@ Navedite nekoliko tehnologija i vanjskih usluga koje bitno određuju kako vaša 
 
 | Član | Glavna uloga ili doprinos |
 | --- | --- |
-| [Ime] | [Uloga ili doprinos] |
-| [Ime] | [Uloga ili doprinos] |
+| Roko Čulin | [Uloga ili doprinos] |
+| Borna Oršulić | [Uloga ili doprinos] |
+| Antonio Nović | [Uloga ili doprinos] |
+| Dora Maruševec | [Uloga ili doprinos] |
+| Borna Flegar | [Uloga ili doprinos] |
+| Jakov Troje | [Uloga ili doprinos] |
+| Hrvoje Štivić | [Uloga ili doprinos] |
 
 Uloge se tijekom projekta mogu mijenjati. Repozitorij i dogovoreni alat za praćenje zadataka (engl. task tracker) služe kao dodatni dokazi timskog rada.
 
@@ -106,7 +122,7 @@ Uloge se tijekom projekta mogu mijenjati. Repozitorij i dogovoreni alat za prać
 
 <a id="license"></a>
 
-**Status licence:** [Navedite licencu i postavite poveznicu na projektnu datoteku `LICENSE` ili izričito navedite da nije dodijeljena licenca koja dopušta javnu ponovnu uporabu. Namjeravani opseg provjerite s timom; nemojte prepisivati licencu predloška ove dokumentacije kao licencu svoje aplikacije.]
+**Status licence:** Licenca još nije dodjeljena
 
 Dokumentacijski predložak kolegija sadrži otvorene obrazovne sadržaje (engl. Open Educational Resources, OER) i licenciran je licencom Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International. Ta licenca **ne određuje automatski licencu studentske aplikacije**; tim treba jasno navesti licencu svojeg projekta u prethodnom retku i datoteci `LICENSE`, ako je primjenjivo.
 
