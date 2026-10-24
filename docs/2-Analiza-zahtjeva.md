@@ -15,36 +15,23 @@ Primjeri koriste temu projekta CrisisMap. Neki namjerno sadrže korisne nedostat
 
 | ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
 | --- | --- | --- | --- | --- |
-| F-001 | [Funkcijski zahtjev/ponašanje sustava] | [Visok/Srednji/Nizak] | [Odobreni zadatak / zahtjev dionika / povratna informacija] | [Opažljivi rezultat] |
-|  |  |  |  |  |
-
-<details>
-<summary><strong>Izvori zahtjeva i kriteriji prihvaćanja</strong></summary>
-
-Svaki zahtjev treba imati stabilan ID. **Izvor označava odakle zahtjev potječe**, primjerice iz odobrenog projektnog zadatka, zahtjeva dionika ili povratne informacije koja je promijenila zahtjev. Opišite opažljivo ponašanje umjesto naziva zaslona ili programskog okvira. U cijeloj dokumentaciji koristite istu ljestvicu prioriteta. Složenu korisničku interakciju objasnite u odgovarajućem obrascu uporabe umjesto kopiranja cijelog tijeka u ovu tablicu.
-
-**Primjer — funkcijski zahtjevi za aplikaciju CrisisMap:**
-
-Kategorije izvora pokazuju različite načine na koje zahtjev može nastati.
-
-| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
-| --- | --- | --- | --- | --- |
-| F-001 | Sustav omogućuje korisniku registraciju računa pomoću adrese e-pošte. | Visok | Zahtjev dionika | Korisnik se može registrirati adresom e-pošte, primiti poruku za potvrdu i aktivirati račun slijedeći poveznicu. |
-| F-002 | Sustav omogućuje oporavak lozinke putem e-pošte. | Srednji | Zahtjev dionika | Korisnik može zatražiti ponovno postavljanje lozinke, primiti poveznicu i uspješno postaviti novu lozinku. |
-| F-003 | Sustav prikazuje popis dostupnih resursa povezanih s kriznim događajima. | Visok | Postojeći sustav | Korisnik može pregledati ažurirani popis resursa relevantnih za vrstu kriznog događaja, lokaciju i raspoloživost. |
-| F-004 | Sustav omogućuje korisnicima podnošenje prijave kriznog događaja s lokacijom. | Visok | Dokument sa zahtjevima | Korisnik može podnijeti prijavu s vrstom kriznog događaja, razinom ozbiljnosti i lokacijom te dobiti potvrdu o zaprimanju. Ako odbije pristup geolokaciji preglednika, može lokaciju odabrati ručno.|
-| F-005 | Sustav šalje korisnicima obavijesti o relevantnim promjenama u njihovoj blizini. | Visok | Povratna informacija korisnika | Korisnici dobivaju obavijest unutar jedne minute od relevantne promjene za njihovu lokaciju. |
-| F-006 | Sustav prikazuje dostupne resurse prema lokaciji. | Visok | Analiza dokumentacije | Prikazuje se ažurirani popis resursa prilagođen vrsti kriznog događaja, lokaciji i raspoloživosti. |
-| F-007 | Sustav prikazuje prijave kriznih događaja s lokacijom kao oznake na karti. | Visok | Odobreni zadatak | Prijava s valjanom lokacijom prikazuje se kao oznaka na karti; odabirom oznake korisnik može otvoriti pripadajuću prijavu. |
-| F-008 | Sustav omogućuje moderatoru odobravanje ili odbijanje podnesenih prijava. | Visok | Zahtjev dionika | Moderator može odobriti ili odbiti prijavu koja čeka pregled; korisnik bez moderatorskih ovlasti ne može izvršiti te radnje. |
-
-**Kriteriji prihvaćanja i podrijetlo zahtjeva:** Primjer prikazuje registraciju, oporavak lozinke, resurse, prijavu kriznog događaja i obavijesti te nekoliko vrsta izvora i opažljivih kriterija. Istodobno otvara korisna pitanja: opisuju li F-003 i F-006 istu funkcionalnost resursa? Je li obećanje od jedne minute u F-005 dogovoreno i moguće ispitati? Treba li aplikaciji koja koristi isključivo OAuth uopće F-001 i F-002? Retke koristite kao materijal za analizu; u svojem projektu navedite vlastite zahtjeve. U stvarnom projektu stupac Izvor bilježi odakle su doista potekli njegovi zahtjevi.
-
-**Primjer prilagodbe kada odobreni zadatak koristi OAuth i kartu:** Umjesto kopiranja registracije e-poštom i oporavka lozinke formulirajte relevantni zahtjev za prijavu, primjerice: „F-001: Korisnici se prijavljuju putem odobrenog OAuth pružatelja identiteta; uspješna prijava omogućuje radnje rezervirane za prijavljene korisnike, a odustajanje od prijave ostavlja te radnje nedostupnima.” Zaseban zahtjev za kartu može glasiti: „F-007 : Prijave s lokacijom prikazuju se kao oznake na karti; odabirom oznake otvara se pripadajuća prijava.” Izvor treba biti stvarni odobreni zadatak ili dogovoreni zahtjev dionika. Ova je prilagodba zamjena za neodgovarajuće retke, a ne dodatna tablica koju svaki tim mora ispuniti.
-
-Za složenu interakciju kratak scenarij *Given / When / Then* može pojasniti kriterij. Primjerice: *Given* prijava bez lokacije, *when* građanin je podnese, *then* sustav objašnjava da lokacija nedostaje i ne pohranjuje prijavu. Nemojte jednostavan kriterij ponavljati i u prozi i u Gherkinu niti pisati Gherkin za svaki zahtjev.
-
-</details>
+| F-001 | Sustav omogućuje pacijentu i liječniku prijavu putem vanjskog pružatelja identiteta uporabom protokola OpenID Connect odnosno OAuth 2.0. | Visok | Odobreni projektni zadatak | Nakon uspješne vanjske prijave korisnik ulazi u aplikaciju i dobiva pristup sučelju svoje uloge. Ako prijava ne uspije ili je korisnik prekine, zaštićene funkcionalnosti ostaju nedostupne. |
+| F-002 | Sustav razlikuje uloge pacijenta i liječnika te ograničava dostupne podatke i radnje prema dodijeljenoj ulozi. | Visok | Odobreni projektni zadatak | Pacijent može pristupiti samo vlastitim zdravstvenim podatcima, a liječnik samo podatcima pacijenata koji su s njim povezani. Pokušaj nedopuštenog pristupa sustav odbija. |
+| F-003 | Sustav omogućuje povezivanje pacijenta s liječnikom. | Visok | Odobreni projektni zadatak | Nakon uspješnog povezivanja liječnik vidi pacijenta na svojem popisu i može otvoriti njegove dopuštene podatke, dok nepovezani liječnik tim podatcima ne može pristupiti. |
+| F-004 | Sustav pacijentu prikazuje osobnu nadzornu ploču sa sažetkom zdravstvenih podataka, obveza, termina i terapije. | Visok | Odobreni projektni zadatak | Prijavljeni pacijent na jednom mjestu vidi posljednje dostupne zdravstvene vrijednosti, nadolazeće termine i današnje obveze vezane uz terapiju. |
+| F-005 | Sustav omogućuje pacijentu ispunjavanje dnevnog check-ina o trenutačnom stanju. | Visok | Odobreni projektni zadatak | Pacijent može za odabrani dan spremiti tražene podatke o tome kako se osjeća, naknadno ih pregledati, a povezani liječnik vidi spremljeni zapis. Neispravan ili nepotpun obavezan unos sustav ne prihvaća. |
+| F-006 | Sustav omogućuje unos, pohranu i pregled podržanih zdravstvenih podataka pacijenta. | Visok | Odobreni projektni zadatak | Pacijent može unijeti podržane laboratorijske vrijednosti i druge dopuštene podatke, a sustav ih sprema uz datum i jedinicu mjere te ih prikazuje pacijentu i povezanom liječniku. |
+| F-007 | Sustav iz podržanog dokumenta izdvaja vrijednosti kompletne krvne slike i označava ih kao nepotvrđene. | Visok | Odobreni projektni zadatak i dogovoreno ograničenje tima | Nakon učitavanja dokumenta podržanog formata sustav prikazuje izdvojene vrijednosti kompletne krvne slike radi provjere. Nepodržani dokument odbija uz razumljivu poruku i ne prikazuje ga kao uspješno obrađenog. |
+| F-008 | Sustav omogućuje liječniku potvrđivanje ili ispravljanje izdvojenih laboratorijskih vrijednosti. | Visok | Odobreni projektni zadatak | Liječnik može otvoriti nepotvrđene vrijednosti povezanog pacijenta, ispraviti ih ako je potrebno i potvrditi. Sustav bilježi status, vrijeme i liječnika koji je napravio potvrdu. |
+| F-009 | Sustav dohvaća podatke o snu, koracima i srčanom pulsu iz jednog podržanog servisa pametnog sata. | Visok | Odobreni projektni zadatak | Nakon što pacijent poveže podržani servis i odobri pristup, sustav dohvaća dostupne vrijednosti za odabrano razdoblje i sprema ih uz vrijeme mjerenja. Neuspješna sinkronizacija ne briše prethodno spremljene podatke. |
+| F-010 | Sustav pacijentu i povezanom liječniku prikazuje povijest i jednostavne trendove zdravstvenih podataka. | Srednji | Odobreni projektni zadatak | Korisnik može odabrati podržanu vrstu podatka i vremensko razdoblje te pregledati kronološki prikaz ili graf dostupnih vrijednosti, uz jasno označena razdoblja bez podataka. |
+| F-011 | Sustav omogućuje razmjenu tekstualnih poruka između pacijenta i povezanog liječnika. | Srednji | Odobreni projektni zadatak | Pacijent i s njim povezani liječnik mogu poslati poruku i vidjeti je u zajedničkom razgovoru s vremenom slanja. Nepovezani korisnik ne može otvoriti ni koristiti taj razgovor. |
+| F-012 | Sustav omogućuje evidentiranje i pregled termina pacijenta, a liječniku omogućuje upravljanje terminima povezanih pacijenata. | Srednji | Odobreni projektni zadatak | Liječnik može dodati, promijeniti ili otkazati termin, a pacijent vidi ažurirane nadolazeće i prethodne termine. Sustav sprječava spremanje termina bez obaveznog datuma i vremena. |
+| F-013 | Sustav omogućuje liječniku unos i odobravanje rasporeda terapije za povezanog pacijenta. | Visok | Odobreni projektni zadatak | Liječnik može za lijek upisati naziv, količinu i vrijeme uzimanja te aktivirati raspored. Pacijent vidi samo trenutačno važeću terapiju i pripadajuće upute. |
+| F-014 | Sustav pacijenta obavještava o dospjeloj obvezi uzimanja lijeka i čuva povijest obavijesti. | Visok | Odobreni projektni zadatak | Za aktivni raspored terapije sustav u dogovoreno vrijeme stvara obavijest unutar aplikacije ili podržanu push obavijest koja navodi lijek i količinu. Pacijent može pregledati prethodne obavijesti. |
+| F-015 | Sustav pacijentu pruža Health Agenta koji objašnjava potvrđene podatke iz njegova profila i pomaže mu pripremiti pitanja za liječnika. | Visok | Odobreni projektni zadatak | Pacijent može postaviti pitanje o dostupnim potvrđenim podatcima, a agent vraća odgovor temeljen na tim podatcima ili jasno navodi da nema dovoljno informacija. Agent ne postavlja dijagnozu, ne propisuje lijek i ne mijenja dozu. |
+| F-016 | Sustav liječniku pruža AI asistenta za sažimanje dostupnih podataka pacijenta, uočavanje mogućih obrazaca i pripremu nacrta pitanja ili objašnjenja. | Visok | Odobreni projektni zadatak | Liječnik za odabranog povezanog pacijenta može zatražiti sažetak ili nacrt, dobiti rezultat označen kao sadržaj koji zahtijeva stručnu provjeru te odlučiti hoće li ga urediti ili podijeliti. Sustav sadržaj ne šalje pacijentu automatski. |
+| F-017 | Sustav vodi provjerljiv zapis važnih promjena zdravstvenih podataka, potvrda laboratorijskih vrijednosti i promjena terapije. | Srednji | Odobreni projektni zadatak | Za podržanu promjenu moguće je utvrditi vrstu radnje, vrijeme i korisnika koji ju je izvršio, a obični korisnik ne može mijenjati postojeći zapis aktivnosti. |
 
 
 ## 2.2 Nefunkcijski zahtjevi
@@ -53,33 +40,18 @@ Za složenu interakciju kratak scenarij *Given / When / Then* može pojasniti kr
 
 | ID | Opis | Prioritet | Izvor | Način provjere |
 | --- | --- | --- | --- | --- |
-| NF-01 | [Konkretan zahtjev (npr. odziv, sigurnost, pristupačnost)] | Visok / Srednji / Nizak | [Sigurnost / Uputa / SLA] | [Mjerenje / Testni scenarij / Pregled] |
-|  |  |  |  |  |
-
-<details>
-<summary><strong>Nefunkcijski zahtjevi za analizu</strong></summary>
-
-Relevantna svojstva mogu se odnositi na uporabljivost, pristupačnost, sigurnost, performanse ili pouzdanost. Odaberite svojstva specifična za projekt i opišite kako ih je moguće provjeriti. Zahtjev navodi što se očekuje; stvarna opažanja i dokazi pripadaju rezultatima ispitivanja, a ne drugom stupcu s rezultatima u ovoj tablici.
-
-**Primjer — nefunkcijski zahtjevi za aplikaciju CrisisMap:**
-
-| ID | Opis | Prioritet | Izvor |
-| --- | --- | --- | --- |
-| NF-1.1 | Sustav mora podržati 1.000 istodobnih korisnika uz vrijeme odziva kraće od 1 s. | Visok | SLA | Opteretiti sustav zadanim brojem istodobnih korisnika i izmjeriti vrijeme odziva. |
-| NF-1.2 | Svi osjetljivi podaci moraju biti šifrirani algoritmom AES-256. | Visok | Sigurnosna politika | Pregledati način pohrane i konfiguraciju šifriranja za podatke na koje se zahtjev odnosi. |
-| NF-1.3 | Korisničko sučelje mora podržavati engleski i španjolski jezik. | Srednji | Povratna informacija dionika | Pregledati reprezentativne korisničke tijekove u oba jezika. |
-| NF-1.4 | Dostupnost sustava mora iznositi najmanje 99,5 % mjesečno. | Visok | SLA | Izračunati mjesečnu dostupnost iz zapisa sustava za nadzor, ako takvi podaci postoje.|
-| NF-3.1.7 | Sustav treba imati odgovarajuću dokumentaciju. | Visok | Pravila dokumentiranja | Pregledati zahtijevane dokumentaciju prema obavezama.|
-| NF-3.1.7.1 | Kod sustava treba biti dokumentiran prema „Code Conventions for the Java Programming Language”. | Visok | Pravila dokumentiranja | Pregledati kod. |
-| NF-3.1.7.2 | Sustav treba biti opisan projektnim dokumentom/SRS-om. | Visok | Pravila dokumentiranja | Pregledati strukturu dokumenta  |
-| NF-3.1.7.3 | Sustav treba imati „Operativni priručnik” koji opisuje pravilnu uporabu. | Visok | Pravila dokumentiranja | Pregledati postoji li priručnik i mogu li se prema njemu izvršiti opisane radnje. |
-| NF-3.1.7.4 | Sustav treba imati „Plan implementacije” za pravilno postavljanje. | Visok | Smjernice za postavljanje | Pregledati odgovara li opisani postupak stvarnom postupku postavljanja.|
-
-**Provjerljivost i opseg:** Primjer uvodi performanse, sigurnost, lokalizaciju, dostupnost i dokumentaciju, uključujući hijerarhijski ID zahtjeva. Navedeni izvori primjeri su podrijetla zahtjeva, a ne dokaz da za studentski projekt stvarno postoji SLA ili sigurnosna politika. Vrijednosti poput 1.000 korisnika, 99,5 % mjesečne dostupnosti i AES-256 moraju imati odobren izvor i izvediv način provjere prije nego što postanu zahtjevi tima. Skup zahtjeva o dokumentaciji ilustrira razlaganje zahtjeva, ali zahtjevi za izradu *ove dokumentacije kolegija* u pravilu pripadaju uputama zadatka, a ne zahtjevima kvalitete web-aplikacije.
-
-**Primjer prilagodbe:** Ako je pristupačnost zahtjevana za  projekt, projektno specifičan zahtjev može glasiti: „NF-01: Sve obavezne radnje u obrascu za podnošenje prijave moguće je izvršiti samo tipkovnicom, uz vidljiv fokus na aktivnoj kontroli.” Provjera: navigirati kroz obrazac bez pokazivačkog uređaja, odabrati ili unijeti lokaciju, poslati prijavu i provjeriti može li se pročitati rezultat. To je provjerljivo svojstvo kvalitete, a ne dodatna funkcionalnost koju svaki projekt mora implementirati.
-
-</details>
+| NF-01 | Autorizacija se mora provoditi na poslužiteljskoj strani tako da korisnik ne može pristupiti podatcima ili radnjama druge uloge odnosno nepovezanog pacijenta. | Visok | Osjetljivost zdravstvenih podataka i odobreni projektni zadatak | Izvesti integracijske testove koji s računom pacijenta, nepovezanog liječnika i odjavljenog korisnika pokušavaju dohvatiti ili promijeniti zaštićene podatke; svaki takav zahtjev mora biti odbijen. |
+| NF-02 | Komunikacija s javno postavljenom aplikacijom mora koristiti HTTPS, a pristupni tokeni, ključevi vanjskih usluga i druge tajne ne smiju biti zapisani u repozitoriju ni poslani klijentskom dijelu kada mu nisu potrebni. | Visok | Sigurnost i pravila kolegija | Provjeriti HTTPS na javnoj adresi, pregledati konfiguraciju i povijest repozitorija te potvrditi da se tajne učitavaju iz varijabli okruženja. |
+| NF-03 | Sustav mora zaštititi integritet zdravstvenih podataka i spriječiti nepotpune ili dvostruke zapise pri ponovljenom slanju istog zahtjeva. | Visok | Osjetljivost zdravstvenih podataka | Ponoviti zahtjeve za spremanje check-ina, laboratorijskih vrijednosti i promjene terapije te provjeriti da ne nastaju neželjeni duplikati ni djelomično spremljeni zapisi. |
+| NF-04 | Za uobičajene radnje koje ne uključuju vanjsku AI uslugu ili servis pametnog sata najmanje 95 % odgovora mora završiti unutar dvije sekunde pri opterećenju od 20 istodobnih korisnika. | Srednji | Cilj uporabljivosti tima | Provesti ponovljiv test opterećenja nad reprezentativnim dohvatima i spremanjima te izračunati udio odgovora unutar dvije sekunde. |
+| NF-05 | Korisničko sučelje mora biti na engleskom jeziku i prilagodljivo zaslonima računala i mobilnih uređaja bez gubitka osnovnih funkcionalnosti. | Visok | Odobreni projektni zadatak | Proći glavne pacijentske i liječničke tijekove na širini zaslona od 360 px i najmanje 1280 px te provjeriti da su sav tekst, kontrole i poruke na engleskom jeziku, vidljivi i uporabivi bez vodoravnog pomicanja cijele stranice. |
+| NF-06 | Glavne funkcionalnosti moraju biti uporabive samo tipkovnicom, a interaktivne kontrole moraju imati vidljiv fokus i programski dostupan naziv. | Srednji | Cilj pristupačnosti tima | Bez uporabe miša proći prijavu, unos check-ina, slanje poruke, pregled termina i upravljanje terapijom te provjeriti fokus i nazive kontrola alatom za pregled pristupačnosti. |
+| NF-07 | Pad vanjske AI usluge, pružatelja identiteta ili servisa pametnog sata ne smije uzrokovati gubitak prethodno spremljenih podataka niti lažno prikazati uspješan rezultat. | Visok | Vanjske ovisnosti projekta | U testnom okruženju simulirati nedostupnost svake vanjske usluge; sustav mora sačuvati postojeće podatke, prikazati razumljivu pogrešku i omogućiti ponovni pokušaj kada je primjenjivo. |
+| NF-08 | AI odgovori moraju biti jasno označeni kao informativni ili savjetodavni te ne smiju samostalno postavljati dijagnozu, propisivati lijek niti mijenjati dozu terapije. | Visok | Odobreni projektni zadatak i sigurnosno ograničenje | Provesti skup upita koji traže dijagnozu, propisivanje ili promjenu doze i provjeriti da ih agent odbija na predviđen način. Provjeriti i da liječnički AI sadržaj nije automatski poslan pacijentu. |
+| NF-09 | Obrada laboratorijskog dokumenta mora biti ograničena na dogovoreni podržani format i podatke kompletne krvne slike, uz jasno označavanje nepouzdanog ili nepotpunog rezultata. | Visok | Dogovoreno ograničenje opsega | Ispitati podržani dokument, dokument s nedostajućim vrijednostima i nepodržani dokument; samo prepoznate vrijednosti smiju se ponuditi za potvrdu, a ostali slučajevi moraju imati jasnu poruku. |
+| NF-10 | Javno postavljena inačica mora omogućiti demonstraciju najmanje jednog cjelovitog pacijentskog i jednog liječničkog tijeka bez ručne izmjene baze podataka. | Visok | Pravila kolegija | Na javnoj adresi s pripremljenim demonstracijskim računima provesti prijavu, pacijentski unos i odgovarajući liječnički pregled ili potvrdu od početka do kraja. |
+| NF-11 | Sustav mora podržavati aktualne stabilne inačice preglednika Chrome, Firefox i Safari. | Srednji | Cilj kompatibilnosti tima | Provesti glavni pacijentski i liječnički tijek u navedenim preglednicima te evidentirati rezultate i eventualna ograničenja. |
+| NF-12 | Osobni i zdravstveni podatci korišteni u razvoju, ispitivanju i demonstraciji moraju biti izmišljeni ili anonimizirani. | Visok | Privatnost i akademski prototip | Pregledati početne podatke, testove, snimke zaslona, dokumentaciju i demonstracijske račune te potvrditi da ne sadrže stvarne identifikacijske ili zdravstvene podatke. |
 
 ## 2.3 Dionici i akteri
 
