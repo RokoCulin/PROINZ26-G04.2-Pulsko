@@ -1,30 +1,62 @@
-# [Naziv aplikacije] — Projektna dokumentacija
+
+# Pulsko — Projektna dokumentacija
 
 **Kolegij:** [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz), Fakultet elektrotehnike i računarstva Sveučilišta u Zagrebu  
-**Akademska godina:** [20XX./20XX.]  
+**Akademska godina:** 2026./2027.  
 **Tim:** [Oznaka i naziv tima]  
 **Nastavnik:** Vlado Sruk  
-**Asistent / demonstrator:** [Ime i uloga u ovom izvođenju kolegija]
+**Asistent / demonstrator:** [Ime i prezime]
 
 ## Pregled projekta
 
-**Cilj:** Omogućiti čitatelju koji prvi put vidi projekt da u dvije ili tri rečenice prepozna aplikaciju, njezine ciljane korisnike i glavnu svrhu.
+**Cilj:** Razviti web aplikaciju koja pacijentima omogućuje jednostavno pohranjivanje, organiziranje i praćenje zdravstvenih nalaza te dijeljenje odabranih podataka s liječnicima.
 
-[Opis projekta.]
+Pulsko je aplikacija namijenjena pacijentima i liječnicima, s ciljem jednostavnijeg upravljanja zdravstvenim podacima i njihove preglednosti. Pacijentima omogućuje vođenje osobne evidencije nalaza i zdravstvenih pokazatelja, dok liječnicima pruža mogućnost uvida u podatke pacijenata koji su im odobrili pristup.
+
+Problem koji aplikacija nastoji riješiti jest nepreglednost zdravstvene dokumentacije koja se često nalazi na različitim mjestima i u različitim formatima. Objedinjavanjem podataka na jednom mjestu korisnicima se želi olakšati praćenje zdravstvenog stanja kroz vrijeme i komunikacija s liječnicima.
+
+Projekt se trenutačno nalazi u početnoj fazi. Predviđene funkcionalnosti bit će detaljnije definirane tijekom analize zahtjeva i implementirane u narednim fazama razvoja.
 
 <details>
 <summary><strong>Sažet pregled projekta</strong></summary>
 
-Za projekt na temu CrisisMap sažet pregled može navesti građane kojima trebaju informacije o kriznim događajima povezane s njihovom lokacijom te cilj aplikacije da prijave kriznih događaja prikaže na karti. Funkcionalnost spomenite samo ako pripada odobrenom zadatku tima; bez dokaza nemojte tvrditi da aplikacija poboljšava odgovor hitnih službi. Ovo je primjer informativnog pregleda, a ne tekst za prepisivanje niti dokaz da je funkcionalnost ostvarena.
+### Ciljani korisnici
+
+Aplikacija je namijenjena dvjema glavnim skupinama korisnika:
+
+- **Pacijenti** – osobe koje žele na jednom mjestu pohraniti svoje zdravstvene nalaze, pratiti promjene zdravstvenih pokazatelja i dijeliti podatke s liječnicima.
+- **Liječnici** – zdravstveni djelatnici koji žele imati pregled zdravstvenih podataka pacijenata koji su im odobrili pristup.
+
+### Planirane funkcionalnosti
+
+- Registracija i prijava korisnika uz razlikovanje uloga pacijenta i liječnika.
+- Provjera liječničkih korisničkih računa.
+- Unos, pohrana i pregled zdravstvenih nalaza.
+- Evidencija zdravstvenih pokazatelja i praćenje njihovih promjena kroz vrijeme.
+- Povezivanje pacijenata i liječnika.
+- Upravljanje pristupom zdravstvenim podacima.
+- Pregled dostupnih podataka pacijenata iz perspektive liječnika.
+- Obavijesti unutar aplikacije.
+- Pomoć pri razumijevanju laboratorijskih nalaza, s početnim naglaskom na kompletnu krvnu sliku.
+
+Pomoć pri razumijevanju laboratorijskih nalaza zamišljena je kao informativna funkcionalnost i ne zamjenjuje stručno liječničko mišljenje, dijagnozu ili preporuku.
+
+Detaljan popis funkcionalnih i nefunkcionalnih zahtjeva bit će naveden u dokumentu **Analiza zahtjeva**.
+
+### Trenutačno stanje
+
+Projekt je u fazi početnog planiranja. Razvoj aplikacije još nije započeo, a konačna arhitektura, tehnologije i način implementacije bit će određeni tijekom rada na projektu.
 
 </details>
 
-**Aplikacija i osnovno postavljanje:** [README repozitorija](../README_PREDLOZAK.md#quick-start)  
-**Javno dostupna aplikacija:** pogledajte [README – Postavljanje](../README_PREDLOZAK.md#deployment)
+**Aplikacija i osnovno postavljanje:** [README repozitorija](../README.md#quick-start)  
+**Javno dostupna aplikacija:** Poveznica će biti dodana nakon prve javne objave aplikacije.
 
 ## Članovi tima i uloge
 
-Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa nalazi se u [README-u repozitoriju](../README_PREDLOZAK.md#team-members).
+Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa nalazit će se u [README-u repozitorija](../README.md#team-members).
+
+Raspodjela odgovornosti unutar tima bit će određena tijekom početne organizacije projekta.
 
 ## Kazalo dokumentacije
 
@@ -39,99 +71,79 @@ Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa
 | [7. Zaključak i budući rad](7-Zakljucak-i-buduci-rad.md) | Zaključak i moguća daljnja poboljšanja |
 | [A. Pregled aktivnosti grupe](A-Pregled-aktivnosti-grupe.md) | Aktivnosti tima, doprinosi i izazovi |
 
+Dokumentacija će se postupno izrađivati i nadopunjavati tijekom razvoja projekta. Pojedine stranice trenutačno nisu dovršene.
+
 ## Ključne točke projekta
 
 | Kontrolna točka | Demonstracija | Video |
 | --- | --- | --- |
-| Iteracija 1 | [Poveznica na demonstraciju ili inačicu projekta] | [Poveznica na video Demo 1, ako je snimljen] |
-| Završni pregled | [Poveznica na završnu inačicu projekta] | [Poveznica na video završne demonstracije, ako je snimljen] |
+| Iteracija 1 | Poveznica će biti dodana nakon prve iteracije. | Poveznica će biti dodana nakon snimanja demonstracije. |
+| Završni pregled | Poveznica će biti dodana nakon završetka projekta. | Poveznica će biti dodana nakon snimanja završne demonstracije. |
 
 Dokumentacija se kontinuirano ažurira kako se aplikacija razvija.
 
 ## Organizacija projekta i razvojni proces
 
-**Način rada:** [Stvarni način rada i trajanje iteracije, ako je relevantno.]  
-**Praćenje trenutačnih zadataka i nedostataka:** [Poveznica na GitHub Issues ili stvarno korištenu ploču zadataka.]
+**Način rada:** Način organizacije rada, raspodjela zadataka i trajanje razvojnih iteracija bit će definirani na početku razvoja projekta.
+
+**Praćenje trenutačnih zadataka i nedostataka:** Planirano je korištenje GitHuba za pohranu izvornog koda i praćenje promjena. Poveznica na sustav za praćenje zadataka bit će dodana nakon njegova uspostavljanja.
 
 <details>
 <summary><strong>Opis načina rada tima</strong></summary>
 
-**Primjer — CrisisMap:**
+Razvoj aplikacije Pulsko bit će organiziran kroz više faza.
 
-Navedite pristup koji tim stvarno koristi. Tim koji razvija CrisisMap može organizirati prijave, rad na karti i provjere kao GitHub Issues, jednom tjedno raspraviti prioritete i iznad postaviti poveznicu na svoju aktivnu ploču zadataka. Takav je konkretan opis procesa informativniji od tvrdnje da tim koristi „Scrum” ako zapravo ne primjenjuje njegove prakse. Stvarni tim treba navesti vlastiti ritam rada i odgovornosti; dokumentacija ne treba duplicirati ploču zadataka. Primjer opisuje mogući tijek rada (engl. workflow), a ne tvrdi da je objavljeni tim CrisisMapa radio upravo tako.
+U početnoj fazi tim će analizirati problem, definirati funkcionalne i nefunkcionalne zahtjeve te odrediti opseg projekta.
+
+Nakon analize zahtjeva slijedi oblikovanje arhitekture sustava, modeliranje podataka i izrada potrebnih UML dijagrama.
+
+Implementacija će obuhvatiti razvoj korisničkog sučelja, poslužiteljskog dijela i potrebnih funkcionalnosti aplikacije.
+
+Tijekom razvoja planira se redovito provjeravanje implementiranih funkcionalnosti te evidentiranje pronađenih nedostataka.
+
+Konačan način organizacije rada, raspodjela odgovornosti i učestalost sastanaka bit će definirani dogovorom članova tima.
+
+Ovaj opis predstavlja planirani tijek razvoja. Stvarni način rada bit će dokumentiran nakon početka projekta.
 
 </details>
 
 ## Pravila dokumentacije
 
-Dokumentacija se sastoji od međusobno povezanih Markdown stranica. Obavezni UML dijagrami izrađuju se u PlantUML-u, uz PlantUML izvor u dokumentaciji sačuvajte i čitljivu sliku. Primjeri u ovom predlošku kolegija pokazuju kako nešto dokumentirati; nisu dio rezultata studentskog projekta.
+Dokumentacija projekta sastoji se od međusobno povezanih Markdown stranica koje opisuju različite aspekte razvoja aplikacije.
+
+Za prikaz arhitekture sustava, obrazaca uporabe i drugih potrebnih modela koristit će se UML dijagrami izrađeni u PlantUML-u.
+
+Za svaki dijagram potrebno je sačuvati izvornu `.puml` datoteku i odgovarajući čitljiv grafički prikaz.
+
+Dokumentacija mora biti usklađena sa stvarnim stanjem projekta. Planirane funkcionalnosti jasno će se razlikovati od implementiranih, a rezultati ispitivanja navodit će se tek nakon provedenih provjera.
 
 <details>
 <summary><strong>Izvori dijagrama i nastavni primjeri</strong></summary>
 
-Nastavni primjeri pretpostavljaju React/Vite klijentski dio, Node.js poslužiteljski dio, PostgreSQL, smještaj aplikacije na Renderu i Selenium WebDriver (JavaScript). Vaš tehnološki skup može biti drukčiji; u dokumentaciji opišite ono što stvarno koristite.
+UML dijagrami bit će izrađeni tijekom analize zahtjeva i oblikovanja sustava.
 
-Za obrazac uporabe podnošenja prijave kriznog događaja u CrisisMapu tim može čuvati UML izvor u `.puml` datoteci, prikazati odgovarajuću sliku na relevantnoj stranici dokumentacije te ažurirati oboje kada se interakcija promijeni. Koristite stvarni dijagram i stvarno postavljanje vlastitog projekta. Domena ili tehnologija prikazana u primjeru ne postaje zahtjev osim ako je dio odobrenog zadatka.
+Planirani dijagrami uključuju prikaz aktera i obrazaca uporabe, strukture sustava te komunikacije između njegovih dijelova.
 
->Napomena o primjerima: Blokovi „Primjer — CrisisMap" nastavni su scenarij, a ne rezultat ičijeg projekta; ne prepisujte ih. U primjerima se koriste React, Node.js, PostgreSQL, Render i Selenium samo radi dosljednosti. Vaš stog može biti drukčiji (npr. Java/Spring); dokumentirajte ono što stvarno koristite.</details>
+Izvorne PlantUML datoteke čuvat će se u repozitoriju projekta, uz odgovarajuće prikaze u dokumentaciji.
+
+Primjeri iz nastavnih materijala koristit će se isključivo kao smjernice za izradu vlastitih modela i neće se prikazivati kao rezultati projekta Pulsko.
+
+Tehnologije koje će se koristiti za implementaciju aplikacije još nisu konačno određene. Nakon odabira bit će navedene i obrazložene u dokumentaciji arhitekture i oblikovanja.
+
+</details>
 
 ## Akademski integritet, ponašanje i licenciranje
 
-README repozitorija sadrži projektnu [izjavu o uporabi umjetne inteligencije](../README_PREDLOZAK.md#ai-usage), [informacije o kodeksu ponašanja i podršci](../README_PREDLOZAK.md#code-of-conduct-and-support) te [status licence ili ponovne uporabe](../README_PREDLOZAK.md#license). Pristupni podaci i druge tajne nikada se ne objavljuju u dokumentaciji niti dijele u običnim porukama.
+Projekt će se izrađivati u skladu s pravilima akademskog integriteta Fakulteta elektrotehnike i računarstva Sveučilišta u Zagrebu.
+
+Svi korišteni vanjski izvori, biblioteke i drugi materijali bit će navedeni u dokumentaciji kada budu uključeni u projekt.
+
+README repozitorija sadržavat će informacije o pravilima ponašanja i podršci te statusu licence i mogućnostima ponovne uporabe izvornog koda.
+
+Posebna pozornost posvetit će se zaštiti zdravstvenih podataka korisnika. Stvarni osobni i osjetljivi zdravstveni podaci neće se koristiti u javno dostupnim primjerima, demonstracijama ili ispitivanjima aplikacije.
+
+Pristupni podaci, lozinke i druge povjerljive informacije neće se objavljivati u dokumentaciji ni u izvornom kodu repozitorija.
 
 ## Izjava o uporabi umjetne inteligencije
 
-<!-- UPUTA: Ovo je detaljan zapis uporabe umjetne inteligencije; README sadrži kratak sažetak i poveznicu na ovaj odjeljak. Unesite samo ono što se stvarno dogodilo i uklonite neupotrijebljene retke. Ako nije korišten nijedan alat generativne umjetne inteligencije, zamijenite cijeli odjeljak jednom rečenicom koja to jasno navodi. Svaki redak mora upućivati na stranicu, datoteku, zahtjev za uključivanje promjena (PR) ili zadatak. Nikada ne unosite pristupne podatke, osobne podatke ni tuđi zaštićeni sadržaj u alate umjetne inteligencije. -->
-
-Kratak sažetak: [README – Uporaba umjetne inteligencije](../README_PREDLOZAK.md#ai-usage). Ovaj odjeljak bilježi koji su alati korišteni, za koju dokumentaciju ili kod te kako je tim provjerio rezultat. Slijedi FER-ova [pravila o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
-
-### Korišteni alati
-
-| Alat | Inačica ili model | Koristio/la | Glavna svrha |
-| --- | --- | --- | --- |
-| [Naziv alata] | [Inačica ili model, ako je poznat] | [Član/članovi tima] | [npr. izrada nacrta dokumentacije, generiranje izvora dijagrama] |
-
-### Opseg doprinosa umjetne inteligencije
-
-| Stranica, datoteka ili artefakt | Vrsta pomoći | Što je alat proizveo | Što je tim zadao i promijenio | Lokacija |
-| --- | --- | --- | --- | --- |
-| [npr. 3. Obrasci uporabe, UC-002] | [Izrada nacrta / preoblikovanje / prijevod / izvor dijagrama / sažimanje] | [Kratak opis] | [Ulaz zadan alatu; dodane, ispravljene ili uklonjene činjenice] | [Stranica dokumentacije, `.puml` datoteka, PR] |
-
-Stranice i artefakti koji nisu navedeni iznad izrađeni su bez pomoći generativne umjetne inteligencije. [Po želji: kao dodatne retke navedite kod ili ispitivanja izrađena uz pomoć umjetne inteligencije.]
-
-### Provjera generiranog sadržaja
-
-| Provjera | Kako je provedena | Dokaz |
-| --- | --- | --- |
-| Činjenična točnost | [Svaka tvrdnja o funkcionalnostima, ponašanju ili arhitekturi uspoređena je s pokrenutom aplikacijom i kodom] | [Imena pregledavatelja; poveznice na zahtjev za uključivanje promjena (PR) ili zadatak] |
-| Nema tvrdnji o neostvarenim funkcionalnostima | [Provjereno je da opisane funkcionalnosti, ispitivanja i rezultati stvarno postoje; planirani rad označen je kao planiran] | [Usporedba s odjeljkom 5.4 (Ispitivanje) i odjeljkom 7.1 (Zaključak)] |
-| Dosljednost s drugim stranicama | [Nazivi, ID-ovi i dijagrami provjereni su prema Analizi zahtjeva, Obrascima uporabe, Arhitekturi i oblikovanju te Ispitivanju] | [Kontrolni popis ili bilješka pregleda] |
-| Izvori dijagrama | [Generirani PlantUML je iscrtan, ispravljen i odgovara implementiranom sustavu] | [`.puml` datoteka i izrađena slika] |
-| Povjerljivi sadržaj | [Kako je tim osigurao da u upite ili dokumentaciju nisu unesene tajne, pristupni podaci ni osobni podaci] | [Primijenjeni postupak] |
-
-### Pogreške pronađene u izlazu umjetne inteligencije
-
-| Problem | Kako je pronađen | Rješenje |
-| --- | --- | --- |
-| [Netočna, izmišljena ili iz predloška preuzeta tvrdnja] | [Pregled, ispitivanje ili usporedba s aplikacijom] | [Ispravak s poveznicom] |
-
-<!-- UPUTA: Zabilježite stvarne ispravke ili napišite „Nisu utvrđene”. Općenita tvrdnja poput „sav tekst je pregledan” nije dokaz; dokaz su prethodne tablice. Tim mora moći objasniti svaku rečenicu koju objavi. -->
-
-<details>
-<summary><strong>Primjer zapisa uporabe umjetne inteligencije</strong></summary>
-
-**Primjer — CrisisMap:**
-
-| Stranica ili artefakt | Vrsta pomoći | Što je alat proizveo | Što je tim zadao i promijenio | Lokacija |
-| --- | --- | --- | --- | --- |
-| 3. Obrasci uporabe, UC-002 | Izrada nacrta | Prvu inačicu glavnog i alternativnih tijekova | Tim je zadao stvarna polja obrasca i uklonio granu prijave u sustav koja u aplikaciji ne postoji | Primjer PR #31 |
-| Sekvencijski dijagram, podnošenje prijave | Izvor dijagrama | Nacrt PlantUML-a | Tim je uskladio nazive sudionika s komponentama i uklonio korak slanja obavijesti koji nije implementiran | `diagrams/report-submission.puml` (primjer) |
-
-| Problem | Kako je pronađen | Rješenje |
-| --- | --- | --- |
-| U tekstu je stajalo da se obavijesti dostavljaju unutar jedne minute | Usporedba s Ispitivanjem (5.4): dostava nikada nije ispitana | Tvrdnja je uklonjena; obavijesti su navedene pod Budućim radom |
-| Nacrt je kopirao primjer zahtjeva F-005 iz predloška kao projektni zahtjev | Usporedba s vlastitim popisom zahtjeva tima | Zamijenjeno stvarnim zahtjevom tima |
-
-**Analiza primjera:** Svaki redak navodi stranicu ili datoteku, ono što je alat generirao i ono što je tim promijenio. Pogreške su tipične za generiranu dokumentaciju: funkcionalnost koja ne postoji i tekst predloška prikazan kao činjenica o projektu. Tvrdnje poput „AI je korišten svugdje” ili „sav tekst je pregledan” nije moguće provjeriti. Ovo je nastavni scenarij, a ne opis objavljenog projekta.
-
-</details>
+U okviru ove vježbe predviđeno je da se projekt izrađuje bez uporabe alata generativne umjetne inteligencije.
