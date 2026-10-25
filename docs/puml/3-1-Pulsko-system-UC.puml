@@ -7,7 +7,7 @@
 '           nisu obuhvaćeni.
 ' Autor:    Roko, tim G04.2
 ' AI:       Autor je naveo aktere, obrasce uporabe i njihove odnose; AI je korišten kao pomoć za lakše pisanje PlantUML koda i komentara.
-' Zahtjevi: UC-001 do UC-016
+' Zahtjevi: UC-001 do UC-017
 '
 ' Diagram level: System Requirements
 ' Diagram type:  Use Case Diagram
@@ -72,6 +72,7 @@ rectangle "Sustav Pulsko" as Pulsko {
     (UC-005\nPregled vlastitih\npodataka i trendova) as UC_Dashboard
     (UC-006\nUčitavanje\nlaboratorijskog nalaza) as UC_UploadLab
     (UC-007\nRazgovor s pacijentskim\nAI agentom) as UC_PatientAI
+    (UC-017\nEvidentiranje\nuzimanja lijeka) as UC_DoseLog
 
     ' Liječnik
     (UC-008\nObrada zahtjeva\nza povezivanje) as UC_HandleRequest
@@ -99,6 +100,7 @@ Patient -- UC_CheckIn
 Patient -- UC_Dashboard
 Patient -- UC_UploadLab
 Patient -- UC_PatientAI
+Patient -- UC_DoseLog
 
 Doctor -- UC_HandleRequest
 Doctor -- UC_ViewPatient
