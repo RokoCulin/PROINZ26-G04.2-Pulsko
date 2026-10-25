@@ -1,178 +1,117 @@
 # 2. Analiza zahtjeva
 
-**Cilj:** Iz odobrenog opsega projekta izvesti prepoznatljive, prioritetizirane i provjerljive zahtjeve. Zahtjevi se mogu mijenjati; pri završnoj predaji moraju odražavati dogovorenu aplikaciju. Izvori, odluke i poveznice u primjerima kolegija nastavni su scenariji, a ne projektni zapisi.
-
-<details>
-<summary><strong>Održavanje zahtjeva ažurnima</strong></summary>
-
-Primjeri koriste temu projekta CrisisMap. Neki namjerno sadrže korisne nedostatke za raspravu. Izvori, odluke i poveznice na provjere u tim primjerima **nastavni su scenariji**, a ne zapisi rada stvarnog studentskog tima. Zamijenite ih zahtjevima i dokazima svojeg odobrenog projekta. Značajne promjene zabilježite u odjeljku 2.5.
-
-</details>
-
 ## 2.1 Funkcijski zahtjevi
 
-**Cilj:** Navesti što aplikacija mora omogućiti korisnicima, odakle pojedina mogućnost proizlazi i koji se opažljivi rezultat smatra prihvaćanjem.
-
-| ID | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
-| --- | --- | --- | --- | --- |
-| F-001 | Sustav omogućuje pacijentu i liječniku prijavu putem vanjskog pružatelja identiteta uporabom protokola OpenID Connect odnosno OAuth 2.0. | Visok | Odobreni projektni zadatak | Nakon uspješne vanjske prijave korisnik ulazi u aplikaciju i dobiva pristup sučelju svoje uloge. Ako prijava ne uspije ili je korisnik prekine, zaštićene funkcionalnosti ostaju nedostupne. |
-| F-002 | Sustav razlikuje uloge pacijenta i liječnika te ograničava dostupne podatke i radnje prema dodijeljenoj ulozi. | Visok | Odobreni projektni zadatak | Pacijent može pristupiti samo vlastitim zdravstvenim podatcima, a liječnik samo podatcima pacijenata koji su s njim povezani. Pokušaj nedopuštenog pristupa sustav odbija. |
-| F-003 | Sustav omogućuje povezivanje pacijenta s liječnikom. | Visok | Odobreni projektni zadatak | Nakon uspješnog povezivanja liječnik vidi pacijenta na svojem popisu i može otvoriti njegove dopuštene podatke, dok nepovezani liječnik tim podatcima ne može pristupiti. |
-| F-004 | Sustav pacijentu prikazuje osobnu nadzornu ploču sa sažetkom zdravstvenih podataka, obveza, termina i terapije. | Visok | Odobreni projektni zadatak | Prijavljeni pacijent na jednom mjestu vidi posljednje dostupne zdravstvene vrijednosti, nadolazeće termine i današnje obveze vezane uz terapiju. |
-| F-005 | Sustav omogućuje pacijentu ispunjavanje dnevnog check-ina o trenutačnom stanju. | Visok | Odobreni projektni zadatak | Pacijent može za odabrani dan spremiti tražene podatke o tome kako se osjeća, naknadno ih pregledati, a povezani liječnik vidi spremljeni zapis. Neispravan ili nepotpun obavezan unos sustav ne prihvaća. |
-| F-006 | Sustav omogućuje unos, pohranu i pregled podržanih zdravstvenih podataka pacijenta. | Visok | Odobreni projektni zadatak | Pacijent može unijeti podržane laboratorijske vrijednosti i druge dopuštene podatke, a sustav ih sprema uz datum i jedinicu mjere te ih prikazuje pacijentu i povezanom liječniku. |
-| F-007 | Sustav iz podržanih PDF dokumenata izdvaja vrijednosti kompletne krvne slike i označava ih kao nepotvrđene. | Visok | Odobreni projektni zadatak i dogovoreno ograničenje tima | Nakon učitavanja od jednog do tri podržana PDF dokumenta sustav prikazuje izdvojene vrijednosti kompletne krvne slike radi provjere. Nepodržanu datoteku odbija uz razumljivu poruku i ne prikazuje je kao uspješno obrađenu. |
-| F-008 | Sustav omogućuje liječniku potvrđivanje ili ispravljanje izdvojenih laboratorijskih vrijednosti. | Visok | Odobreni projektni zadatak | Liječnik može otvoriti nepotvrđene vrijednosti povezanog pacijenta, ispraviti ih ako je potrebno i potvrditi. Sustav bilježi status, vrijeme i liječnika koji je napravio potvrdu. |
-| F-009 | Sustav dohvaća podatke o snu, koracima i srčanom pulsu iz jednog podržanog servisa pametnog sata. | Visok | Odobreni projektni zadatak | Nakon što pacijent poveže podržani servis i odobri pristup, sustav dohvaća dostupne vrijednosti za odabrano razdoblje i sprema ih uz vrijeme mjerenja. Neuspješna sinkronizacija ne briše prethodno spremljene podatke. |
-| F-010 | Sustav pacijentu i povezanom liječniku prikazuje povijest i jednostavne trendove zdravstvenih podataka. | Srednji | Odobreni projektni zadatak | Korisnik može odabrati podržanu vrstu podatka i vremensko razdoblje te pregledati kronološki prikaz ili graf dostupnih vrijednosti, uz jasno označena razdoblja bez podataka. |
-| F-011 | Sustav omogućuje razmjenu tekstualnih poruka između pacijenta i povezanog liječnika. | Srednji | Odobreni projektni zadatak | Pacijent i s njim povezani liječnik mogu poslati poruku i vidjeti je u zajedničkom razgovoru s vremenom slanja. Nepovezani korisnik ne može otvoriti ni koristiti taj razgovor. |
-| F-012 | Sustav omogućuje evidentiranje i pregled termina pacijenta, a liječniku omogućuje upravljanje terminima povezanih pacijenata. | Srednji | Odobreni projektni zadatak | Liječnik može dodati, promijeniti ili otkazati termin, a pacijent vidi ažurirane nadolazeće i prethodne termine. Sustav sprječava spremanje termina bez obaveznog datuma i vremena. |
-| F-013 | Sustav omogućuje liječniku unos i odobravanje rasporeda terapije za povezanog pacijenta. | Visok | Odobreni projektni zadatak | Liječnik može za lijek upisati naziv, količinu i vrijeme uzimanja te aktivirati raspored. Pacijent vidi samo trenutačno važeću terapiju i pripadajuće upute. |
-| F-014 | Sustav pacijenta obavještava o dospjeloj obvezi uzimanja lijeka i čuva povijest obavijesti. | Visok | Odobreni projektni zadatak | Za aktivni raspored terapije sustav u dogovoreno vrijeme stvara obavijest unutar aplikacije ili podržanu push obavijest koja navodi lijek i količinu. Pacijent može pregledati prethodne obavijesti. |
-| F-015 | Sustav pacijentu pruža Health Agenta koji objašnjava potvrđene podatke iz njegova profila i pomaže mu pripremiti pitanja za liječnika. | Visok | Odobreni projektni zadatak | Pacijent može postaviti pitanje o dostupnim potvrđenim podatcima, a agent vraća odgovor temeljen na tim podatcima ili jasno navodi da nema dovoljno informacija. Agent ne postavlja dijagnozu, ne propisuje lijek i ne mijenja dozu. |
-| F-016 | Sustav liječniku pruža AI asistenta za sažimanje dostupnih podataka pacijenta, uočavanje mogućih obrazaca i pripremu nacrta pitanja ili objašnjenja. | Visok | Odobreni projektni zadatak | Liječnik za odabranog povezanog pacijenta može zatražiti sažetak ili nacrt, dobiti rezultat označen kao sadržaj koji zahtijeva stručnu provjeru te odlučiti hoće li ga urediti ili podijeliti. Sustav sadržaj ne šalje pacijentu automatski. |
-| F-017 | Sustav vodi provjerljiv zapis važnih promjena zdravstvenih podataka, potvrda laboratorijskih vrijednosti i promjena terapije. | Srednji | Odobreni projektni zadatak | Za podržanu promjenu moguće je utvrditi vrstu radnje, vrijeme i korisnika koji ju je izvršio, a obični korisnik ne može mijenjati postojeći zapis aktivnosti. |
-
+| ID    | Opis                                                                                                                                                             | Prioritet | Izvor                                                    | Kriteriji prihvaćanja                                                                                                                                                                                                                                                                                                              |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F-001 | Sustav omogućuje pacijentu i liječniku prijavu putem vanjskog pružatelja identiteta uporabom protokola OpenID Connect odnosno OAuth 2.0.                         | Visok     | Odobreni projektni zadatak                               | Nakon uspješne vanjske prijave korisnik ulazi u aplikaciju i dobiva pristup sučelju svoje uloge. Ako prijava ne uspije ili je korisnik prekine, zaštićene funkcionalnosti ostaju nedostupne.                                                                                                                                       |
+| F-002 | Sustav razlikuje uloge pacijenta, liječnika i administratora te ograničava dostupne podatke i radnje prema dodijeljenoj ulozi.                                   | Visok     | Odobreni projektni zadatak                               | Pacijent može pristupiti samo vlastitim zdravstvenim podatcima, a liječnik samo podatcima pacijenata koji su s njim povezani. Administrator ima pristup samo administrativnim funkcijama, poput odobravanja liječničkih uloga, i ne može pregledavati zdravstvene podatke pacijenata. Pokušaj nedopuštenog pristupa sustav odbija. |
+| F-003 | Sustav omogućuje povezivanje pacijenta s liječnikom.                                                                                                             | Visok     | Odobreni projektni zadatak                               | Nakon uspješnog povezivanja liječnik vidi pacijenta na svojem popisu i može otvoriti njegove dopuštene podatke, dok nepovezani liječnik tim podatcima ne može pristupiti.                                                                                                                                                          |
+| F-004 | Sustav pacijentu prikazuje osobnu nadzornu ploču sa sažetkom zdravstvenih podataka, obveza, termina i terapije.                                                  | Visok     | Odobreni projektni zadatak                               | Prijavljeni pacijent na jednom mjestu vidi posljednje dostupne zdravstvene vrijednosti, nadolazeće termine i današnje obveze vezane uz terapiju.                                                                                                                                                                                   |
+| F-005 | Sustav omogućuje pacijentu ispunjavanje dnevnog check-ina o trenutačnom stanju.                                                                                  | Visok     | Odobreni projektni zadatak                               | Pacijent može za odabrani dan spremiti tražene podatke o tome kako se osjeća, naknadno ih pregledati, a povezani liječnik vidi spremljeni zapis. Neispravan ili nepotpun obavezan unos sustav ne prihvaća.                                                                                                                         |
+| F-006 | Sustav omogućuje unos, pohranu i pregled podržanih zdravstvenih podataka pacijenta.                                                                              | Visok     | Odobreni projektni zadatak                               | Pacijent može unijeti podržane laboratorijske vrijednosti i druge dopuštene podatke, a sustav ih sprema uz datum i jedinicu mjere te ih prikazuje pacijentu i povezanom liječniku.                                                                                                                                                 |
+| F-007 | Sustav iz podržanih PDF dokumenata izdvaja vrijednosti kompletne krvne slike i označava ih kao nepotvrđene.                                                      | Visok     | Odobreni projektni zadatak i dogovoreno ograničenje tima | Nakon učitavanja od jednog do tri podržana PDF dokumenta sustav prikazuje izdvojene vrijednosti kompletne krvne slike radi provjere. Nepodržanu datoteku odbija uz razumljivu poruku i ne prikazuje je kao uspješno obrađenu.                                                                                                      |
+| F-008 | Sustav omogućuje liječniku potvrđivanje, ispravljanje ili odbijanje izdvojenih laboratorijskih vrijednosti.                                                      | Visok     | Odobreni projektni zadatak                               | Liječnik može otvoriti nepotvrđene vrijednosti povezanog pacijenta, ispraviti ih ako je potrebno i potvrditi ili odbiti nečitljiv ili neispravan nalaz uz komentar. Sustav bilježi status, vrijeme i liječnika koji je napravio potvrdu ili odbijanje.                                                                             |
+| F-009 | Sustav omogućuje pacijentu ručni unos podataka o snu, koracima, srčanom pulsu i tjelesnoj aktivnosti.                                                            | Visok     | Odobreni projektni zadatak i dogovor tima                | Pacijent može za odabrani dan unijeti trajanje sna, broj koraka, puls i tjelesnu aktivnost, a sustav ih sprema uz datum te prikazuje pacijentu i povezanom liječniku. Vrijednost izvan dopuštenog raspona sustav ne prihvaća. Automatski dohvat s pametnog sata nije dio osnovnog opsega.                                          |
+| F-010 | Sustav pacijentu i povezanom liječniku prikazuje povijest i jednostavne trendove zdravstvenih podataka.                                                          | Srednji   | Odobreni projektni zadatak                               | Korisnik može odabrati podržanu vrstu podatka i vremensko razdoblje te pregledati kronološki prikaz ili graf dostupnih vrijednosti, uz jasno označena razdoblja bez podataka.                                                                                                                                                      |
+| F-011 | Sustav omogućuje razmjenu tekstualnih poruka između pacijenta i povezanog liječnika.                                                                             | Srednji   | Odobreni projektni zadatak                               | Pacijent i s njim povezani liječnik mogu poslati poruku i vidjeti je u zajedničkom razgovoru s vremenom slanja. Nepovezani korisnik ne može otvoriti ni koristiti taj razgovor.                                                                                                                                                    |
+| F-012 | Sustav omogućuje evidentiranje i pregled termina pacijenta, a liječniku omogućuje upravljanje terminima povezanih pacijenata.                                    | Srednji   | Odobreni projektni zadatak                               | Liječnik može dodati, promijeniti ili otkazati termin, a pacijent vidi ažurirane nadolazeće i prethodne termine. Sustav sprječava spremanje termina bez obaveznog datuma i vremena.                                                                                                                                                |
+| F-013 | Sustav omogućuje liječniku unos, izmjenu, ukidanje i odobravanje rasporeda terapije za povezanog pacijenta.                                                      | Visok     | Odobreni projektni zadatak                               | Liječnik može za lijek upisati naziv, količinu i vrijeme uzimanja te aktivirati, izmijeniti ili ukinuti raspored. Pacijent vidi samo trenutačno važeću terapiju i pripadajuće upute.                                                                                                                                               |
+| F-014 | Sustav pacijenta podsjeća na dospjelu dozu lijeka i nadolazeći termin obaviješću unutar aplikacije i e-poštom te čuva povijest podsjetnika.                      | Visok     | Odobreni projektni zadatak i dogovor tima                | Za aktivni raspored terapije i za zakazani termin sustav u dogovoreno vrijeme stvara obavijest unutar aplikacije i šalje e-poruku s nazivom lijeka i količinom, odnosno datumom i vremenom termina. Ako e-poruka ne bude dostavljena, obavijest unutar aplikacije ostaje dostupna. Pacijent može pregledati prethodne podsjetnike. |
+| F-015 | Sustav pacijentu pruža Health Agenta koji objašnjava potvrđene podatke iz njegova profila i pomaže mu pripremiti pitanja za liječnika.                           | Visok     | Odobreni projektni zadatak                               | Pacijent može postaviti pitanje o dostupnim potvrđenim podatcima, a agent vraća odgovor temeljen na tim podatcima ili jasno navodi da nema dovoljno informacija. Agent ne postavlja dijagnozu, ne propisuje lijek i ne mijenja dozu.                                                                                               |
+| F-016 | Sustav liječniku pruža AI asistenta za sažimanje dostupnih podataka pacijenta, uočavanje mogućih obrazaca i pripremu nacrta pitanja ili objašnjenja.             | Visok     | Odobreni projektni zadatak                               | Liječnik za odabranog povezanog pacijenta može zatražiti sažetak ili nacrt, dobiti rezultat označen kao sadržaj koji zahtijeva stručnu provjeru te odlučiti hoće li ga urediti ili podijeliti. Sustav sadržaj ne šalje pacijentu automatski.                                                                                       |
+| F-017 | Sustav vodi provjerljiv zapis važnih promjena zdravstvenih podataka, potvrda laboratorijskih vrijednosti i promjena terapije.                                    | Srednji   | Odobreni projektni zadatak                               | Za podržanu promjenu moguće je utvrditi vrstu radnje, vrijeme i korisnika koji ju je izvršio, a obični korisnik ne može mijenjati postojeći zapis aktivnosti.                                                                                                                                                                      |
+| F-018 | Sustav omogućuje pacijentu evidentiranje je li zakazanu dozu lijeka uzeo ili propustio te pacijentu i povezanom liječniku prikazuje povijest evidentiranih doza. | Visok     | Odobreni projektni zadatak i dogovor tima                | Za zakazanu dozu pacijent može označiti status „uzeto” ili „propušteno”. Sustav sprema status i vrijeme evidentiranja te ih prikazuje u povijesti terapije pacijentu i njegovu povezanom liječniku. Nepovezani liječnik ne može pristupiti toj evidenciji.                                                                         |
+| F-019 | Sustav omogućuje administratoru odobravanje ili odbijanje zahtjeva za liječničku ulogu.                                                                          | Visok     | Dogovor tima (zaštita zdravstvenih podataka)             | Korisnik koji pri prvoj prijavi odabere ulogu liječnika i unese ustanovu i broj licence nema pristup liječničkim funkcijama dok ga administrator ne odobri. Administrator vidi zahtjeve na čekanju te ih odobrava ili odbija uz razlog, a sustav bilježi odluku i obavještava korisnika.                                           |
+| F-020 | Sustav obavještava korisnika unutar aplikacije o važnim događajima koji se odnose na njega.                                                                      | Srednji   | Odobreni projektni zadatak                               | Korisnik u aplikaciji vidi obavijest kada mu je zahtjev za povezivanje prihvaćen ili odbijen, kada je termin promijenjen ili otkazan, kada je liječnički račun odobren ili odbijen, kada je nalaz odbijen te kada primi novu poruku. Nepročitane obavijesti su označene.                                                           |
 
 ## 2.2 Nefunkcijski zahtjevi
 
-**Cilj:** Odrediti važna svojstva kvalitete i uvjete rada odobrene aplikacije na način koji tim može razumno provjeriti.
-
-| ID | Opis | Prioritet | Izvor | Način provjere |
-| --- | --- | --- | --- | --- |
-| NF-01 | Sustav mora podržavati najmanje 10 registriranih liječnika i 1.000 registriranih pacijenata. Jedan liječnik ne smije biti povezan s više od 2.125 pacijenata. | Visok | Cilj kapaciteta tima; [maksimalni broj osiguranih osoba za tim opće/obiteljske medicine prema HZZO-u](https://hzzo.hr/en/pitanja-i-odgovori/15) | Generirati najmanje 10 liječničkih i 1.000 pacijentskih računa, povezati ih i provjeriti dohvat popisa i pojedinačnih profila. Zasebnim graničnim testom provjeriti da sustav odbija povezivanje 2.126. pacijenta s istim liječnikom. |
-| NF-02 | Pri uobičajenom opterećenju od 30 istodobno aktivnih korisnika i najvećem predviđenom opterećenju od 150 korisnika obične radnje moraju završiti unutar tri sekunde, dok AI odgovor mora biti dostupan unutar deset sekundi. | Visok | Cilj performansi tima | Provesti ponovljiv test s 30 i 150 istodobnih korisnika nad reprezentativnim dohvatima i spremanjima te izmjeriti trajanje svake radnje. Zasebno izmjeriti najmanje deset zahtjeva prema AI usluzi; svaki uspješan odgovor mora stići unutar deset sekundi. |
-| NF-03 | Sustav mora prihvatiti istodobni unos najviše tri PDF dokumenta veličine do 10 MB po dokumentu i dovršiti izdvajanje podržanih vrijednosti kompletne krvne slike unutar jedne minute. | Visok | Dogovoreno ograničenje opsega i performansi | Učitati tri podržana PDF dokumenta veličine do 10 MB i izmjeriti vrijeme do prikaza izdvojenih vrijednosti. Provjeriti da sustav odbija četvrti dokument, dokument veći od 10 MB i datoteku koja nije PDF, bez djelomičnog spremanja. |
-| NF-04 | Obavijest o dospjeloj obvezi uzimanja lijeka mora biti stvorena najkasnije pet minuta nakon vremena određenog aktivnim rasporedom terapije. | Visok | Cilj pravodobnosti tima | U kontroliranom testu postaviti više rasporeda terapije i usporediti zakazano vrijeme s vremenom nastanka obavijesti; razlika ni u jednom uspješnom slučaju ne smije biti veća od pet minuta. |
-| NF-05 | Sustav mora štititi zdravstvene podatke poslužiteljskom autorizacijom, prijenosom preko HTTPS-a i sigurnim čuvanjem tajni izvan repozitorija. Razvojni i demonstracijski podatci moraju biti izmišljeni ili anonimizirani. | Visok | Osjetljivost zdravstvenih podataka i pravila kolegija | Pokušati pristupiti zaštićenim podatcima kao odjavljeni korisnik, pacijent i nepovezani liječnik te potvrditi da su svi nedopušteni zahtjevi odbijeni. Provjeriti HTTPS, konfiguraciju tajni, testne podatke, dokumentaciju i povijest repozitorija. |
-| NF-06 | Korisničko sučelje mora biti na engleskom jeziku, podržavati aktualne stabilne inačice preglednika Chrome, Firefox i Safari te ostati uporabivo na širinama zaslona od 360 px do najmanje 1.280 px. Glavne radnje moraju se moći izvesti tipkovnicom uz vidljiv fokus. | Srednji | Odobreni projektni zadatak i cilj pristupačnosti tima | U sva tri preglednika proći glavne pacijentske i liječničke tijekove na širinama od 360 px i 1.280 px. Provjeriti engleski tekst, izostanak vodoravnog pomicanja cijele stranice te izvođenje glavnih radnji samo tipkovnicom. |
+| ID    | Opis                                                                                                                                                                                                                                                                   | Prioritet | Izvor                                                                                                                                           | Način provjere                                                                                                                                                                                                                                                 |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NF-01 | Sustav mora podržavati najmanje 10 registriranih liječnika i 1.000 registriranih pacijenata. Jedan liječnik ne smije biti povezan s više od 2.125 pacijenata.                                                                                                          | Visok     | Cilj kapaciteta tima; [maksimalni broj osiguranih osoba za tim opće/obiteljske medicine prema HZZO-u](https://hzzo.hr/en/pitanja-i-odgovori/15) | Generirati najmanje 10 liječničkih i 1.000 pacijentskih računa, povezati ih i provjeriti dohvat popisa i pojedinačnih profila. Zasebnim graničnim testom provjeriti da sustav odbija povezivanje 2.126. pacijenta s istim liječnikom.                          |
+| NF-02 | Pri uobičajenom opterećenju od 30 istodobno aktivnih korisnika i najvećem predviđenom opterećenju od 150 korisnika obične radnje moraju završiti unutar tri sekunde, dok AI odgovor mora biti dostupan unutar dvadeset sekundi.                                        | Visok     | Cilj performansi tima                                                                                                                           | Provesti ponovljiv test s 30 i 150 istodobnih korisnika nad reprezentativnim dohvatima i spremanjima te izmjeriti trajanje svake radnje. Zasebno izmjeriti najmanje deset zahtjeva prema AI usluzi; svaki uspješan odgovor mora stići unutar dvadeset sekundi. |
+| NF-03 | Sustav mora prihvatiti istodobni unos najviše tri PDF dokumenta veličine do 10 MB po dokumentu i dovršiti izdvajanje podržanih vrijednosti kompletne krvne slike unutar jedne minute.                                                                                  | Visok     | Dogovoreno ograničenje opsega i performansi                                                                                                     | Učitati tri podržana PDF dokumenta veličine do 10 MB i izmjeriti vrijeme do prikaza izdvojenih vrijednosti. Provjeriti da sustav odbija četvrti dokument, dokument veći od 10 MB i datoteku koja nije PDF, bez djelomičnog spremanja.                          |
+| NF-04 | Obavijest o dospjeloj obvezi uzimanja lijeka mora biti stvorena najkasnije pet minuta nakon vremena određenog aktivnim rasporedom terapije.                                                                                                                            | Visok     | Cilj pravodobnosti tima                                                                                                                         | U kontroliranom testu postaviti više rasporeda terapije i usporediti zakazano vrijeme s vremenom nastanka obavijesti; razlika ni u jednom uspješnom slučaju ne smije biti veća od pet minuta.                                                                  |
+| NF-05 | Sustav mora štititi zdravstvene podatke poslužiteljskom autorizacijom, prijenosom preko HTTPS-a i sigurnim čuvanjem tajni izvan repozitorija. Razvojni i demonstracijski podatci moraju biti izmišljeni ili anonimizirani.                                             | Visok     | Osjetljivost zdravstvenih podataka i pravila kolegija                                                                                           | Pokušati pristupiti zaštićenim podatcima kao odjavljeni korisnik, pacijent i nepovezani liječnik te potvrditi da su svi nedopušteni zahtjevi odbijeni. Provjeriti HTTPS, konfiguraciju tajni, testne podatke, dokumentaciju i povijest repozitorija.           |
+| NF-06 | Korisničko sučelje mora biti na engleskom jeziku, podržavati aktualne stabilne inačice preglednika Chrome, Firefox i Safari te ostati uporabivo na širinama zaslona od 360 px do najmanje 1.280 px. Glavne radnje moraju se moći izvesti tipkovnicom uz vidljiv fokus. | Srednji   | Odobreni projektni zadatak i cilj pristupačnosti tima                                                                                           | U sva tri preglednika proći glavne pacijentske i liječničke tijekove na širinama od 360 px i 1.280 px. Provjeriti engleski tekst, izostanak vodoravnog pomicanja cijele stranice te izvođenje glavnih radnji samo tipkovnicom.                                 |
 
 ## 2.3 Dionici i akteri
 
-**Cilj:** Utvrditi uloge koje utječu na zahtjeve i razlikovati dionike od aktera koji komuniciraju s aplikacijom.
-
-| ID uloge ili aktera | Odnos prema sustavu | Relevantni zahtjevi |
-| --- | --- | --- |
-|  |  |  |
-
-<details>
-<summary><strong>Akteri i povezani zahtjevi</strong></summary>
-
-**Primjer — akteri aplikacije CrisisMap:**
-
-| ID aktera | Uloga | Obuhvaćeni funkcijski zahtjevi |
-| --- | --- | --- |
-| A-01 | Koordinator pomoći | F-003: Pregled resursa; F-004: Podnošenje prijave kriznog događaja. |
-| A-02 | Građanin | F-001: Izrada računa; F-005: Primanje obavijesti. |
-| A-03 | Administrator sustava | NF-1.2: Provođenje sigurnosnih pravila; upravljanje korisnicima. |
-| A-04 | Posjetitelj | F-007: Pregled prijava na karti. |
-| A-05 | Moderator | F-008: Odobravanje ili odbijanje prijava. |
-
-**Odgovornosti aktera:** Uloga aktera treba biti povezana s interakcijom, a ne samo s nazivom. Provjerite podnosi li koordinator pomoći u odobrenom zadatku doista prijave kriznih događaja. Poveznica administratora s NF-1.2 navodi sigurnosni aspekt, ali sama po sebi ne opisuje obrazac uporabe; navedite stvarnu radnju administratora ili izostavite ulogu ako je nema. Nastavnici zainteresirani za rezultat mogu biti dionici, a da nisu akteri aplikacije. Tablica je polazište za razmišljanje, a ne potvrđen opis ovlasti u CrisisMapu.
-
-</details>
+| ID uloge ili aktera                   | Odnos prema sustavu                                                                                                                                      | Relevantni zahtjevi                                                                              |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| A-01 Pacijent                         | Primarni akter; prati vlastite podatke, unosi check-in i nalaze, evidentira doze, koristi Health Agenta i komunicira s liječnikom.                       | F-001, F-002, F-003, F-004, F-005, F-006, F-007, F-009, F-010, F-011, F-014, F-015, F-018, F-020 |
+| A-02 Liječnik                         | Primarni akter; prihvaća povezivanje, pregledava podatke povezanih pacijenata, potvrđuje nalaze, upravlja terapijom i terminima te koristi AI asistenta. | F-001, F-002, F-003, F-008, F-010, F-011, F-012, F-013, F-016, F-017, F-018, F-020               |
+| A-03 Administrator                    | Primarni akter; odobrava ili odbija zahtjeve za liječničku ulogu.                                                                                        | F-002, F-019                                                                                     |
+| A-04 Pružatelj identiteta (OAuth 2.0) | Sekundarni akter (vanjski sustav); provodi autentikaciju pri prijavi.                                                                                    | F-001                                                                                            |
+| A-05 AI usluga                        | Sekundarni akter (vanjski sustav); izdvaja vrijednosti iz nalaza, odgovara pacijentu i izrađuje sažetke za liječnika.                                    | F-007, F-015, F-016                                                                              |
+| A-06 Usluga e-pošte                   | Sekundarni akter (vanjski sustav); dostavlja podsjetnike e-poštom.                                                                                       | F-014                                                                                            |
+| A-07 Timer                            | Vremenski okidač; pokreće slanje podsjetnika u zadano vrijeme.                                                                                           | F-014                                                                                            |
+| D-01 Razvojni tim                     | Dionik, nije akter; razvija, postavlja i održava prototip te brine o zaštiti podataka.                                                                   | NF-05                                                                                            |
+| D-02 Nastavnici kolegija              | Dionici, nisu akteri; prate i ocjenjuju projekt.                                                                                                         | —                                                                                                |
 
 ---
 
 ## 2.4 Ograničenja i pretpostavke
 
-**Cilj:** Zabilježiti projektno specifične granice i pretpostavke koje utječu na zahtjeve ili oblikovanje, zajedno s njihovim izvorom i praktičnom posljedicom. Ovo je njihovo mjerodavno mjesto u dokumentaciji.
-
-| ID | Tip | Opis ograničenja ili pretpostavke | Izvor | Inženjerska posljedica / Provjera |
-| --- | --- | --- | --- | --- |
-| C-01 | Ograničenje | [Fiksni tehnički ili procesni uvjet] | [Zadatak / Pravila] | [Utjecaj na arhitekturu i oblikovanje] |
-| AS-01 | Pretpostavka | [Očekivani uvjet, npr. o podacima ili okolini] | [Procjena tima] | [Kako i kada će se provjeriti valjanost] |
-|  |  |  |  |  |
-<details>
-<summary><strong>Ograničenja nasuprot pretpostavkama</strong></summary>
-
-Ograničenje je uvjet koji tim mora poštovati; pretpostavka je uvjet na koji se tim oslanja i koji treba ponovno provjeravati.
-
-**Primjer — projektni kontekst CrisisMapa:**
-
-| ID | Ograničenje ili pretpostavka | Izvor | Posljedica ili način provjere |
-| --- | --- | --- | --- |
-| C-01 | Odobreni zadatak zahtijeva OAuth prijavu u sustav za uređivanje vlastitih prijava korisnika. | Odobreni zadatak  | Zaštićeno uređivanje projektirati oko odabranog pružatelja identiteta; provjeriti autorizirane i neautorizirane zahtjeve. |
-| AS-01 | Prijave koje se prikazuju na karti imaju uporabive koordinate. | Pretpostavka o podacima  | Pregledati ogledne i uvezene prijave; planirati prikaz prijava bez valjanih koordinata. |
-
-**Ograničenje nasuprot pretpostavci:** C-01 navodi obvezujuću odluku i njezin arhitekturni učinak; AS-01 je moguće provjeriti i može se pokazati netočnim. Nemojte kopirati C-01 ako OAuth nije dio stvarnog odobrenog zadatka. Projektni odgovor objasnite u arhitekturi bez prepisivanja ove tablice.
-
-</details>
+| ID    | Tip          | Opis ograničenja ili pretpostavke                                                                                                                     | Izvor                      | Inženjerska posljedica / Provjera                                                                            |
+| ----- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| C-01  | Ograničenje  | Prijava je moguća isključivo putem vanjskog pružatelja identiteta (OpenID Connect / OAuth 2.0); aplikacija ne vodi vlastite lozinke.                  | Pravila kolegija           | Autentikacija se oblikuje oko pružatelja identiteta; nema registracije lozinkom ni oporavka lozinke (F-001). |
+| C-02  | Ograničenje  | Aplikacija je responzivna web-aplikacija na engleskom jeziku; nativna mobilna aplikacija nije u opsegu.                                               | Odobreni projektni zadatak | Jedno web-sučelje za sve uređaje (NF-06).                                                                    |
+| C-03  | Ograničenje  | Aplikacija mora biti javno postavljena i dostupna za demonstraciju.                                                                                   | Pravila kolegija           | Potrebno je okruženje za javno postavljanje i konfiguracija tajni izvan repozitorija (NF-05).                |
+| C-04  | Ograničenje  | Koriste se isključivo izmišljeni ili anonimizirani zdravstveni podatci; prototip nije namijenjen kliničkoj uporabi.                                   | Odobreni projektni zadatak | Demonstracijski skup podataka priprema tim; stvarni podatci ne smiju se unositi ni slati AI usluzi (NF-05).  |
+| C-05  | Ograničenje  | AI funkcionalnosti ne postavljaju dijagnozu, ne propisuju terapiju i ne mijenjaju doze; AI sadržaj za pacijenta liječnik provjerava prije dijeljenja. | Odobreni projektni zadatak | Ograničenja se ugrađuju u upute AI usluzi i sučelje te provjeravaju ispitivanjem (F-015, F-016).             |
+| C-06  | Ograničenje  | Automatsko izdvajanje podržava samo kompletnu krvnu sliku iz PDF dokumenata (najviše tri, do 10 MB).                                                  | Dogovor tima               | Ostali nalazi unose se ručno; validacija formata i veličine pri učitavanju (F-007, NF-03).                   |
+| C-07  | Ograničenje  | Push obavijesti i dohvat podataka s pametnog sata nisu dio osnovnog opsega.                                                                           | Dogovor tima               | Podsjetnici idu unutar aplikacije i e-poštom (F-014); san, koraci i puls unose se ručno (F-009).             |
+| AS-01 | Pretpostavka | Dopušteno je koristiti komercijalnu AI uslugu i slati joj demonstracijske podatke.                                                                    | Procjena tima              | Potvrditi s asistentom; ako AI usluga nije dostupna, ostale funkcije rade bez nje.                           |
+| AS-02 | Pretpostavka | PDF nalazi kompletne krvne slike sadrže strojno čitljiv tekst u dovoljno ujednačenom obliku.                                                          | Procjena tima              | Provjeriti na uzorku demonstracijskih nalaza prije implementacije F-007.                                     |
+| AS-03 | Pretpostavka | Besplatni plan usluge e-pošte dovoljan je za količinu podsjetnika u demonstraciji.                                                                    | Procjena tima              | Provjeriti ograničenja odabrane usluge pri postavljanju.                                                     |
 
 ---
 
 ## 2.5 Značajne promjene zahtjeva
 
-**Cilj:** Sačuvati razlog promjena koje mijenjaju dogovoreni opseg, prioritet ili kriterije prihvaćanja, uz istodobno održavanje prethodnih zahtjeva ažurnima.
-
 | Datum | ID zahtjeva | Promjena i razlog | Dogovoreno s / dokaz |
-| --- | --- | --- | --- |
-|  |  |  |  |
-
-<details>
-<summary><strong>Primjer značajne promjene</strong></summary>
-
-**Primjer scenarija — odluka tijekom pregleda CrisisMapa:**
-
-| Datum | ID zahtjeva | Promjena i razlog | Dogovoreno s / dokaz |
-| --- | --- | --- | --- |
-| [Datum pregleda] | F-004, NF-01 | Dodati ručni odabir lokacije kada korisnik odbije geolokaciju preglednika; bez toga građanin ne može podnijeti prijavu kriznog događaja s lokacijom. | [Poveznica na stvarnu bilješku pregleda ili zadatak tima] |
-
-**Razlog promjene:** Zapis navodi zahvaćene stavke i objašnjava razlog iz perspektive korisnika, a zatim upućuje na dokaz odluke.  Nakon stvarne odluke ažurirajte trenutačne zahtjeve; stilska izmjena teksta ne zahtijeva zapis u dnevniku promjena. Trenutačni red zadataka držite u alatu za praćenje zadataka.
-
-</details>
+| ----- | ----------- | ----------------- | -------------------- |
+|       |             |                   |                      |
 
 ---
 
 ## 2.6 Sljedivost zahtjeva
 
-**Cilj:** Osigurati dvosmjernu sljedivost — povezati zahtjeve s opisanim ponašanjem, dijelovima sustava koji ih ostvaruju te ispitivanjem ili drugom provjerom. 
-
-| ID zahtjeva | Obrazac uporabe / modul | Arhitekturna realizacija | Ispitivanje ili provjera |
-| --- | --- | --- | --- |
-| F-001 | [UC-001] | [Komponenta, modul ili drugo mjesto realizacije] | [ST-01, CT-01 ili druga provjera] |
-|  |  |  |  |
-
-<details>
-<summary><strong>Sljedivost zahtjeva do obrazaca uporabe i ispitivanja</strong></summary>
-
-**Primjer — poveznice zahtjeva CrisisMapa:**
-
-| ID zahtjeva | Obrazac uporabe / ponašanje | Arhitekturna realizacija | Ispitivanje / provjera |
-| --- | --- | --- | --- |
-| F-004 | UC-002 Podnošenje prijave kriznog događaja | Web-klijent; API za prijave; usluga za prijave | ST-01 Valjano podnošenje prijave; ST-02 Nedostaje obavezna lokacija; ST-03 Dopuštenje geolokacije odbijeno |
-| F-005 | Odabir primatelja obavijesti | Proces za obavijesti | CT-06 Primatelji obavijesti; potpuna dostava obavijesti nije pokrivena ovom provjerom |
-
-**Pokrivenost i dokazi:** CT-06 provjerava odabir primatelja za F-005, ali sam po sebi ne dokazuje da je obavijest stvarno dostavljena; ako projekt zahtijeva potpunu dostavu od početka do kraja, za taj dio treba postojati zasebna provjera. Svaki redak pokazuje gdje je zahtjev opisan kao ponašanje, gdje je ostvaren u sustavu i gdje se nalazi dokaz njegove provjere. Zahtjev ne mora imati zaseban obrazac uporabe ako ne opisuje korisničku interakciju; tada navedite relevantno ponašanje, arhitekturni element ili drugi prikladan način realizacije. U svojem projektu koristite stvarne nazive komponenata, modula i provjera iz dokumentacije i implementacije. Nedostajuću poveznicu ostavite praznom ili označite kao *na čekanju* uz kratak razlog. Stvarni rezultati ispitivanja bilježe se uz ispitne slučajeve; ova tablica pokazuje gdje ih pronaći.
-
-</details>
+| ID zahtjeva | Obrazac uporabe / modul                                                                                  | Arhitekturna realizacija            | Ispitivanje ili provjera                  |
+| ----------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------- |
+| F-001       | UC-001 Prijava u sustav                                                                                  | _na čekanju_ (arhitektura u izradi) | _na čekanju_ (ispitni slučajevi u izradi) |
+| F-002       | UC-001 Prijava u sustav; UC-016 Provjera povezanosti s pacijentom; UC-014 Odobravanje liječničkog računa | _na čekanju_                        | _na čekanju_                              |
+| F-003       | UC-003 Slanje zahtjeva za povezivanje s liječnikom; UC-008 Obrada zahtjeva za povezivanje                | _na čekanju_                        | _na čekanju_                              |
+| F-004       | UC-005 Pregled vlastitih podataka i trendova                                                             | _na čekanju_                        | _na čekanju_                              |
+| F-005       | UC-004 Unos dnevnog check-ina                                                                            | _na čekanju_                        | _na čekanju_                              |
+| F-006       | UC-004 Unos dnevnog check-ina; UC-006 Učitavanje laboratorijskog nalaza                                  | _na čekanju_                        | _na čekanju_                              |
+| F-007       | UC-006 Učitavanje laboratorijskog nalaza                                                                 | _na čekanju_                        | _na čekanju_                              |
+| F-008       | UC-010 Potvrda laboratorijskih vrijednosti                                                               | _na čekanju_                        | _na čekanju_                              |
+| F-009       | UC-004 Unos dnevnog check-ina                                                                            | _na čekanju_                        | _na čekanju_                              |
+| F-010       | UC-005 Pregled vlastitih podataka i trendova; UC-009 Pregled podataka pacijenta                          | _na čekanju_                        | _na čekanju_                              |
+| F-011       | UC-002 Razmjena poruka s povezanom osobom                                                                | _na čekanju_                        | _na čekanju_                              |
+| F-012       | UC-012 Zakazivanje termina pregleda                                                                      | _na čekanju_                        | _na čekanju_                              |
+| F-013       | UC-011 Određivanje terapije pacijentu                                                                    | _na čekanju_                        | _na čekanju_                              |
+| F-014       | UC-015 Slanje podsjetnika                                                                                | _na čekanju_                        | _na čekanju_                              |
+| F-015       | UC-007 Razgovor s pacijentskim AI agentom                                                                | _na čekanju_                        | _na čekanju_                              |
+| F-016       | UC-013 Izrada AI sažetka i dijeljenje s pacijentom                                                       | _na čekanju_                        | _na čekanju_                              |
+| F-017       | Nema zaseban UC; zapis promjena dio je ponašanja UC-010, UC-011 i UC-014                                 | _na čekanju_                        | _na čekanju_                              |
+| F-018       | UC-017 Evidentiranje uzimanja lijeka; UC-009 Pregled podataka pacijenta                                  | _na čekanju_                        | _na čekanju_                              |
+| F-019       | UC-014 Odobravanje liječničkog računa                                                                    | _na čekanju_                        | _na čekanju_                              |
+| F-020       | Nema zaseban UC; obavijesti su dio ponašanja UC-002, UC-008, UC-010, UC-012 i UC-014                     | _na čekanju_                        | _na čekanju_                              |
 
 ---
 
 ## 2.7 Pregled zahtjeva
 
-**Cilj:** Zabilježiti važne povratne informacije o zahtjevima i odluke koje iz njih proizlaze na dvije formalne kontrolne točke projekta, u 7. i 14. tjednu.
-
 | Kontrolna točka | Povratna informacija ili nalaz | Odluka o zahtjevu ili opsegu |
-| --- | --- | --- |
-| Iteracija 1 | [Povratna informacija] | [Odluka; vidi odjeljak 2.5] |
-| Demo 2  | [Povratna informacija] | [Odluka; vidi odjeljak 2.5] |
-| Završni pregled | [Povratna informacija] | [Odluka; vidi odjeljak 2.5] |
-
-<details>
-<summary><strong>Odluke o zahtjevima nakon pregleda</strong></summary>
-
-**Primjer scenarija — pregled zahtjeva CrisisMapa:**
-
-| Kontrolna točka | Povratna informacija ili nalaz | Odluka o zahtjevu ili opsegu |
-| --- | --- | --- |
-| Iteracija 1 | Demonstracija pokazuje da odbijanje pristupa lokaciji preglednika onemogućuje podnošenje prijave. | Dogovoriti ručni odabir lokacije; ažurirati F-004 i primjer NF-01 te razlog zabilježiti u odjeljku 2.5. |
-
-**Odluka povezana s povratnom informacijom:** Zapis povezuje opaženo ponašanje s konkretnom promjenom zahtjeva i izbjegava zapisnik cijelog sastanka. Zapišite samo stvarne povratne informacije i odluke za kontrolne točke. Konzultacije u nekom drugom tjednu ne stvaraju dodatnu obaveznu predaju.
-
-</details>
+| --------------- | ------------------------------ | ---------------------------- |
+| Iteracija 1     | _još nije održano_             | —                            |
+| Demo 2          | _još nije održano_             | —                            |
+| Završni pregled | _još nije održano_             | —                            |
 
 ---
 
->**Završna provjera:** Zahtjevi su aktualni, provjerljivi i povezani. Svaki važan zahtjev moguće je pratiti od njegova opisa i ponašanja preko mjesta realizacije u sustavu do odgovarajućeg ispitivanja ili druge provjere. Poveznice koriste stvarne identifikatore i nazive iz projektne dokumentacije.
-
+> **Završna provjera:** Zahtjevi su aktualni, provjerljivi i povezani. Svaki važan zahtjev moguće je pratiti od njegova opisa i ponašanja preko mjesta realizacije u sustavu do odgovarajućeg ispitivanja ili druge provjere. Poveznice koriste stvarne identifikatore i nazive iz projektne dokumentacije.
