@@ -1,140 +1,219 @@
 # 3. Obrasci uporabe
 
-**Cilj:** Prikazati glavne interakcije između aktera aplikacije i sustava. Opišite kako akter ostvaruje cilj i što se događa kada važan korak ne uspije. Interakcije temeljite na odobrenim zahtjevima i ažurirajte ih kako se aplikacija razvija.
+Ovo poglavlje prikazuje glavne interakcije aktera s aplikacijom Pulsko: tko koristi sustav, s kojim ciljem i što se događa kada važan korak ne uspije. Obrasci uporabe temelje se na opsegu iz [1. Opseg projekta](1-Projekt.md) i zahtjevima iz [2. Analiza zahtjeva](2-Analiza-zahtjeva.md).
 
 ## 3.1 Dijagram obrazaca uporabe
 
-**Cilj:** Prikazati granicu sustava, relevantne aktere i njihove glavne ciljeve u **preglednom UML dijagramu obrazaca uporabe**. Ako je za razumijevanje pojedinog dijela sustava potrebno prikazati više detalja, taj dio izdvojite u dodatni usmjereni dijagram. Dodatni dijagrami trebaju produbiti dio preglednog modela, a ne stvarati nepovezane ili duplicirane prikaze istog sustava.
+![Dijagram obrazaca uporabe sustava Pulsko](./assets/diagrams/3-1-Pulsko-system-UC.svg)
 
-![Dijagram obrazaca uporabe sustava CrisisMap](./assets/diagrams/3-1-crisismap-system-UC.svg)
+**Slika 3.1. Dijagram obrazaca uporabe sustava Pulsko**
 
-**Slika 3.1. Dijagram obrazaca uporabe sustava CrisisMap**
+**PlantUML izvor:** [izvor](./puml/3-1-Pulsko-system-UC.puml)
 
-**PlantUML izvor:** [izvor](./puml/3-1-crisismap-system-UC.puml)
+**Akteri:**
 
-**Provjera dijagrama:** Prikažite prepoznate uloge koje **komuniciraju s aplikacijom**, a ne dionike koji s njom nemaju interakciju. Svaki glavni korisnički cilj mora imati pridruženog aktera; uključeni obrazac uporabe može se dosegnuti preko drugog obrasca uporabe bez vlastite izravne veze s akterom. `<<include>>` i `<<extend>>` koristite samo kada odnos odgovara stvarnom ponašanju.
+| Akter                            | Vrsta                       | Uloga u sustavu                                                                                                                                                   |
+| -------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Korisnik                         | Primarni (apstraktni)       | Nadakter Pacijenta i Liječnika; prijava i razmjena poruka.                                                                                                        |
+| Pacijent                         | Primarni                    | Bilježi i pregledava svoje podatke, učitava nalaze, koristi pacijentskog AI agenta, povezuje se s liječnikom.                                                     |
+| Liječnik                         | Primarni                    | Obrađuje zahtjeve za povezivanje, pregledava podatke pacijenata, potvrđuje laboratorijske vrijednosti, određuje terapiju i termine, dijeli provjereni AI sažetak. |
+| Administrator                    | Primarni                    | Odobrava liječničke račune.                                                                                                                                       |
+| Timer                            | Primarni (vremenski okidač) | Pokreće slanje podsjetnika.                                                                                                                                       |
+| Pružatelj identiteta (OAuth 2.0) | Sekundarni                  | Provodi autentikaciju pri prijavi.                                                                                                                                |
+| AI usluga                        | Sekundarni                  | Izdvaja vrijednosti iz nalaza, odgovara pacijentu, izrađuje sažetak za liječnika.                                                                                 |
+| Usluga e-pošte                   | Sekundarni                  | Dostavlja podsjetnike e-poštom.                                                                                                                                   |
 
-<details>
-<summary><strong>Primjer aktera i granica sustava</strong></summary>
-
-**Opis primjera — CrisisMap:**
-
-Dijagram prikazuje **ogledni scenarij** s građaninom, posjetiteljem i koordinatorom pomoći te vanjskim pružateljem identiteta. Pružatelj identiteta sudjeluje u obrascu uporabe „Prijava u sustav” kao sekundarni akter: korisnik pokreće prijavu u aplikaciji, a vanjski sustav provodi autentikaciju. Budući da projekt koristi vanjskog pružatelja identiteta, ta se ovisnost prikazuje i u dijagramu obrazaca uporabe; tehnički detalji integracije pripadaju arhitekturnoj dokumentaciji.
-
-**Odabir aktera i ciljeva:** Granica pokazuje što aplikacija nudi, akteri imaju različite ciljeve, a nijedan akter ni obrazac uporabe ne tvrdi da ova studentska aplikacija angažira hitne službe. Dijagram usporedite s odobrenim funkcijskim zahtjevima i akterima.
-
-
-**Pet pitanja za odabir sadržaja dijagrama** (ne pet dijagrama za predaju):
-
-| Fokus | Pitanje |
-| --- | --- |
-| Cijeli sustav | Koji korisnički ciljevi najbolje objašnjavaju čemu ova aplikacija služi? |
-| Ključne funkcionalnosti | Koje ciljeve treba detaljnije opisati ili, ako je potrebno, prikazati zasebnim usmjerenim dijagramom? |
-| Korisničke uloge | Koji akteri mogu sudjelovati u pojedinom cilju i kako se njihove ovlasti razlikuju? |
-| Ključni procesi | Koji cilj ima važne alternative koje treba opisati u obrascu uporabe? |
-| Vanjske integracije | Sudjeluje li drugi sustav u obrascu uporabe kao **sekundarni akter**, primjerice odobreni pružatelj identiteta pri prijavi? |
-
-Vanjski sustav može biti sekundarni akter obrasca uporabe kada sudjeluje u ostvarenju korisničkog cilja; tehničke veze opisuju se u arhitekturi. Nemojte stvarati dodatni obavezni dijagram obrazaca uporabe samo radi popisa integracija. Prenatrpan dijagram podijelite prema povezanim akterima ili ciljevima samo kada time postaje čitljiviji.
-
-</details>
+**Odnosi:** Pacijent i Liječnik specijalizacije su Korisnika. UC-009 do UC-013 uključuju (`<<include>>`) UC-016 jer liječnik smije raditi samo s povezanim pacijentom. Prijava (UC-001) nije `<<include>>` drugih obrazaca, nego njihov preduvjet. `<<extend>>` se ne koristi; iznimke su opisane kao alternativni tokovi u 3.2. Razvojni tim i baza podataka nisu akteri.
 
 ## 3.2 Specifikacije obrazaca uporabe
 
-**Cilj:** Za svaki obrazac uporabe iz dijagrama objasniti cilj aktera, uobičajenu interakciju s aplikacijom i važne alternative. Jednostavne obrasce uporabe opišite kratko; proširite one kod kojih alternative, vanjske ovisnosti ili posljedice zahtijevaju dodatno objašnjenje.
+### UC-001: Prijava u sustav
 
-**Za svaki obrazac uporabe koristite jednu okomitu tablicu.** Navedite samo onoliko pojedinosti koliko interakcija zahtijeva; neprimjenjivu alternativu izostavite umjesto da je popunjavate samo radi forme.
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| :-------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Korisnik (Pacijent ili Liječnik)                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Sekundarni akter**              | Pružatelj identiteta (OAuth 2.0)                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Preduvjeti**                    | Korisnik ima račun kod pružatelja identiteta.                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Glavni uspješni tok**           | 1. Korisnik odabire prijavu.<br>2. Aplikacija preusmjerava korisnika na pružatelja identiteta.<br>3. Korisnik se autentificira i odobrava pristup.<br>4. Aplikacija prima potvrdu identiteta.<br>5. Aplikacija otvara nadzornu ploču prema ulozi korisnika.                                                                                                                                                                               |
+| **Alternativni tokovi / Iznimke** | **3a — Odustajanje ili neuspjela autentikacija:** korisnik ostaje neprijavljen, aplikacija nudi ponovni pokušaj.<br>**4a — Prva prijava:** aplikacija traži odabir uloge. Pacijent odmah dobiva pristup. Liječnik unosi ustanovu i broj licence te dobiva račun _na čekanju_ dok ga Administrator ne odobri (UC-014).<br>**5a — Liječnički račun na čekanju:** aplikacija prikazuje da odobrenje još traje i ne nudi liječničke funkcije. |
+| **Posljedice (ishod)**            | Korisnik je prijavljen i vidi funkcije svoje uloge. Pri prvoj prijavi stvoren je profil.                                                                                                                                                                                                                                                                                                                                                  |
 
-### UC-[ID]: [Naziv usmjeren na cilj]
+### UC-002: Razmjena poruka s povezanom osobom
 
-| Element specifikacije | Opis |
-| :--- | :--- |
-| **Primarni akter** | [Uloga definirana u analizi zahtjeva] |
-| **Povezani zahtjevi** | [Identifikatori funkcijskih zahtjeva, npr. F-001, F-004] |
-| **Preduvjeti** | [Stanje sustava koje mora biti zadovoljeno prije početka izvođenja] |
-| **Glavni uspješni tok** | 1. Akter pokreće akciju.<br>2. Program obrađuje unos i vraća povratnu informaciju.<br>3. [Koračni prikaz interakcije do ostvarenja cilja] |
-| **Alternativni tokovi / Iznimke** | **[Korak]a — [Naziv iznimke]:** [Uvjet nastanka, reakcija programa i nastavak toka] |
-| **Posljedice (ishod)** | [Promjena stanja podataka ili potvrda nakon uspješnog završetka] |
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                       |
+| :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Korisnik (Pacijent ili Liječnik)                                                                                                                                                                                                                           |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                      |
+| **Preduvjeti**                    | Korisnik je prijavljen. Pacijent i liječnik su povezani (zahtjev prihvaćen, UC-008).                                                                                                                                                                       |
+| **Glavni uspješni tok**           | 1. Korisnik otvara razgovor s povezanom osobom.<br>2. Aplikacija prikazuje dosadašnje poruke.<br>3. Korisnik piše i šalje poruku.<br>4. Aplikacija sprema poruku i prikazuje je u razgovoru.<br>5. Primatelj vidi novu poruku i oznaku nepročitane poruke. |
+| **Alternativni tokovi / Iznimke** | **1a — Nema povezane osobe:** aplikacija ne nudi razgovor i upućuje na povezivanje (UC-003).<br>**3a — Prazna poruka:** aplikacija ne dopušta slanje.<br>**4a — Slanje nije uspjelo:** aplikacija prikazuje grešku, zadržava tekst i nudi ponovno slanje.  |
+| **Posljedice (ishod)**            | Poruka je spremljena i vidljiva objema stranama.                                                                                                                                                                                                           |
 
-<details>
-<summary><strong>Primjeri specifikacija: Registracija i prijava kriznog događaja</strong></summary>
+### UC-003: Slanje zahtjeva za povezivanje s liječnikom
 
-**Primjer — CrisisMap:**
+| Element specifikacije             | Opis                                                                                                                                                                                                                  |
+| :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Pacijent                                                                                                                                                                                                              |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                 |
+| **Preduvjeti**                    | Pacijent je prijavljen.                                                                                                                                                                                               |
+| **Glavni uspješni tok**           | 1. Pacijent otvara pretragu liječnika.<br>2. Aplikacija prikazuje odobrene liječnike.<br>3. Pacijent odabire liječnika i šalje zahtjev.<br>4. Aplikacija sprema zahtjev sa statusom _na čekanju_ i prikazuje potvrdu. |
+| **Alternativni tokovi / Iznimke** | **2a — Nema rezultata:** aplikacija javlja da liječnik nije pronađen.<br>**3a — Već povezan ili zahtjev već poslan:** aplikacija ne šalje novi zahtjev i prikazuje postojeći status.                                  |
+| **Posljedice (ishod)**            | Zahtjev čeka liječnikov odgovor (UC-008).                                                                                                                                                                             |
 
-**UC-001: Registracija računa.** Ovaj kratki primjer odnosi se na projekt čiji odobreni zadatak uključuje račune s adresom e-pošte i lozinkom.
+### UC-004: Unos dnevnog check-ina
 
-| Polje | Opis |
-| --- | --- |
-| Primarni akter | Građanin (A-02 u primjeru) |
-| ID zahtjeva | F-001 |
-| Preduvjeti, ako postoje | Nema. |
-| Glavni tijek | Građanin unosi adresu e-pošte; aplikacija šalje poveznicu za potvrdu; građanin potvrđuje račun. |
-| Alternativni ili neuspješni tijekovi, ako postoje | Adresa e-pošte već postoji → aplikacija objašnjava zašto se registracija ne može nastaviti. |
-| Rezultat | Račun je aktivan nakon potvrde. |
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                   |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Pacijent                                                                                                                                                                                                                                                                                                                               |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                  |
+| **Preduvjeti**                    | Pacijent je prijavljen.                                                                                                                                                                                                                                                                                                                |
+| **Glavni uspješni tok**           | 1. Pacijent otvara dnevni check-in.<br>2. Aplikacija prikazuje obrazac: opće stanje, san (sati), koraci, puls i tjelesna aktivnost.<br>3. Pacijent unosi podatke i sprema ih.<br>4. Aplikacija provjerava vrijednosti, sprema zapis za taj dan i ažurira trendove.                                                                     |
+| **Alternativni tokovi / Iznimke** | **3a — Djelomičan unos:** pacijent može spremiti samo neka polja.<br>**4a — Nevaljana vrijednost** (npr. puls izvan raspona ili negativni koraci): aplikacija označava polje, zadržava unos i ništa ne sprema dok se ne ispravi.<br>**4b — Check-in za taj dan već postoji:** aplikacija nudi izmjenu postojećeg zapisa umjesto novog. |
+| **Posljedice (ishod)**            | Dnevni zapis je spremljen i vidljiv pacijentu i povezanim liječnicima.                                                                                                                                                                                                                                                                 |
 
-Ako odobreni zadatak umjesto toga koristi isključivo OAuth prijavu, zamijenite ovaj primjer odgovarajućim ponašanjem prijave; nemojte dodavati registraciju lokalnom lozinkom samo radi podudaranja s primjerom.
+### UC-005: Pregled vlastitih podataka i trendova
 
-**UC-002: Podnošenje prijave kriznog događaja.** Ista polja mogu opisati dulji tijek u kojem odabir lokacije, provjera valjanosti i pohrana mogu ne uspjeti.
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                |
+| :-------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Pacijent                                                                                                                                                                                                                                                                                                                            |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                               |
+| **Preduvjeti**                    | Pacijent je prijavljen.                                                                                                                                                                                                                                                                                                             |
+| **Glavni uspješni tok**           | 1. Pacijent otvara nadzornu ploču.<br>2. Aplikacija prikazuje sažetak: zadnji check-in, nadolazeće termine, aktivnu terapiju, zadnje nalaze i objašnjenja koja je podijelio liječnik.<br>3. Pacijent odabire vrstu podataka (npr. puls, san, biomarker) i razdoblje.<br>4. Aplikacija prikazuje povijest i jednostavan graf trenda. |
+| **Alternativni tokovi / Iznimke** | **2a — Nema podataka:** aplikacija prikazuje praznu ploču i upućuje na check-in (UC-004) ili učitavanje nalaza (UC-006).<br>**4a — Nepotvrđene laboratorijske vrijednosti:** prikazuju se jasno označene kao _nepotvrđene_ dok ih liječnik ne potvrdi (UC-010).                                                                     |
+| **Posljedice (ishod)**            | Pacijent vidi svoje podatke. Ništa se ne mijenja.                                                                                                                                                                                                                                                                                   |
 
-| Polje | Opis |
-| --- | --- |
-| Primarni akter | Građanin |
-| ID zahtjeva | F-004 |
-| Preduvjeti, ako postoje | Obrazac za prijavu dostupan je. Ako odobreni zadatak zahtijeva prijavu u sustav, građanin je prijavljen. |
-| Glavni tijek | 1. Građanin otvara obrazac za prijavu; aplikacija prikazuje polja za vrstu kriznog događaja, razinu ozbiljnosti, opis i lokaciju.<br>2. Građanin unosi podatke i odabire lokaciju na karti ili drugim podržanim načinom.<br>3. Građanin podnosi obrazac; aplikacija provjerava obavezna polja i lokaciju.<br>4. Aplikacija pohranjuje prijavu i prikazuje potvrdu s referencom na nju. |
-| Alternativni ili neuspješni tijekovi, ako postoje | **1a — Prijava u sustav nije uspjela:** Ako je prijava obavezna, a pružatelj identiteta je ne dovrši, prijava kriznog događaja ostaje nepodnesena i aplikacija objašnjava kako pokušati ponovno.<br>**2a — Odbijen pristup lokaciji:** Ako aplikacija nudi geolokaciju, ali je korisnik odbije, građanin ručno odabire lokaciju ako ta mogućnost postoji; tijek se nastavlja u koraku 3.<br>**3a — Nevaljana ili nedostajuća lokacija:** Aplikacija objašnjava problem, po mogućnosti zadržava unesene podatke i ne pohranjuje prijavu; građanin ispravlja lokaciju i ponavlja korak 3.<br>**3b — Pohrana nije uspjela:** Aplikacija prijavljuje neuspjeh i ne prikazuje lažnu potvrdu o podnošenju. |
-| Rezultat | Aplikacija pohranjuje prijavu kriznog događaja i potvrđuje njezino podnošenje. |
+### UC-006: Učitavanje laboratorijskog nalaza
 
-**Odabir razine detalja:** Oba primjera koriste ista polja. UC-001 je kratak jer je glavna iznimka jasna; UC-002 zahtijeva numerirane korake i alternative jer oni mijenjaju ishod i mogu usmjeravati ispitivanje.Pri prilagodbi primjera koristite ID-ove zahtjeva i ponašanje vlastite aplikacije.
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                                                                                               |
+| :-------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Pacijent                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Sekundarni akter**              | AI usluga                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                                                                                              |
+| **Preduvjeti**                    | Pacijent je prijavljen.                                                                                                                                                                                                                                                                                                                                                                                            |
+| **Glavni uspješni tok**           | 1. Pacijent odabire učitavanje nalaza i prilaže datoteku (PDF ili slika).<br>2. Aplikacija sprema datoteku i šalje je AI usluzi na izdvajanje vrijednosti.<br>3. AI usluga vraća prepoznate biomarkere s vrijednostima i jedinicama.<br>4. Aplikacija prikazuje izdvojene vrijednosti pacijentu.<br>5. Aplikacija sprema vrijednosti sa statusom _nepotvrđeno_ i šalje ih povezanom liječniku na potvrdu (UC-010). |
+| **Alternativni tokovi / Iznimke** | **1a — Nepodržan format ili prevelika datoteka:** aplikacija odbija datoteku i navodi podržane formate.<br>**3a — AI usluga nije dostupna ili ne prepozna vrijednosti:** nalaz ostaje spremljen kao datoteka. Pacijent može ručno unijeti vrijednosti, koje su također _nepotvrđene_.<br>**5a — Nema povezanog liječnika:** vrijednosti ostaju nepotvrđene dok se pacijent ne poveže (UC-003).                     |
+| **Posljedice (ishod)**            | Nalaz i izdvojene vrijednosti su spremljeni kao nepotvrđeni i čekaju liječničku potvrdu.                                                                                                                                                                                                                                                                                                                           |
 
-**UC-005: Moderiranje prijave kriznog događaja.** Ovaj primjer vrijedi samo za projekt u kojem odobreni opseg uključuje moderatorski pregled prijava.
+### UC-007: Razgovor s pacijentskim AI agentom
 
-| Polje | Opis |
-| --- | --- |
-| Primarni akter | Moderator (A-05 u primjeru) |
-| ID zahtjeva | F-008 |
-| Preduvjeti, ako postoje | Moderator je prijavljen i ima moderatorske ovlasti; postoji prijava koja čeka pregled. |
-| Glavni tijek | 1. Moderator otvara prijavu koja čeka pregled.<br>2. Aplikacija prikazuje podatke prijave i dostupne moderatorske radnje.<br>3. Moderator odabire odobravanje ili odbijanje.<br>4. Aplikacija provjerava ovlasti, mijenja status prijave i prikazuje novi status. |
-| Alternativni ili neuspješni tijekovi, ako postoje | **3a — Radnja nije potvrđena:** Moderator odustaje od promjene i prijava ostaje nepromijenjena.<br>**4a — Ovlasti nisu valjane:** Aplikacija odbija promjenu i status prijave ostaje nepromijenjen. |
-| Rezultat | Prijava ima novi status ako je moderatorska radnja uspješno provedena; inače ostaje nepromijenjena. |
-</details>
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                                    |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Primarni akter**                | Pacijent                                                                                                                                                                                                                                                                                                                                                |
+| **Sekundarni akter**              | AI usluga                                                                                                                                                                                                                                                                                                                                               |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                                   |
+| **Preduvjeti**                    | Pacijent je prijavljen.                                                                                                                                                                                                                                                                                                                                 |
+| **Glavni uspješni tok**           | 1. Pacijent otvara AI agenta i postavlja pitanje (npr. „Što znači moj hemoglobin?”).<br>2. Aplikacija šalje pitanje AI usluzi zajedno s **potvrđenim** podacima pacijenta.<br>3. AI usluga vraća objašnjenje.<br>4. Aplikacija prikazuje odgovor uz napomenu da nije liječnički savjet.<br>5. Pacijent po želji sprema predložena pitanja za liječnika. |
+| **Alternativni tokovi / Iznimke** | **1a — Traži dijagnozu, terapiju ili promjenu doze:** agent to odbija i upućuje pacijenta na liječnika (UC-002).<br>**2a — Nema potvrđenih podataka:** agent odgovara općenito i navodi da nema provjerenih podataka.<br>**3a — AI usluga nije dostupna:** aplikacija javlja da agent trenutno ne radi. Ostale funkcije rade normalno.                  |
+| **Posljedice (ishod)**            | Pacijent je dobio objašnjenje, a pitanja za liječnika su spremljena ako ih je odabrao. Zdravstveni podaci se ne mijenjaju.                                                                                                                                                                                                                              |
+
+### UC-008: Obrada zahtjeva za povezivanje
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                        |
+| :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Liječnik                                                                                                                                                                                                                    |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                       |
+| **Preduvjeti**                    | Liječnik je prijavljen i odobren (UC-014). Postoji barem jedan zahtjev _na čekanju_.                                                                                                                                        |
+| **Glavni uspješni tok**           | 1. Liječnik otvara popis zahtjeva na čekanju.<br>2. Aplikacija prikazuje zahtjeve s osnovnim podacima pacijenata.<br>3. Liječnik prihvaća zahtjev.<br>4. Aplikacija povezuje pacijenta i liječnika i obavještava pacijenta. |
+| **Alternativni tokovi / Iznimke** | **3a — Liječnik odbija zahtjev:** aplikacija postavlja status _odbijen_ i obavještava pacijenta. Veza se ne stvara.<br>**3b — Pacijent je u međuvremenu povukao zahtjev:** aplikacija javlja da zahtjev više ne postoji.    |
+| **Posljedice (ishod)**            | Pacijent i liječnik su povezani (ili je zahtjev odbijen). Liječnik od sada vidi podatke pacijenta.                                                                                                                          |
+
+### UC-009: Pregled podataka pacijenta
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                                       |
+| :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Liječnik                                                                                                                                                                                                                                                                                                                                                   |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                                      |
+| **Preduvjeti**                    | Liječnik je prijavljen i odobren.                                                                                                                                                                                                                                                                                                                          |
+| **Glavni uspješni tok**           | 1. Liječnik otvara popis svojih pacijenata i odabire pacijenta.<br>2. Aplikacija provjerava povezanost s pacijentom (**«include» UC-016**).<br>3. Aplikacija prikazuje pacijentove check-inove, nalaze (potvrđene i nepotvrđene), terapiju, termine i trendove.<br>4. Liječnik odabire vrstu podataka i razdoblje, a aplikacija prikazuje povijest i graf. |
+| **Alternativni tokovi / Iznimke** | **1a — Nema povezanih pacijenata:** aplikacija prikazuje prazan popis.<br>**2a — Pacijent nije povezan:** aplikacija odbija pristup i ne prikazuje podatke.                                                                                                                                                                                                |
+| **Posljedice (ishod)**            | Liječnik vidi podatke pacijenta. Ništa se ne mijenja.                                                                                                                                                                                                                                                                                                      |
+
+### UC-010: Potvrda laboratorijskih vrijednosti
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                              |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Primarni akter**                | Liječnik                                                                                                                                                                                                                                                                                                                                          |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                             |
+| **Preduvjeti**                    | Liječnik je prijavljen i odobren. Pacijent ima nalaz s _nepotvrđenim_ vrijednostima (UC-006).                                                                                                                                                                                                                                                     |
+| **Glavni uspješni tok**           | 1. Liječnik otvara nalaz koji čeka potvrdu.<br>2. Aplikacija provjerava povezanost s pacijentom (**«include» UC-016**).<br>3. Aplikacija prikazuje izvornu datoteku i izdvojene vrijednosti jednu uz drugu.<br>4. Liječnik provjerava vrijednosti i potvrđuje ih.<br>5. Aplikacija mijenja status u _potvrđeno_ i bilježi tko je i kada potvrdio. |
+| **Alternativni tokovi / Iznimke** | **4a — Vrijednost je pogrešna:** liječnik je ispravlja prije potvrde. Aplikacija bilježi izvornu i ispravljenu vrijednost.<br>**4b — Nalaz je nečitljiv ili neispravan:** liječnik ga odbija uz komentar. Vrijednosti se ne potvrđuju, a pacijent je obaviješten.                                                                                 |
+| **Posljedice (ishod)**            | Vrijednosti su potvrđene (ili odbijene) i zabilježene. Od tada ih pacijentski AI agent može koristiti (UC-007).                                                                                                                                                                                                                                   |
+
+### UC-011: Određivanje terapije pacijentu
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                                    |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Primarni akter**                | Liječnik                                                                                                                                                                                                                                                                                                                                                |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                                   |
+| **Preduvjeti**                    | Liječnik je prijavljen i odobren.                                                                                                                                                                                                                                                                                                                       |
+| **Glavni uspješni tok**           | 1. Liječnik odabire pacijenta i otvara terapiju.<br>2. Aplikacija provjerava povezanost s pacijentom (**«include» UC-016**).<br>3. Liječnik unosi lijek, dozu, raspored uzimanja i trajanje.<br>4. Aplikacija provjerava obavezna polja, sprema terapiju i bilježi promjenu.<br>5. Terapija se prikazuje pacijentu, a podsjetnici se zakazuju (UC-015). |
+| **Alternativni tokovi / Iznimke** | **3a — Izmjena ili ukidanje postojeće terapije:** liječnik mijenja dozu ili završava terapiju. Aplikacija bilježi staru i novu vrijednost, a podsjetnici se ažuriraju.<br>**4a — Nedostaje obavezno polje:** aplikacija ga označava, zadržava unos i ništa ne sprema.                                                                                   |
+| **Posljedice (ishod)**            | Terapija je spremljena i vidljiva pacijentu, promjena je zabilježena i podsjetnici su zakazani.                                                                                                                                                                                                                                                         |
+
+### UC-012: Zakazivanje termina pregleda
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                             |
+| :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Liječnik                                                                                                                                                                                                                                                                                                         |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                            |
+| **Preduvjeti**                    | Liječnik je prijavljen i odobren.                                                                                                                                                                                                                                                                                |
+| **Glavni uspješni tok**           | 1. Liječnik odabire pacijenta i otvara termine.<br>2. Aplikacija provjerava povezanost s pacijentom (**«include» UC-016**).<br>3. Liječnik unosi datum, vrijeme, mjesto i napomenu.<br>4. Aplikacija provjerava podatke i sprema termin.<br>5. Termin se prikazuje pacijentu, a podsjetnik se zakazuje (UC-015). |
+| **Alternativni tokovi / Iznimke** | **3a — Termin u prošlosti ili preklapanje s drugim terminom liječnika:** aplikacija upozorava i ne sprema termin dok se ne ispravi.<br>**3b — Pomicanje ili otkazivanje termina:** liječnik mijenja ili otkazuje postojeći termin. Pacijent je obaviješten, a podsjetnik se ažurira.                             |
+| **Posljedice (ishod)**            | Termin je spremljen i vidljiv pacijentu, a podsjetnik je zakazan.                                                                                                                                                                                                                                                |
+
+### UC-013: Izrada AI sažetka i dijeljenje s pacijentom
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Liječnik                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| **Sekundarni akter**              | AI usluga                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Preduvjeti**                    | Liječnik je prijavljen i odobren.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Glavni uspješni tok**           | 1. Liječnik odabire pacijenta i traži AI sažetak.<br>2. Aplikacija provjerava povezanost s pacijentom (**«include» UC-016**).<br>3. Aplikacija šalje dostupne podatke pacijenta AI usluzi.<br>4. AI usluga vraća sažetak, predložena pitanja i nacrt objašnjenja za pacijenta.<br>5. Aplikacija prikazuje nacrt liječniku, označen kao AI sadržaj.<br>6. Liječnik pregledava i uređuje nacrt, zatim ga dijeli s pacijentom.<br>7. Aplikacija sprema podijeljeni tekst, bilježi tko ga je odobrio i prikazuje ga pacijentu. |
+| **Alternativni tokovi / Iznimke** | **4a — AI usluga nije dostupna:** aplikacija javlja grešku, a liječnik može ručno napisati objašnjenje.<br>**6a — Liječnik ne želi dijeliti:** sažetak ostaje samo liječniku i pacijent ga ne vidi.                                                                                                                                                                                                                                                                                                                        |
+| **Posljedice (ishod)**            | Liječnik ima sažetak. Pacijent vidi samo sadržaj koji je liječnik pregledao i odobrio.                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+### UC-014: Odobravanje liječničkog računa
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                  |
+| :-------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Administrator                                                                                                                                                                                                                                                                                         |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                 |
+| **Preduvjeti**                    | Administrator je prijavljen. Postoji liječnički račun _na čekanju_ (UC-001, 4a).                                                                                                                                                                                                                      |
+| **Glavni uspješni tok**           | 1. Administrator otvara popis liječničkih računa na čekanju.<br>2. Aplikacija prikazuje podatke koje je liječnik naveo (ime, ustanova, broj licence).<br>3. Administrator provjerava podatke i odobrava račun.<br>4. Aplikacija aktivira liječničku ulogu, bilježi odobrenje i obavještava liječnika. |
+| **Alternativni tokovi / Iznimke** | **3a — Podaci nisu valjani:** administrator odbija račun uz razlog. Liječnik je obaviješten i nema pristup liječničkim funkcijama.                                                                                                                                                                    |
+| **Posljedice (ishod)**            | Liječnik je odobren i vidljiv pacijentima u pretrazi (UC-003), ili je odbijen.                                                                                                                                                                                                                        |
+
+### UC-015: Slanje podsjetnika
+
+| Element specifikacije             | Opis                                                                                                                                                                                                                                                                                                      |
+| :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Timer                                                                                                                                                                                                                                                                                                     |
+| **Sekundarni akter**              | Usluga e-pošte                                                                                                                                                                                                                                                                                            |
+| **Povezani zahtjevi**             | F-???                                                                                                                                                                                                                                                                                                     |
+| **Preduvjeti**                    | Postoji aktivna terapija (UC-011) ili nadolazeći termin (UC-012) s podsjetnikom.                                                                                                                                                                                                                          |
+| **Glavni uspješni tok**           | 1. Timer pokreće provjeru u zadanom vremenu.<br>2. Aplikacija pronalazi podsjetnike koji su dospjeli (uzimanje lijeka, termin sutra).<br>3. Aplikacija prikazuje obavijest pacijentu u aplikaciji.<br>4. Aplikacija šalje e-poštu preko usluge e-pošte.<br>5. Aplikacija bilježi da je podsjetnik poslan. |
+| **Alternativni tokovi / Iznimke** | **2a — Nema dospjelih podsjetnika:** ništa se ne šalje.<br>**4a — Usluga e-pošte nije dostupna:** obavijest u aplikaciji ostaje, a slanje e-pošte se ponavlja kasnije.                                                                                                                                    |
+| **Posljedice (ishod)**            | Pacijent je dobio podsjetnik, a slanje je zabilježeno. Isti podsjetnik se ne šalje dvaput.                                                                                                                                                                                                                |
+
+### UC-016: Provjera povezanosti s pacijentom
+
+| Element specifikacije             | Opis                                                                                                                                      |
+| :-------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primarni akter**                | Nema izravnog aktera. Uključuju ga UC-009 do UC-013 (Liječnik).                                                                           |
+| **Povezani zahtjevi**             | F-???                                                                                                                                     |
+| **Preduvjeti**                    | Liječnik je prijavljen i odabrao je pacijenta.                                                                                            |
+| **Glavni uspješni tok**           | 1. Aplikacija provjerava postoji li prihvaćena veza između liječnika i odabranog pacijenta.<br>2. Veza postoji i osnovni UC se nastavlja. |
+| **Alternativni tokovi / Iznimke** | **2a — Veza ne postoji:** aplikacija odbija radnju, ne prikazuje i ne mijenja podatke pacijenta, a pokušaj bilježi.                       |
+| **Posljedice (ishod)**            | Liječnik radi samo s podacima pacijenta koji je prihvatio povezivanje.                                                                    |
 
 ---
 
 ## 3.3 Provjera dosljednosti obrazaca uporabe
 
-**Cilj:** Provjeriti međusobnu usklađenost obrazaca uporabe, aktera, zahtjeva i ispitnih slučajeva. Cjelovito mapiranje održava se isključivo u **[matrici sljedivosti zahtjeva](2-Analiza-zahtjeva.md#26-sljedivost-zahtjeva)**.
-
-| Provjera | Pitanje za tim |
-| --- | --- |
-| Zahtjev | Je li svaki važan obrazac uporabe povezan s postojećim zahtjevom? |
-| Akter | Odgovara li akter naveden ovdje prethodno utvrđenoj ulozi i dopuštenoj interakciji? |
-| Aplikacija | Može li tim demonstrirati opisani glavni rezultat i važnu alternativu ili je opis jasno označen kao trenutačno oblikovanje? |
-
----
-
-Povezivanje zahtjev → obrazac uporabe → ispitivanje održavajte **samo jednom, u [tablici sljedivosti zahtjeva](./2-Analiza-zahtjeva.md)**. Ovdje nemojte održavati drugu projektnu tablicu mapiranja ni stupac sa statusom implementacije. Ako važan zahtjev nema interakciju s ljudskim akterom, objasnite gdje se obrađuje umjesto izmišljanja aktera.
-
-<details>
-<summary><strong>Provjera pokrivenosti zahtjeva</strong></summary>
-
-**Primjer — CrisisMap:** Tablica pokrivenosti obrazaca uporabe koju treba analizirati:
-
-| Broj obrasca uporabe | Naziv obrasca uporabe | Obuhvaćeni funkcijski zahtjevi |
-| --- | --- | --- |
-| UC-001 | Registracija računa | F-001: Registracija računa putem e-pošte |
-| UC-002 | Prijava kriznog događaja | F-022: Prijava i provjera kriznog događaja |
-| UC-003 | Sustav upozorenja | F-045: Slanje upozorenja korisnicima i timovima |
-| UC-004 | Koordinacija spašavanja | F-067: Koordinacija s hitnim službama |
-
----
-
-**Problemi pokrivenosti koje treba riješiti:**
-
-- **Pogrešan ID zahtjeva:** ova tablica povezuje UC-002 s F-022, dok se opis UC-002 u odjeljku 3.2 poziva na F-004, zahtjev za podnošenje prijave iz odjeljka 2.1.
-- **Zahtjevi koji ne postoje:** F-022, F-045 i F-067 nisu definirani u oglednim zahtjevima u 2.1.
-- **Obrasci uporabe bez opisa:** UC-003 i UC-004 nemaju opis u 3.2. UC-004 (koordinacija s hitnim službama) ujedno je mogućnost s vanjskim posljedicama koju opseg dopušta samo ako je uključena u odobreni zadatak.
-- **Nesklad aktera:** primjer aktera u odjeljku 2.3 navodi da koordinator pomoći podnosi prijave (F-004), dok UC-002 kao primarnog aktera navodi građanina.
-
-</details>
-
-**Završna provjera:** Dijagram, specifikacije obrazaca uporabe i matrica sljedivosti međusobno su usklađeni. Svaki važan obrazac uporabe povezan je s postojećim zahtjevom, akteri odgovaraju stvarnim ulogama u aplikaciji, a opisani glavni i alternativni tijekovi odgovaraju ponašanju koje sustav stvarno podržava.
+| Provjera   | Stanje                                                                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Zahtjev    | Svaki obrazac uporabe bit će povezan s funkcijskim zahtjevom iz 2.1; poveznice se održavaju u [matrici sljedivosti](2-Analiza-zahtjeva.md#26-sljedivost-zahtjeva). _Na čekanju: popis zahtjeva u izradi._           |
+| Akter      | Akteri odgovaraju ulogama iz 1.2 i 2.3; Administrator je dodan radi odobravanja liječničkih računa.                                                                                                                 |
+| Aplikacija | Opisi su trenutačno oblikovanje (iteracija 1); otvorena pitanja (format nalaza, poruke u stvarnom vremenu, prijedlog termina od strane pacijenta, provjera liječnika) bit će usklađena nakon dogovora s asistentom. |
