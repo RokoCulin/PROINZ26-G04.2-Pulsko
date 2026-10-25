@@ -6,7 +6,7 @@
 '           Interna logika, pohrana podataka i korisničko sučelje namjerno
 '           nisu obuhvaćeni.
 ' Autor:    Roko, tim G04.2
-' AI:       Autor je naveo aktere, obrasce uporabe i njihove odnose; AI je korišten za lakše pisanje PlantUML koda.
+' AI:       Autor je naveo aktere, obrasce uporabe i njihove odnose; AI je korišten kao pomoć za lakše pisanje PlantUML koda i komentara.
 ' Zahtjevi: UC-001 do UC-016
 '
 ' Diagram level: System Requirements
