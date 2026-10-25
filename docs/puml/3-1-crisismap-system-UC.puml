@@ -1,23 +1,21 @@
 ' ==============================================================================
-' 3-1-crisismap-system-UC_v1.puml
+' 3-1-pulsko-system-UC.puml
 '
-' Svrha:    Prikazuje tko i s kojim ciljem koristi sustav CrisisMap (građani,
-'           moderatori, koordinatori pomoći) te koje vanjske sustave sustav
-'           koristi. Interna logika, pohrana podataka i korisničko sučelje
-'           namjerno nisu obuhvaćeni (kasniji modeli).
-' Autor:    Vlado Sruk, kolegij Programsko inženjerstvo
-' AI:       Dijagram je izradio autor. AI je pomogao u reviziji i komentarima;
-'           autor ih je pregledao i odgovara za konačni sadržaj.
-' Zahtjevi: UC-01 do UC-10 (svaki slučaj uporabe ima ID za praćenje
-'           prema implementaciji i testovima)
+' Svrha:    Prikazuje tko i s kojim ciljem koristi sustav Pulsko (pacijenti,
+'           liječnici, administrator) te koje vanjske sustave sustav koristi.
+'           Interna logika, pohrana podataka i korisničko sučelje namjerno
+'           nisu obuhvaćeni.
+' Autor:    Roko, tim G04.2
+' AI:       Autor je naveo aktere, obrasce uporabe i njihove odnose; AI je korišten za lakše pisanje PlantUML koda.
+' Zahtjevi: UC-001 do UC-016
 '
 ' Diagram level: System Requirements
 ' Diagram type:  Use Case Diagram
-' Version:       1.3
+' Version:       1.0 (status: K)
 ' ==============================================================================
 
 @startuml
-title Sustav CrisisMap – slučajevi uporabe
+title Sustav Pulsko – obrasci uporabe
 left to right direction
 
 skinparam shadowing false
@@ -40,121 +38,100 @@ skinparam usecase {
 ' Primarni akteri
 ' ==============================================================================
 
-' Akteri su uloge, a ne stanja: nazivi ne sadrže "prijavljen" ni "anoniman".
-' Stanje prijave opisuje bilješka ispod aktera Posjetitelj.
-actor User as "Korisnik aplikacije"
-actor Citizen as "Građanin"
-actor Visitor as "Posjetitelj"
-actor Moderator as "Moderator"
-actor Manager as "Koordinator pomoći"
+actor User as "Korisnik"
+actor Patient as "Pacijent"
+actor Doctor as "Liječnik"
+actor Admin as "Administrator"
+actor Timer as "Timer"
 
-' Sve uloge su specijalizacije korisnika aplikacije, pa im je pregled karte
-' dostupan bez dodatne veze.
-Citizen -|> User
- User -|>  Visitor
-Moderator -|> User
-Manager -|> User
-
-' Samo za raspored na dijagramu.
-Manager -[hidden]down-> Citizen
-Moderator -[hidden]down-> Citizen
-Citizen -[hidden]down-> Visitor
-Visitor -[hidden]down->  User
-
-'note left of Visitor
-'  Posjetitelj nije prijavljen u sustav.
-'  Prijavom (UC-01) postaje Građanin.
-'  Ne može podnijeti prijavu događaja (UC-04).
-'  Ostale uloge pretpostavljaju prijavu.
-'end note
+' Pacijent i liječnik dijele prijavu i poruke preko nadaktera Korisnik.
+Patient -|> User
+Doctor -|> User
 
 ' ==============================================================================
 ' Sekundarni akteri (vanjski sustavi)
 ' ==============================================================================
 
-actor "Pružatelj identiteta\n(OAuth)" as IdP <<external system>>
-actor "Pružatelj obavijesti" as Notifications <<external system>>
-actor "Pružatelj kartografske\nusluge" as Maps <<external system>>
+actor "Pružatelj identiteta\n(OAuth 2.0)" as IdP <<external system>>
+actor "AI usluga" as AI <<external system>>
+actor "Usluga e-pošte" as Email <<external system>>
 
 ' ==============================================================================
 ' Granica sustava
 ' ==============================================================================
 
-rectangle "Sustav CrisisMap" as CrisisMap {
+rectangle "Sustav Pulsko" as Pulsko {
 
-    ' Pristup
-    (UC-01\nPrijava u sustav) as UC_SignIn
+    ' Zajedničko
+    (UC-001\nPrijava u sustav) as UC_SignIn
+    (UC-002\nRazmjena poruka\ns povezanom osobom) as UC_Messages
 
-    ' Prijave i karta
-    (UC-02\nPregled prijava na karti) as UC_Map
-    (UC-03\nFiltriranje prikaza događaja) as UC_Filter
-    (UC-04\nPodnošenje prijave\nkriznog događaja) as UC_Report
-    (UC-05\nProvjera podataka prijave) as UC_ValidateReport
-    (UC-06\nDodavanje fotografije) as UC_UploadPhoto
-    (UC-07\nModeriranje prijave\nkriznog događaja) as UC_Moderate
+    ' Pacijent
+    (UC-003\nSlanje zahtjeva za\npovezivanje s liječnikom) as UC_ConnectRequest
+    (UC-004\nUnos dnevnog check-ina) as UC_CheckIn
+    (UC-005\nPregled vlastitih\npodataka i trendova) as UC_Dashboard
+    (UC-006\nUčitavanje\nlaboratorijskog nalaza) as UC_UploadLab
+    (UC-007\nRazgovor s pacijentskim\nAI agentom) as UC_PatientAI
 
-    ' Koordinacija resursa
-    (UC-08\nPregled dostupnih resursa) as UC_Resources
-    (UC-09\nRaspodjela resursa pomoći) as UC_Allocate
+    ' Liječnik
+    (UC-008\nObrada zahtjeva\nza povezivanje) as UC_HandleRequest
+    (UC-009\nPregled podataka\npacijenta) as UC_ViewPatient
+    (UC-010\nPotvrda laboratorijskih\nvrijednosti) as UC_ConfirmLab
+    (UC-011\nOdređivanje terapije\npacijentu) as UC_Therapy
+    (UC-012\nZakazivanje termina\npregleda) as UC_Appointment
+    (UC-013\nIzrada AI sažetka i\ndijeljenje s pacijentom) as UC_DoctorAI
+    (UC-016\nProvjera povezanosti\ns pacijentom) as UC_CheckLink
 
-    ' Obavijesti
-    (UC-10\nPrimanje obavijesti o\ndogađajima u blizini) as UC_Alert
+    ' Administracija i vremenski okidači
+    (UC-014\nOdobravanje\nliječničkog računa) as UC_ApproveDoctor
+    (UC-015\nSlanje podsjetnika) as UC_Reminder
 }
 
 ' ==============================================================================
-' Asocijacije aktera i slučajeva uporabe
+' Asocijacije aktera i obrazaca uporabe
 ' ==============================================================================
 
-User -- UC_Map
+User -- UC_SignIn
+User -- UC_Messages
 
-' Posjetitelj namjerno NEMA vezu s UC-04: podnošenje prijave događaja traži
-' prijavu u sustav jer prijava u ERD-u (4-2) ima obvezan user_id. Posjetitelj
-' može samo pregledavati kartu i prijaviti se.
-Visitor -- UC_SignIn
+Patient -- UC_ConnectRequest
+Patient -- UC_CheckIn
+Patient -- UC_Dashboard
+Patient -- UC_UploadLab
+Patient -- UC_PatientAI
 
-' Moderator i koordinator prijavljuju se istim postupkom. Uloga im se
-' dodjeljuje izvan ovog modela (administracija korisnika nije u opsegu).
-Moderator -- UC_SignIn
-Manager -- UC_SignIn
+Doctor -- UC_HandleRequest
+Doctor -- UC_ViewPatient
+Doctor -- UC_ConfirmLab
+Doctor -- UC_Therapy
+Doctor -- UC_Appointment
+Doctor -- UC_DoctorAI
 
-Citizen -- UC_Report
-Citizen -- UC_Alert
-
-Moderator -- UC_Moderate
-
-Manager -- UC_Resources
-Manager -- UC_Allocate
+Admin -- UC_ApproveDoctor
+Timer -- UC_Reminder
 
 ' ==============================================================================
-' Veze između slučajeva uporabe
+' Veze između obrazaca uporabe
 ' ==============================================================================
 
-' Neobavezno ponašanje koje proširuje potpuni osnovni slučaj.
-UC_Map <.. UC_Filter : <<extend>>\n[filtriranje zatraženo]
+' Liječnik smije raditi samo s pacijentom koji je prihvatio povezivanje;
+' provjera se uvijek izvodi.
+UC_ViewPatient ..> UC_CheckLink : <<include>>
+UC_ConfirmLab ..> UC_CheckLink : <<include>>
+UC_Therapy ..> UC_CheckLink : <<include>>
+UC_Appointment ..> UC_CheckLink : <<include>>
+UC_DoctorAI ..> UC_CheckLink : <<include>>
 
-UC_Report <.. UC_UploadPhoto : <<extend>>\n[fotografija priložena]
-
-' Obvezno ponašanje koje se uvijek izvodi pri podnošenju prijave.
-UC_Report ..> UC_ValidateReport : <<include>>
-
-' Prijava namjerno NIJE <<include>> zaštićenih slučajeva (UC-04, UC-07,
-' UC-08, UC-09, UC-10): korisnik je već prijavljen prije njihova početka.
-' Prijava je preduvjet, a <<include>> bi bio ispravan tek da se uvijek
-' izvodi unutar samog slučaja.
+' Prijava namjerno NIJE <<include>> ostalih obrazaca: korisnik je prijavljen
+' prije njihova početka, pa je prijava preduvjet.
 
 ' ==============================================================================
 ' Interakcije sa sekundarnim akterima
 ' ==============================================================================
 
 UC_SignIn -- IdP
-
-' Kartografska usluga je prikazana jer je ključna vanjska ovisnost. U strožem
-' modelu usmjerenom na ciljeve pojavila bi se tek u arhitekturnom prikazu.
-UC_Map -right- Maps
-
-UC_Alert -right- Notifications
-
-' Samo za raspored vanjskih sustava u jednom stupcu.
-Maps -[hidden]left-> IdP 
-Maps -[hidden]down-> Notifications
+UC_UploadLab -- AI
+UC_PatientAI -- AI
+UC_DoctorAI -- AI
+UC_Reminder -- Email
 @enduml
