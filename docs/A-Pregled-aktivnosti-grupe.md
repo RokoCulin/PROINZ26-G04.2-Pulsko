@@ -6,56 +6,26 @@
 
 **Cilj:** Voditi kratak zapis projektnih sastanaka i tjedne koordinacije: tko je sudjelovao, što je odlučeno i koja je radnja uslijedila. Raspravu koja nije dovela do odluke zabilježite samo ako je važno pitanje ostalo otvoreno.
 
->Definirati prije prve uporabe:
-`[Inicijali/Kratica] = [Ime i prezime]` (npr. *AK = Ana Kovač; LM = Luka Marić; EP = Ema Petrović; NK = Nika Kralj*).																														
-
+Članovi tima: RČ = Roko Čulin; BF = Borna Flegar; DM = Dora Maruševec; AN = Antonio Nović; BO = Borna Oršulić; HŠ = Hrvoje Štivić; JT = Jakov Troje
+																													
 | Datum i sudionici | Glavna tema | Donesena odluka ili zadatak  | Poveznica na zadatak ili  rezultat, ako postoji |
 | --- | --- | --- | --- |
-|  |  |  |  |
-
-Za svaki relevantan sastanak ili zapis tjedne koordinacije upišite jedan sažet redak. Dodijeljeni zadatak treba imati odgovornu osobu; za neriješeno pitanje treba navesti tko će ga dalje obraditi. Sam naslov sastanka ne pokazuje što se promijenilo. U ovu evidenciju nemojte kopirati cijeli popis issuea ni prijepis razgovora.
-
-<details>
-<summary><strong>Primjer evidencije sastanaka (CrisisMap)</strong></summary>
-
-**Primjer — CrisisMap:**
-
-**Kratice članova tima:** AK = Ana Kovač; LM = Luka Marić; EP = Ema Petrović; NK = Nika Kralj.
-
-| Datum i sudionici | Glavna tema | Odluka, radnja ili otvoreno pitanje | Poveznica na zadatak ili nastali rezultat, ako postoji |
-| --- | --- | --- | --- |
-| 15. 11. 2025.; AK, LM, EP | Lokacija kada je pristup preglednika odbijen | Dodati ručni odabir položaja na karti u obrazac za prijavu. AK obrađuje obrazac; LM provjerava valjanost lokacije. | Zadataka #21 i #23. |
-| 22. 11. 2025.; AK, EP | Usklađivanje formata lokacijskih podataka | klijentski dio i poslužiteljski API koriste neusklađene formate koordinata. EP će uskladiti format zahtjeva i demonstrira spremanje na sljedećem pregledu. | Zadatak #25. |
-
-**Ishod i odgovornost:** Zapisi jasno definiraju tko je odgovoran za koji dio posla i koji je provjerljivi rezultat dogovoren. npr Rečenica „Raspravljali smo o obradi lokacije” prikrila bi je li se itko obvezao na promjenu. Ovi redci navode odluku ili otvorenu radnju, odgovornu osobu i rezultat koji se može pregledati.
-
-</details>
+| 14. 10. 2026.; RČ, BF, DM, AN, BO, HŠ, JT | Odabir i razrada ideje za projekt | Definirane su glavne funkcionalnosti i izrađen službeni prijedlog projekta | / |
+| 24. 10. 2026.; RČ, BF, DM, AN, BO, HŠ | Podjela zadataka za dokumentaciju | Dogovorena je podjela i preuzimanje zadataka za popunjavanje projektne dokumentacije. RČ preuzima #1 i #6, BF #2, AN #3, BO #4 i #5, DM #7, a HŠ #9.” | Zadatci #1-#7 i #9 |
 
 ## A.2 Plan rada
 
 **Cilj:** Prikazati planirani redoslijed rada i odgovornosti u timu. Prikažite projektne tjedne ili druga kratka razdoblja koja tim koristi, uključujući pripremu za formalne provjere.
 
-**Trenutačni plan:** [Poveznica na GitHub Projects ploču, Gantogram ili održavanu tablicu u nastavku. Navesti osobu zaduženu za ažurnost plana. Odaberite jedan glavni prikaz i navedite tko ga održava ažurnim.]
+**Trenutačni plan:** Održavana tablica u nastavku. Za ažurnost plana zadužen je HŠ.
 
 | Razdoblje/Tjedan | Glavni planirani rad | Odgovorni članovi | Poveznica na zadatke |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| Projektni tjedan 3 | Definiranje funkcijskih i nefunkcijskih zahtjeva te razrada obrazaca uporabe i dokumentacije | RČ, BF, DM, AN, BO, HŠ | Zadatci #1-#7 i #9 |
+| Projektni tjedan 4 | Dorada funkcijskih i nefunkcijskih zahtjeva te detaljna razrada scenarija ključnih obrazaca uporabe | Svi članovi | / |
+| Projektni tjedan 5 | Oblikovanje početne arhitekture sustava, modela podataka (baza) te izrada dijagrama razreda i slijeda | Svi članovi | / |
+| Projektni tjedan 6 | Prijava korisnika te izrada pacijentske nadzorne ploče (dnevni check-in i ručni unos pulsa) | Svi članovi | / |
 
-Ako koristite tablicu, plan vodite na korisnoj tjednoj razini i ažurirajte ga kada se prioriteti promijene. Kratice članova tima definirajte  u A.1 i ovdje ih primjenjujte dosljedno; ako dva člana imaju iste inicijale, proširite kraticu. Plan nije dokaz da je planirani rad dovršen (to dokazuje kod i dokumentacija).
-
-<details>
-<summary><strong>Primjer plana rada</strong></summary>
-
-**Primjer — CrisisMap:** Plan rada obuhvaća razvoj prijava, karte i postavljanja aplikacije. Za svako razdoblje navedeni su glavni zadaci i odgovorni članovi.
-
-| Razdoblje | Glavni planirani rad | Odgovorni članovi | Poveznica na zadatke/opis |
-| --- | --- | --- | --- |
-| Projektni tjedan 6 | Obrazac za prijavu i provjera valjanosti lokacije | AK, LM | Zadataka #21 i #23. |
-| Projektni tjedan 7 | Povezivanje obrasca s API-jem za prijave | EP | Zadatak #25. |
-
-**Čitanje plana:** Kratice štede prostor u sažetom planu; njihove definicije s početka A.1 vrijede u cijelom ovom primjeru. Kada rad kasni, ažurirajte stvarni zadatak i očekivanje u planu; nemojte tvrditi da je nedovršena funkcionalnost završena samo zato što je predviđeni tjedan prošao.
-
-</details>
 
 ## A.3 Aktivnosti i doprinosi članova
 
@@ -63,55 +33,29 @@ Ako koristite tablicu, plan vodite na korisnoj tjednoj razini i ažurirajte ga k
 
 | Aktivnost ili rezultat | Član | Prijavljeni sati | Reprezentativni rezultat ili poveznica |
 | --- | --- | --- | --- |
-|  |  |  |  |
-
-Koristite aktivnosti specifične za projekt umjesto obaveznog retka za svako poglavlje dokumentacije ili svaki UML dijagram. Tim treba dosljedno bilježiti sate i izbjegavati dvostruko brojanje zajedničkog rada; reprezentativni rezultat objašnjava što je prijavljeni trud proizveo. Sati su samoprijavljena procjena uloženog rada, a ne mjera kvalitete niti zamjena za pregled koda i artefakata.
-
-<details>
-<summary><strong>Primjer aktivnosti i rezultata rada</strong></summary>
-
-**Primjer — CrisisMap:** Tablica razlikuje implementaciju, integraciju i dokumentaciju te svaku aktivnost povezuje s rezultatom.
-
-| Aktivnost ili rezultat | Član | Prijavljeni sati | Reprezentativni rezultat ili poveznica |
-| --- | --- | --- | --- |
-| Ručni unos položaja na karti | AK | 8 | Zadatak #21; promjena klijentskog dijela. |
-| Provjera valjanosti i trajna pohrana prijave | LM | 10 | Zadatak #23; promjena pozadinskog sustava i ispitivanje. |
-| Integracija klijenta i API-ja te javno postavljanje | EP | 7 | Zadatak #25; konfiguracija u `render.yaml` i `dist/` |
-| Obrazac uporabe za podnošenje prijave i provjera odbijenog dopuštenja | NK | 5 | Završene izmjene UC-002 i ispitivanje ST-03. |
-
-**Trud i rezultat:** Završni stupac omogućuje raspravu o doprinosu bez tretiranja velikog broja sati kao dokaza isporuke. Tim može prijaviti stvarno dugotrajan, još neriješen problem integracije kao obavljen rad i iskreno opisati njegov ishod.
-
-</details>
+| Prilagođavanje sadržaja datoteke README.md | RČ | 2 | Zadatak #1 |
+| Izrada uvodne stranice dokumentacije (docs/Home.md) | BF | 3 | Zadatak #2 |
+| Definicija cilja, ciljanih korisnika i granica projekta (docs/1-Projekt.md) | AN | 3 | Zadatak #3 |
+| Definiranje funkcijskih i nefunkcijskih zahtjeva ( docs/2-Analiza-zahtjeva.md ) | BO | 4 | Zadatak #4 i #5|
+| Razrada ključnih obrasaca uporabe ( docs/3-Obrasci-uporabe.md ) | RČ | 2 | Zadatak #6 |
+| Izrada UML dijagrama obrazaca uporabe (docs/puml) | DM | 3 | Zadatak #7 |
+| Izrada i vođenje pregleda aktivnosti grupe ( docs/A-Pregled-aktivnosti-grupe.md ) | HŠ | 2 | Zadatak #9 |
 
 ## A.4 Pregled promjena u repozitoriju
 
 **Cilj:** Prikazati kada su promjene napravljene u repozitoriju i tko ih je napravio, uz napomenu da sam broj zapisa promjena ne mjeri kvalitetu doprinosa.
 
-**Prikaz aktivnosti repozitorija:** [Ugradite ili povežite GitHubov prikaz `Contributors` i generirani graf za projektni repozitorij; navedite razdoblje koje obuhvaća.]
+**Prikaz aktivnosti repozitorija:** [Contributors graf](https://github.com/RokoCulin/PROINZ26-G04.2-Pulsko/graphs/contributors)
 
-Graf može pokazati kada su zapisi promjena napravljeni i tko ih je napravio, ali ne prikazuje sav rad na oblikovanju, ispitivanju, integraciji, pregledu ili dokumentaciji. Ako postoji uočljiv nesklad s tablicom aktivnosti, kratko ga objasnite; nemojte iz grafa izvoditi broj sati. Generirani prikaz neka bude vezan uz stvarni repozitorij umjesto da se ručno crta drugi graf.
+*Napomena:* Graf obuhvaća razdoblje do 26. listopada 2026. godine te prikazuje do sada napravljene promjene u sklopu izrade početne dokumentacije.
 
 ## A.5 Ključni inženjerski izazovi i rješenja
 
 **Cilj:** Dokumentirati stvarne tehničke i organizacijske prepreke s kojima se tim suočio, poduzete korektivne inženjerske korake te konačni ishod. Odaberite konkretne izazove umjesto općenite pohvale timskog rada.
 
+*Tijekom izrade početne dokumentacije nisu zabilježeni ključni inženjerski izazovi. Sekcija će se dopunjavati tijekom daljnjeg razvoja sustava i implementacije.*
+
 | Izazov | Poduzeta radnja | Ishod ili preostalo ograničenje |
 | --- | --- | --- |
 |  |  |  |
 
-<details>
-<summary><strong>Rješavanje nesklada formata lokacije</strong></summary>
-
-**Primjer — CrisisMap:**
-
-| Izazov | Poduzeta radnja | Ishod ili preostalo ograničenje |
-| --- | --- | --- |
-| Odabrani položaj na karti prikazivao se u klijentu, ali podnesena prijava nije zadržavala koordinate. | AK i EP usporedile su zahtjev preglednika s poljima lokacije koje očekuje API; AK je uskladila format zahtjeva, a LM je dodao provjeru valjanosti lokacije. | Nova prijava u ovom se scenariju može dohvatiti sa spremljenim položajem; tim povezuje odgovarajuću promjenu integracije i provjeru. |
-
-**Problem, odgovor i ishod:** Svaki se dio može provjeriti u projektu. Rečenica poput „imali smo poteškoće s integracijom i riješili ih timskim radom” ne bi čitatelju rekla što nije radilo ni kako je rješenje promijenjeno.
-
-</details>
-
----
-
->**Završna provjera:** Sastanci navode smislene ishode i odgovorne osobe; plan odražava namjeravani rad; tablica uloženog rada i generirani prikaz repozitorija odnose na ovaj vidljivi projekt; konkretni izazovi povezani su s radnjama i njihovim rezultatima. 
