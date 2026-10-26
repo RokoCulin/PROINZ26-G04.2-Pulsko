@@ -94,6 +94,7 @@ rectangle "Sustav Pulsko" as Pulsko {
 
 User -- UC_SignIn
 User -- UC_Messages
+Admin -- UC_SignIn
 
 Patient -- UC_ConnectRequest
 Patient -- UC_CheckIn
