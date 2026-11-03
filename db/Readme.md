@@ -19,7 +19,7 @@ Pulsko koristi jednu PostgreSQL bazu (testirano na PostgreSQL 16, treba 14+). Mo
 | AI | `ai_poruka`, `pitanje_za_lijecnika`, `ai_sazetak` |
 | Revizija | `revizijski_zapis` |
 
-Statusi su u srednjem rodu radi jedinstvenog rječnika: `na_cekanju`, `prihvaceno`, `odbijeno`, `odobreno`, `potvrdeno`, `nepotvrdeno`, `zakazano`, `otkazano`, `uzeto`, `propusteno`, `nacrt`, `podijeljeno`...
+
 
 ## Brzo pokretanje (iz korijena repozitorija)
 
@@ -42,8 +42,6 @@ Ručno: `psql -d pulsko_dev -v ON_ERROR_STOP=1 -f db/001_kreiranje_sheme.sql`, p
 - liječnik i pacijent ne mogu imati preklapajuće zakazane termine
 - poruku mogu slati samo strane prihvaćene veze
 - isti podsjetnik se ne stvara dvaput; `revizijski_zapis` je samo za dodavanje (F-017)
-
-Poruke grešaka iz baze su na hrvatskom (npr. `Lijecnik % vec ima najvise dopustenih 2125 pacijenata`); backend ih treba preslikati u poruke korisniku na engleskom.
 
 ## Što nije u bazi (odluke aplikacije)
 
