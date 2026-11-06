@@ -25,13 +25,14 @@ function SignIn() {
                 <h1>Sign in to Pulsko</h1>
                 <p className="subtitle">Choose how you want to sign in.</p>
 
-                <button
+                <a
+                    href="/patient"
                     className="provider-button"
                     onClick={() => setAuth("You have selected OpenID Connect")}
                 >
                     <span className="openid-icon">◎</span> Continue with OpenID
                     Connect
-                </button>
+                </a>
                 <button
                     className="provider-button"
                     onClick={() =>
