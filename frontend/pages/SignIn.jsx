@@ -3,6 +3,7 @@ import "../css/SignIn.css";
 
 function SignIn() {
     const [role, setRole] = useState("");
+    const [auth, setAuth] = useState("");
     const [message, setMessage] = useState("");
 
     function continueLogin() {
@@ -26,9 +27,7 @@ function SignIn() {
 
                 <button
                     className="provider-button"
-                    onClick={() =>
-                        setMessage("Connect your OpenID provider to sign in.")
-                    }
+                    onClick={() => setAuth("You have selected OpenID Connect")}
                 >
                     <span className="openid-icon">◎</span> Continue with OpenID
                     Connect
@@ -48,6 +47,9 @@ function SignIn() {
                     or
                     <span />
                 </div>
+                <p className="subtitle-lower">
+                    If you are here for the first time
+                </p>
                 <h2>Select your role</h2>
 
                 <div className="roles">
