@@ -1,0 +1,245 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: #f7f8f5;
+    color: #202943;
+    font-family: "DM Sans", sans-serif;
+}
+.checkin-page {
+    min-height: 100vh;
+}
+.checkin-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5vw;
+    border-bottom: 1px solid #e5e9e0;
+    background: white;
+}
+.checkin-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #202943;
+    font:
+        800 23px "Manrope",
+        sans-serif;
+    letter-spacing: -1px;
+    text-decoration: none;
+}
+.checkin-brand img {
+    width: 30px;
+    height: 30px;
+}
+.checkin-back {
+    color: #557444;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.checkin-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 38px 24px;
+}
+.checkin-label {
+    margin: 0 0 8px;
+    color: #718460;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+.checkin-content h1 {
+    margin: 0;
+    color: #202943;
+    font:
+        700 clamp(30px, 4vw, 42px) "Manrope",
+        sans-serif;
+    letter-spacing: -1.8px;
+}
+.checkin-intro {
+    margin: 9px 0 22px;
+    color: #727b70;
+    font-size: 13px;
+}
+.checkin-form {
+    display: grid;
+    gap: 15px;
+}
+.checkin-section {
+    padding: 21px;
+    border: 1px solid #e2e8dc;
+    border-radius: 12px;
+    background: white;
+}
+.checkin-section-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 17px;
+    text-align: center;
+}
+.checkin-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 11px;
+    background: #edf3e4;
+    color: #587747;
+    font-size: 20px;
+}
+.checkin-section-heading h2 {
+    margin: 0;
+    color: #29392f;
+    font:
+        700 16px "Manrope",
+        sans-serif;
+}
+.checkin-section-heading p {
+    margin: 4px 0 0;
+    color: #7b8378;
+    font-size: 11px;
+}
+.symptom-options,
+.mood-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 17px;
+}
+.symptom-option,
+.mood-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 11px;
+    border: 1px solid #e1e7dc;
+    border-radius: 20px;
+    background: #fbfcfa;
+    color: #63705e;
+    font-size: 10px;
+    cursor: pointer;
+}
+.symptom-option.chosen,
+.mood-option.chosen {
+    border-color: #9bb878;
+    background: #edf4e3;
+    color: #405a38;
+}
+.symptom-option input,
+.mood-option input {
+    width: 13px;
+    height: 13px;
+    margin: 0;
+    accent-color: #587747;
+}
+.field-label {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin: 0 0 7px;
+    color: #566252;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+}
+.field-label span {
+    color: #9aa195;
+    font-weight: 400;
+}
+.checkin-section textarea {
+    width: 100%;
+    resize: vertical;
+    padding: 11px 12px;
+    border: 1px solid #e1e7dc;
+    border-radius: 8px;
+    background: #fbfcfa;
+    color: #354338;
+    font: inherit;
+    font-size: 11px;
+    line-height: 1.5;
+}
+.checkin-section textarea::placeholder {
+    color: #9aa195;
+}
+.checkin-section textarea:focus {
+    outline: 2px solid #c6d9ad;
+    border-color: #9bb878;
+}
+.checkin-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 3px 2px;
+}
+.checkin-bottom p {
+    margin: 0;
+    color: #858d81;
+    font-size: 10px;
+    line-height: 1.5;
+}
+.checkin-submit {
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 8px;
+    background: #263b32;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.checkin-submit:hover {
+    background: #3a5b45;
+}
+.checkin-submit span {
+    margin-left: 8px;
+    color: #c9f36a;
+}
+.checkin-success {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid #d9e7cd;
+    border-radius: 8px;
+    background: #eff5e8;
+    color: #557444;
+    font-size: 11px;
+}
+.checkin-safety {
+    margin: 17px 0 0;
+    color: #899186;
+    font-size: 10px;
+    line-height: 1.6;
+}
+@media (max-width: 560px) {
+    .checkin-content {
+        padding: 29px 15px;
+    }
+    .checkin-section {
+        padding: 16px;
+    }
+    .checkin-section-heading {
+        align-items: flex-start;
+    }
+    .checkin-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .checkin-submit {
+        width: 100%;
+    }
+    .mood-options,
+    .symptom-options {
+        gap: 6px;
+    }
+}

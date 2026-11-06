@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: #f7f8f5;
+    color: #202943;
+    font-family: "DM Sans", sans-serif;
+}
+.therapy-page {
+    min-height: 100vh;
+}
+.therapy-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5vw;
+    border-bottom: 1px solid #e5e9e0;
+    background: white;
+}
+.therapy-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #202943;
+    font:
+        800 23px "Manrope",
+        sans-serif;
+    letter-spacing: -1px;
+    text-decoration: none;
+}
+.therapy-brand img {
+    width: 30px;
+    height: 30px;
+}
+.therapy-back {
+    color: #557444;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.therapy-content {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 42px 24px;
+}
+.therapy-label {
+    margin: 0 0 8px;
+    color: #718460;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+.therapy-content h1 {
+    margin: 0;
+    color: #202943;
+    font:
+        700 clamp(30px, 4vw, 42px) "Manrope",
+        sans-serif;
+    letter-spacing: -1.8px;
+}
+.therapy-intro {
+    margin: 10px 0 22px;
+    color: #727b70;
+    font-size: 13px;
+}
+.therapy-demo-note {
+    margin-bottom: 13px;
+    padding: 11px 14px;
+    border: 1px solid #dfe8d2;
+    border-radius: 8px;
+    background: #f0f5e8;
+    color: #65745e;
+    font-size: 10px;
+    font-weight: 700;
+}
+.medication-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+}
+.medication-card {
+    min-height: 205px;
+    padding: 18px;
+    border: 1px solid #e3e8de;
+    border-radius: 11px;
+    background: white;
+}
+.medicine-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.medicine-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: #edf3e4;
+    color: #587747;
+    font-size: 20px;
+}
+.medicine-time {
+    padding: 6px 9px;
+    border-radius: 20px;
+    background: #f0f5e8;
+    color: #557444;
+    font-size: 10px;
+    font-weight: 700;
+}
+.medication-card h2 {
+    margin: 15px 0 5px;
+    color: #29392f;
+    font:
+        700 16px "Manrope",
+        sans-serif;
+}
+.medication-card p {
+    margin: 0;
+    color: #788174;
+    font-size: 11px;
+}
+.medication-card p strong {
+    color: #465343;
+}
+.taken-button {
+    margin-top: 17px;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: #263b32;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.taken-button:hover:not(:disabled) {
+    background: #3a5b45;
+}
+.taken-button.done {
+    background: #eaf2dc;
+    color: #557444;
+    cursor: default;
+}
+.therapy-footnote {
+    margin: 16px 0 0;
+    color: #788174;
+    font-size: 10px;
+    line-height: 1.6;
+}
+@media (max-width: 760px) {
+    .medication-list {
+        grid-template-columns: 1fr;
+    }
+    .medication-card {
+        min-height: 185px;
+    }
+    .therapy-content {
+        padding: 32px 18px;
+    }
+}

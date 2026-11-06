@@ -72,12 +72,12 @@ function PatientHome() {
                         <p>Save a note about how you feel today.</p>
                         <span className="card-arrow">→</span>
                     </a>
-                    <a className="home-card" href="/patient/health-data">
+                    <a className="home-card" href="/patient/health-agent">
                         <span className="home-icon">⌁</span>
-                        <h3>Health data</h3>
+                        <h3>Health agent</h3>
                         <p>
-                            Review confirmed information shared by your care
-                            team.
+                            Any uncertainties you have can be resolved with the
+                            help of your personal health assistant.
                         </p>
                         <span className="card-arrow">→</span>
                     </a>
@@ -112,9 +112,6 @@ function PatientHome() {
 
             <footer className="patient-footer">
                 <span>Pulsko · Care feels better when we’re connected.</span>
-                <a href="/patient/messages">
-                    Need help? Contact your care team →
-                </a>
             </footer>
         </main>
     );

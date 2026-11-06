@@ -33,7 +33,8 @@ function SignIn() {
                     <span className="openid-icon">◎</span> Continue with OpenID
                     Connect
                 </a>
-                <button
+                <a
+                    href="/patient"
                     className="provider-button"
                     onClick={() =>
                         setMessage("Connect your OAuth provider to sign in.")
@@ -41,7 +42,7 @@ function SignIn() {
                 >
                     <span className="google-icon">G</span> Continue with OAuth
                     2.0
-                </button>
+                </a>
 
                 <div className="divider">
                     <span />

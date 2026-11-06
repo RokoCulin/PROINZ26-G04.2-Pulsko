@@ -1,0 +1,213 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: #f7f8f5;
+    color: #202943;
+    font-family: "DM Sans", sans-serif;
+}
+.appointments-page {
+    min-height: 100vh;
+}
+.appointments-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5vw;
+    border-bottom: 1px solid #e5e9e0;
+    background: white;
+}
+.appointments-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #202943;
+    font:
+        800 23px "Manrope",
+        sans-serif;
+    letter-spacing: -1px;
+    text-decoration: none;
+}
+.appointments-brand img {
+    width: 30px;
+    height: 30px;
+}
+.appointments-back {
+    color: #557444;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.appointments-content {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 42px 24px;
+}
+.appointments-label {
+    margin: 0 0 8px;
+    color: #718460;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+.appointments-content h1 {
+    margin: 0;
+    color: #202943;
+    font:
+        700 clamp(30px, 4vw, 42px) "Manrope",
+        sans-serif;
+    letter-spacing: -1.8px;
+}
+.appointments-intro {
+    margin: 10px 0 22px;
+    color: #727b70;
+    font-size: 13px;
+}
+.appointments-demo {
+    margin-bottom: 13px;
+    padding: 11px 14px;
+    border: 1px solid #dfe8d2;
+    border-radius: 8px;
+    background: #f0f5e8;
+    color: #65745e;
+    font-size: 10px;
+    font-weight: 700;
+}
+.appointment-list {
+    display: grid;
+    gap: 12px;
+}
+.appointment-card {
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px;
+    border: 1px solid #49634f;
+    border-radius: 11px;
+    background: #3c5544;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+.appointment-card:hover {
+    border-color: #66816a;
+    background: #435f4b;
+}
+.appointment-date {
+    width: 66px;
+    height: 74px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #58725c;
+    color: #f4f7ed;
+}
+.appointment-date span {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+.appointment-date strong {
+    font:
+        800 25px "Manrope",
+        sans-serif;
+    line-height: 1.1;
+}
+.appointment-date small {
+    font-size: 8px;
+}
+.appointment-details {
+    flex: 1;
+}
+.appointment-status {
+    color: #d4e6b9;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+.appointment-details h2 {
+    margin: 4px 0;
+    color: #f5f7f1;
+    font:
+        700 17px "Manrope",
+        sans-serif;
+}
+.appointment-department {
+    margin: 0 0 7px !important;
+    color: #c8daaf !important;
+    font-weight: 600;
+}
+.appointment-details p {
+    margin: 3px 0;
+    color: #d4ddd2;
+    font-size: 11px;
+}
+.appointment-details p strong {
+    color: #fff;
+}
+.appointment-time {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 3px 7px;
+    border-radius: 12px;
+    background: #d4e6b9;
+    color: #304735;
+    font-size: 14px;
+    font-weight: 700;
+}
+.appointment-location {
+    color: #bdcbbd !important;
+    font-size: 10px !important;
+}
+.appointment-type-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #58725c;
+    color: #e0eec8;
+    font-size: 20px;
+}
+.appointments-note {
+    margin-top: 18px;
+    color: #7b8378;
+    font-size: 11px;
+}
+.appointments-note a {
+    color: #557444;
+    font-weight: 700;
+    text-decoration: none;
+}
+.appointments-note a:hover,
+.appointments-back:hover {
+    text-decoration: underline;
+}
+@media (max-width: 600px) {
+    .appointments-content {
+        padding: 32px 16px;
+    }
+    .appointment-card {
+        gap: 12px;
+        padding: 13px;
+    }
+    .appointment-date {
+        width: 55px;
+        height: 68px;
+    }
+    .appointment-details h2 {
+        font-size: 15px;
+    }
+    .appointment-type-icon {
+        display: none;
+    }
+}
