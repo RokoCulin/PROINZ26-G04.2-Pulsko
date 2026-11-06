@@ -1,0 +1,222 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    font-family: "DM Sans", sans-serif;
+    color: #202943;
+    background: #f1f4ec;
+}
+#root {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+button,
+a {
+    font: inherit;
+}
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 28px 16px;
+    background: #f1f4ec;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 570px;
+    padding: 36px 44px 24px;
+    border: 1px solid #e4e9df;
+    border-radius: 22px;
+    background: white;
+    box-shadow: 0 20px 55px #273b2c12;
+    text-align: center;
+}
+
+.login-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #202943;
+    font:
+        800 30px "Manrope",
+        sans-serif;
+    letter-spacing: -2px;
+    text-decoration: none;
+}
+
+.signInLogo {
+    height: 34px;
+    width: auto;
+}
+h1,
+h2 {
+    font-family: "Manrope", sans-serif;
+    color: #202943;
+}
+h1 {
+    margin: 23px 0 7px;
+    font-size: 30px;
+    letter-spacing: -1.5px;
+}
+.subtitle {
+    margin: 0 0 22px;
+    color: #7b8290;
+    font-size: 14px;
+}
+
+.provider-button {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    margin: 10px 0;
+    padding: 0 14px;
+    border: 1px solid #e2e6df;
+    border-radius: 9px;
+    background: white;
+    color: #424b58;
+    font-size: 13px;
+    cursor: pointer;
+}
+.provider-button:hover {
+    background: #f7faef;
+    border-color: #c1d69e;
+}
+.openid-icon {
+    color: #547b50;
+    font-size: 24px;
+}
+.google-icon {
+    color: #4285f4;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: #90978d;
+    font-size: 12px;
+}
+.divider span {
+    height: 1px;
+    flex: 1;
+    background: #e8ebe5;
+}
+h2 {
+    margin: 0 0 13px;
+    font-size: 18px;
+}
+.roles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.role-card {
+    min-height: 175px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px;
+    border: 1px solid #e2e6df;
+    border-radius: 12px;
+    background: #fbfcfa;
+    color: #202943;
+    cursor: pointer;
+}
+.role-card:hover {
+    border-color: #bed490;
+}
+.role-card.selected {
+    border: 2px solid #779e4c;
+    background: #f6faef;
+}
+.role-icon {
+    margin-bottom: 5px;
+    color: #557b45;
+    font-size: 35px;
+    line-height: 1.2;
+}
+.role-card strong {
+    font:
+        700 15px "Manrope",
+        sans-serif;
+}
+.role-card > span:last-child {
+    margin-top: 7px;
+    color: #747c86;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.continue-button {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 17px;
+    border: 0;
+    border-radius: 9px;
+    background: #263b32;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+.continue-button span {
+    margin-left: 10px;
+    color: #c9f36a;
+}
+.continue-button:hover:not(:disabled) {
+    background: #3a5b45;
+}
+.continue-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.message {
+    min-height: 15px;
+    margin: 8px 0 0;
+    color: #718460;
+    font-size: 11px;
+}
+
+@media (max-width: 520px) {
+    .login-box {
+        padding: 28px 20px 20px;
+    }
+    h1 {
+        font-size: 27px;
+    }
+    .role-card {
+        min-height: 165px;
+        padding: 12px 9px;
+    }
+    .role-card > span:last-child {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-box {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+    .roles {
+        gap: 8px;
+    }
+    .role-card {
+        padding-right: 7px;
+        padding-left: 7px;
+    }
+}

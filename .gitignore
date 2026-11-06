@@ -83,3 +83,16 @@ out
 
 # pnpm
 .pnpm-store
+
+
+# ============= FRONTEND NONSENSE ======================
+#pictures
+*.svg
+*.png
+*.jpg
+
+# config files
+eslint.config.js
+vite.config.js
+package-lock.json
+package.json
