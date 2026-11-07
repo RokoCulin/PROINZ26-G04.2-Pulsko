@@ -1,120 +1,277 @@
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import "../css/PatientHome.css";
 
-function PatientHome() {
-    return (
-        <main className="patient-page">
-            <header className="patient-header">
-                <a className="patient-brand" href="/patient">
-                    <img src="/favicon.png" alt="" />
-                    <span>Pulsko</span>
-                </a>
-                <div className="patient-profile">
-                    <span>[S]</span> [IME]{" "}
-                    {/* ==================================== slika i ime pacijenta učitaj */}
-                </div>
-            </header>
+const seedDoctors = [
+  {
+    id: "PUL-10021",
+    name: "Dr. Ana Novak",
+    specialty: "Internal medicine",
+    place: "Pulsko Health Centre",
+  },
+  {
+    id: "PUL-10034",
+    name: "Dr. Marko Kovač",
+    specialty: "Cardiology",
+    place: "Pulsko Health Centre",
+  },
+  {
+    id: "PUL-10058",
+    name: "Dr. Lea Horvat",
+    specialty: "Clinical pharmacy",
+    place: "Pulsko Health Centre",
+  },
+];
 
-            <section className="home-hero">
-                <div className="hero-copy">
-                    <p className="eyebrow">YOUR PATIENT SPACE</p>
-                    <h1>Good to see you, [IME]</h1>{" "}
-                    {/* ==================================== tu treba dodati ime pacijenta, tj. da se ucitava direkt */}
-                    <p>
-                        Keep your care organized and stay connected with your
-                        doctor. What would you like to do today?
-                    </p>
-                    <a className="hero-button" href="/patient/check-in">
-                        Start daily check-in <span>→</span>
-                    </a>
-                </div>
-                <div
-                    className="hero-art"
-                    aria-label="Decorative health illustration"
-                >
-                    <div className="art-circle circle-one" />
-                    <div className="art-circle circle-two" />
-                    <div className="health-preview">
-                        <div className="preview-heading">
-                            <span className="preview-icon">+</span>
-                            <div>
-                                <strong>Your health space</strong>
-                                <small>Connected care, in one place</small>
-                            </div>
-                        </div>
-                        <svg
-                            className="pulse-graphic"
-                            viewBox="0 0 420 130"
-                            aria-hidden="true"
-                        >
-                            <path d="M0 70 H105 L135 70 L154 34 L181 104 L209 58 L229 70 H278 L302 70 L322 43 L344 93 L365 70 H420" />
-                        </svg>
-                        <div className="preview-bottom">
-                            <span>YOUR CARE TEAM</span>
-                            <span className="connected-dot" /> Connected
-                        </div>
-                    </div>
-                </div>
-            </section>
+const read = (key, fallback) => {
+  try {
+    return JSON.parse(localStorage.getItem(key)) ?? fallback;
+  } catch {
+    return fallback;
+  }
+};
 
-            <section className="features-area">
-                <div className="section-title">
-                    <div>
-                        <p className="eyebrow">YOUR CARE TOOLS</p>
-                        <h2>Where would you like to go?</h2>
-                    </div>
-                    <span>Choose a section to get started</span>
-                </div>
+export default function PatientHome() {
+  const [query, setQuery] = useState("");
 
-                <div className="home-links" aria-label="Patient features">
-                    <a className="home-card" href="/patient/check-in">
-                        <span className="home-icon">☺</span>
-                        <h3>Daily check-in</h3>
-                        <p>Save a note about how you feel today.</p>
-                        <span className="card-arrow">→</span>
-                    </a>
-                    <a className="home-card" href="/patient/health-agent">
-                        <span className="home-icon">⌁</span>
-                        <h3>Health agent</h3>
-                        <p>
-                            Any uncertainties you have can be resolved with the
-                            help of your personal health assistant.
-                        </p>
-                        <span className="card-arrow">→</span>
-                    </a>
-                    <a className="home-card" href="/patient/therapy">
-                        <span className="home-icon">＋</span>
-                        <h3>Therapy</h3>
-                        <p>See the therapy details your doctor has shared.</p>
-                        <span className="card-arrow">→</span>
-                    </a>
-                    <a className="home-card" href="/patient/appointments">
-                        <span className="home-icon">□</span>
-                        <h3>Appointments</h3>
-                        <p>Keep track of visits with your care team.</p>
-                        <span className="card-arrow">→</span>
-                    </a>
-                    <a className="home-card" href="/patient/messages">
-                        <span className="home-icon">✉</span>
-                        <h3>Messages</h3>
-                        <p>Get in touch with your connected doctor.</p>
-                        <span className="card-arrow">→</span>
-                    </a>
-                    <div className="help-card">
-                        <span className="home-icon">i</span>
-                        <h3>Care information</h3>
-                        <p>
-                            Pulsko helps you review shared information. Your
-                            doctor remains your source for medical advice.
-                        </p>
-                    </div>
-                </div>
-            </section>
+  const [requests, setRequests] = useState(() =>
+    read("pulsko-patient-requests", []),
+  );
 
-            <footer className="patient-footer">
-                <span>Pulsko · Care feels better when we’re connected.</span>
-            </footer>
-        </main>
-    );
+  const doctors = useMemo(
+    () =>
+      seedDoctors.filter((doctor) =>
+        (doctor.name + " " + doctor.id + " " + doctor.specialty)
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      ),
+    [query],
+  );
+
+  function requestDoctor(doctor) {
+    if (requests.some((item) => item.id === doctor.id)) {
+      return;
+    }
+
+    const next = [...requests, { ...doctor, status: "Pending" }];
+
+    setRequests(next);
+
+    localStorage.setItem("pulsko-patient-requests", JSON.stringify(next));
+  }
+
+  const metrics = read("pulsko-metrics", []);
+  const latest = metrics.at(-1);
+
+  const labs = read("pulsko-labs", []);
+
+  return (
+    <main className="phome-shell">
+      <header className="phome-header">
+        <Link className="phome-brand" to="/patient">
+          ✳ <span>Pulsko</span>
+        </Link>
+
+        <nav className="phome-nav">
+          <Link to="/patient">Overview</Link>
+          <Link to="/patient/labs">Lab results</Link>
+          <Link to="/patient/appointments">Appointments</Link>
+          <Link to="/patient/messages">Messages</Link>
+        </nav>
+
+        <span className="phome-chip">S&nbsp; Sample Patient</span>
+      </header>
+
+      <section className="phome-welcome">
+        <div>
+          <p className="phome-eyebrow">YOUR PATIENT SPACE</p>
+
+          <h1>Good to see you, Sam.</h1>
+
+          <p className="phome-muted">
+            Your health information, care team and daily routines in one place.
+          </p>
+
+          <Link className="phome-btn" to="/patient/check-in">
+            Complete daily check-in →
+          </Link>
+        </div>
+
+        <div className="phome-art" aria-label="Decorative health illustration">
+          <div className="phome-circle phome-circle-one" />
+          <div className="phome-circle phome-circle-two" />
+          <div className="phome-preview">
+            <div className="phome-preview-heading">
+              <span className="phome-preview-icon">+</span>
+              <div>
+                <strong>Your health space</strong>
+                <small>Connected care, in one place</small>
+              </div>
+            </div>
+            <svg
+              className="phome-pulse-graphic"
+              viewBox="0 0 420 130"
+              aria-hidden="true"
+            >
+              <path d="M0 70 H105 L135 70 L154 34 L181 104 L209 58 L229 70 H278 L302 70 L322 43 L344 93 L365 70 H420" />
+            </svg>
+            <div className="phome-preview-bottom">
+              <span>YOUR CARE TEAM</span>
+              <span className="phome-connected-dot" /> Connected
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="phome-block">
+        <div className="phome-heading">
+          <div>
+            <p className="phome-eyebrow">AT A GLANCE</p>
+            <h2>Your health snapshot</h2>
+          </div>
+
+          <Link to="/patient/check-in">Add today's data →</Link>
+        </div>
+
+        <div className="phome-metrics">
+          <article className="phome-metric">
+            <small>Steps</small>
+            <strong>{latest?.steps ?? "—"}</strong>
+            <span>steps</span>
+          </article>
+
+          <article className="phome-metric">
+            <small>Heart rate</small>
+            <strong>
+              {latest?.heartRate ? `${latest.heartRate} bpm` : "—"}
+            </strong>
+            <span>latest measurement</span>
+          </article>
+
+          <article className="phome-metric">
+            <small>Sleep</small>
+            <strong>{latest?.sleep ? `${latest.sleep} h` : "—"}</strong>
+            <span>last night</span>
+          </article>
+
+          <article className="phome-metric">
+            <small>Lab results</small>
+            <strong>{labs.length}</strong>
+            <span>uploaded reports</span>
+          </article>
+        </div>
+      </section>
+
+      <section className="phome-block">
+        <div className="phome-heading">
+          <div>
+            <p className="phome-eyebrow">YOUR CARE TOOLS</p>
+            <h2>What would you like to do?</h2>
+          </div>
+        </div>
+
+        <div className="phome-tiles">
+          <Link className="phome-tile" to="/patient/check-in">
+            <span>＋</span>
+            <h3>Daily check-in</h3>
+            <p>Record steps, heart rate, sleep and how you feel.</p>
+          </Link>
+
+          <Link className="phome-tile" to="/patient/labs">
+            <span>⌁</span>
+            <h3>Lab results</h3>
+            <p>Upload your lab reports and keep them in one place.</p>
+          </Link>
+
+          <Link className="phome-tile" to="/patient/therapy">
+            <span>♡</span>
+            <h3>Therapy</h3>
+            <p>Review your medication schedule and reminders.</p>
+          </Link>
+
+          <Link className="phome-tile" to="/patient/health-agent">
+            <span>✳</span>
+            <h3>Health Agent</h3>
+            <p>Understand confirmed information and prepare questions.</p>
+          </Link>
+
+          <Link className="phome-tile" to="/patient/appointments">
+            <span>▦</span>
+            <h3>Appointments</h3>
+            <p>View upcoming and previous visits.</p>
+          </Link>
+
+          <Link className="phome-tile" to="/patient/messages">
+            <span>✉</span>
+            <h3>Messages</h3>
+            <p>Contact doctors you are connected with.</p>
+          </Link>
+        </div>
+      </section>
+
+      <section className="phome-block phome-connect">
+        <div>
+          <p className="phome-eyebrow">BUILD YOUR CARE TEAM</p>
+          <h2>Find your doctor</h2>
+          <p className="phome-muted">
+            Search by doctor name or unique profile ID and send a connection
+            request.
+          </p>
+        </div>
+
+        <label className="phome-search">
+          Doctor name or profile ID
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="e.g. Ana Novak or PUL-10021"
+          />
+        </label>
+
+        <div className="phome-results">
+          {doctors.map((doctor) => (
+            <article className="phome-result" key={doctor.id}>
+              <div className="phome-avatar">
+                {doctor.name.split(" ").slice(-1)[0][0]}N
+              </div>
+
+              <div className="phome-grow">
+                <b>{doctor.name}</b>
+                <small>
+                  {doctor.specialty} · {doctor.id}
+                </small>
+              </div>
+
+              <button
+                className="phome-secondary"
+                onClick={() => requestDoctor(doctor)}
+                disabled={requests.some((item) => item.id === doctor.id)}
+              >
+                {requests.some((item) => item.id === doctor.id)
+                  ? "Request pending"
+                  : "Request connection"}
+              </button>
+            </article>
+          ))}
+
+          {!doctors.length && (
+            <p className="phome-muted">
+              No doctors found. Check the name or profile ID.
+            </p>
+          )}
+        </div>
+
+        {!!requests.length && (
+          <p className="phome-status">
+            Pending requests: {requests.map((item) => item.name).join(", ")}
+          </p>
+        )}
+      </section>
+
+      <footer className="phome-footer">
+        Pulsko · Care feels better when we're connected.
+        <span>Academic demo — sample data only.</span>
+      </footer>
+    </main>
+  );
 }
-
-export default PatientHome;

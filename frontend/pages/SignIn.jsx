@@ -1,110 +1,106 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../css/SignIn.css";
 
-function SignIn() {
-    const [role, setRole] = useState("");
-    const [auth, setAuth] = useState("");
-    const [message, setMessage] = useState("");
+export default function SignIn() {
+  const [role, setRole] = useState("");
+  const [provider, setProvider] = useState("");
 
-    function continueLogin() {
-        if (role) {
-            setMessage(
-                `You selected ${role}. Connect a sign-in provider to continue.`,
-            );
-        }
-    }
+  const navigate = useNavigate();
 
-    return (
-        <main className="login-page">
-            <section className="login-box">
-                <a className="login-logo" href="/">
-                    <img src="/favicon.png" alt="logo" className="signInLogo" />
-                    <p>Pulsko</p>
-                </a>
+  function continueLogin() {
+    if (!role || !provider) return;
 
-                <h1>Sign in to Pulsko</h1>
-                <p className="subtitle">Choose how you want to sign in.</p>
+    localStorage.setItem("pulsko-demo-role", role);
+    localStorage.setItem("pulsko-demo-provider", provider);
 
-                <a
-                    href="/patient"
-                    className="provider-button"
-                    onClick={() => setAuth("You have selected OpenID Connect")}
-                >
-                    <span className="openid-icon">◎</span> Continue with OpenID
-                    Connect
-                </a>
-                <a
-                    href="/patient"
-                    className="provider-button"
-                    onClick={() =>
-                        setMessage("Connect your OAuth provider to sign in.")
-                    }
-                >
-                    <span className="google-icon">G</span> Continue with OAuth
-                    2.0
-                </a>
+    navigate(role === "Patient" ? "/patient" : "/doctor");
+  }
 
-                <div className="divider">
-                    <span />
-                    or
-                    <span />
-                </div>
-                <p className="subtitle-lower">
-                    If you are here for the first time
-                </p>
-                <h2>Select your role</h2>
+  return (
+    <main className="pulsko-auth">
+      <section className="auth-card">
+        <a className="brand" href="/">
+          ✳ <span>Pulsko</span>
+        </a>
 
-                <div className="roles">
-                    <button
-                        className={
-                            role === "Patient"
-                                ? "role-card selected"
-                                : "role-card"
-                        }
-                        onClick={() => {
-                            setRole("Patient");
-                            setMessage("");
-                        }}
-                    >
-                        <span className="role-icon">♙</span>
-                        <strong>Patient</strong>
-                        <span>
-                            Track your health, follow your therapy and stay
-                            connected with your doctor.
-                        </span>
-                    </button>
+        <p className="eyebrow">WELCOME BACK</p>
 
-                    <button
-                        className={
-                            role === "Doctor"
-                                ? "role-card selected"
-                                : "role-card"
-                        }
-                        onClick={() => {
-                            setRole("Doctor");
-                            setMessage("");
-                        }}
-                    >
-                        <span className="role-icon">⚕</span>
-                        <strong>Doctor</strong>
-                        <span>
-                            Manage your patients, review their data and
-                            coordinate therapy.
-                        </span>
-                    </button>
-                </div>
+        <h1>Sign in to Pulsko</h1>
 
-                <button
-                    className="continue-button"
-                    disabled={!role}
-                    onClick={continueLogin}
-                >
-                    Continue <span>→</span>
-                </button>
-                <p className="message">{message}</p>
-            </section>
-        </main>
-    );
+        <p className="muted">Choose a sign-in method and your workspace.</p>
+
+        <div className="provider-list">
+          <button
+            className={
+              provider === "oidc"
+                ? "provider-choice selected"
+                : "provider-choice"
+            }
+            onClick={() => setProvider("oidc")}
+          >
+            <b>◎</b>
+            Continue with OpenID Connect
+            <span>{provider === "oidc" ? "✓" : "○"}</span>
+          </button>
+
+          <button
+            className={
+              provider === "oauth"
+                ? "provider-choice selected"
+                : "provider-choice"
+            }
+            onClick={() => setProvider("oauth")}
+          >
+            <b>G</b>
+            Continue with OAuth 2.0
+            <span>{provider === "oauth" ? "✓" : "○"}</span>
+          </button>
+        </div>
+
+        <div className="auth-divider">
+          <span />
+          YOUR ROLE
+          <span />
+        </div>
+
+        <div className="role-grid">
+          <button
+            className={
+              role === "Patient" ? "role-choice selected" : "role-choice"
+            }
+            onClick={() => setRole("Patient")}
+          >
+            <span className="role-symbol">♡</span>
+            <b>Patient</b>
+            <small>Track your health and stay connected.</small>
+          </button>
+
+          <button
+            className={
+              role === "Doctor" ? "role-choice selected" : "role-choice"
+            }
+            onClick={() => setRole("Doctor")}
+          >
+            <span className="role-symbol">⚕</span>
+            <b>Doctor</b>
+            <small>Manage patients and coordinate care.</small>
+          </button>
+        </div>
+
+        <button
+          className="primary-btn full"
+          disabled={!role || !provider}
+          onClick={continueLogin}
+        >
+          Continue to {role || "your workspace"} →
+        </button>
+
+        <p className="demo-hint">
+          Academic prototype · Sign-in is simulated; no external identity
+          provider is connected.
+        </p>
+      </section>
+    </main>
+  );
 }
-
-export default SignIn;

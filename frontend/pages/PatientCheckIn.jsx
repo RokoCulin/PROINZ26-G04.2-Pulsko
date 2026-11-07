@@ -1,180 +1,160 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../css/PatientCheckIn.css";
 
-function PatientCheckIn() {
-    const [symptoms, setSymptoms] = useState([]);
-    const [physicalNote, setPhysicalNote] = useState("");
-    const [mood, setMood] = useState("");
-    const [emotionalNote, setEmotionalNote] = useState("");
-    const [saved, setSaved] = useState(false);
+const load = () => {
+  try {
+    return JSON.parse(localStorage.getItem("pulsko-metrics")) || [];
+  } catch {
+    return [];
+  }
+};
 
-    function toggleSymptom(symptom) {
-        if (symptoms.includes(symptom)) {
-            setSymptoms(symptoms.filter((item) => item !== symptom));
-        } else {
-            setSymptoms([...symptoms, symptom]);
-        }
-        setSaved(false);
-    }
+export default function PatientCheckIn() {
+  const [steps, setSteps] = useState("");
+  const [heartRate, setHeartRate] = useState("");
+  const [sleep, setSleep] = useState("");
+  const [mood, setMood] = useState("");
+  const [note, setNote] = useState("");
+  const [saved, setSaved] = useState(false);
 
-    function submitCheckIn(event) {
-        event.preventDefault();
-        setSaved(true);
-    }
+  function save(event) {
+    event.preventDefault();
 
-    return (
-        <main className="checkin-page">
-            <header className="checkin-header">
-                <a className="checkin-brand" href="/patient">
-                    <img src="/favicon.png" alt="" />
-                    <span>Pulsko</span>
-                </a>
-                <a className="checkin-back" href="/patient">
-                    ← Back to overview
-                </a>
-            </header>
+    const row = {
+      date: new Date().toISOString().slice(0, 10),
+      steps: Number(steps),
+      heartRate: Number(heartRate),
+      sleep: Number(sleep),
+      mood,
+      note,
+    };
 
-            <section className="checkin-content">
-                <p className="checkin-label">YOUR PATIENT SPACE</p>
-                <h1>Daily check-in</h1>
-                <p className="checkin-intro">
-                    Take a moment to note how you are feeling today.
-                </p>
+    const all = [...load(), row];
 
-                <form className="checkin-form" onSubmit={submitCheckIn}>
-                    <section className="checkin-section">
-                        <div className="checkin-section-heading">
-                            <span className="checkin-icon">＋</span>
-                            <div>
-                                <h2>Physical wellbeing</h2>
-                                <p>
-                                    Have you noticed any physical symptoms
-                                    today?
-                                </p>
-                            </div>
-                        </div>
-                        <div className="symptom-options">
-                            {[
-                                "Pain",
-                                "Fatigue",
-                                "Nausea",
-                                "Sleep issues",
-                                "Other",
-                            ].map((symptom) => (
-                                <label
-                                    className={
-                                        symptoms.includes(symptom)
-                                            ? "symptom-option chosen"
-                                            : "symptom-option"
-                                    }
-                                    key={symptom}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={symptoms.includes(symptom)}
-                                        onChange={() => toggleSymptom(symptom)}
-                                    />
-                                    {symptom}
-                                </label>
-                            ))}
-                        </div>
-                        <label className="field-label" htmlFor="physical-note">
-                            Anything else you would like to note?{" "}
-                            <span>Optional</span>
-                        </label>
-                        <textarea
-                            id="physical-note"
-                            value={physicalNote}
-                            onChange={(event) => {
-                                setPhysicalNote(event.target.value);
-                                setSaved(false);
-                            }}
-                            placeholder="Write a short note about how you feel physically..."
-                            rows="3"
-                        />
-                    </section>
+    localStorage.setItem("pulsko-metrics", JSON.stringify(all));
 
-                    <section className="checkin-section">
-                        <div className="checkin-section-heading">
-                            <span className="checkin-icon">♡</span>
-                            <div>
-                                <h2>Emotional wellbeing</h2>
-                                <p>
-                                    How would you describe your emotional state
-                                    today?
-                                </p>
-                            </div>
-                        </div>
-                        <div className="mood-options">
-                            {[
-                                "Good",
-                                "Okay",
-                                "Worried",
-                                "Low",
-                                "Overwhelmed",
-                            ].map((option) => (
-                                <label
-                                    className={
-                                        mood === option
-                                            ? "mood-option chosen"
-                                            : "mood-option"
-                                    }
-                                    key={option}
-                                >
-                                    <input
-                                        type="radio"
-                                        name="mood"
-                                        value={option}
-                                        checked={mood === option}
-                                        onChange={() => {
-                                            setMood(option);
-                                            setSaved(false);
-                                        }}
-                                    />
-                                    {option}
-                                </label>
-                            ))}
-                        </div>
-                        <label className="field-label" htmlFor="emotional-note">
-                            Would you like to add anything?{" "}
-                            <span>Optional</span>
-                        </label>
-                        <textarea
-                            id="emotional-note"
-                            value={emotionalNote}
-                            onChange={(event) => {
-                                setEmotionalNote(event.target.value);
-                                setSaved(false);
-                            }}
-                            placeholder="Add any thoughts you would like to remember or share..."
-                            rows="3"
-                        />
-                    </section>
+    setSaved(true);
+  }
 
-                    <div className="checkin-bottom">
-                        <p>
-                            This check-in is not a diagnosis and does not
-                            replace medical advice.
-                        </p>
-                        <button className="checkin-submit" type="submit">
-                            Save check-in <span>→</span>
-                        </button>
-                    </div>
-                    {saved && (
-                        <p className="checkin-success" role="status">
-                            Your check-in is complete for this session. It is
-                            not saved after you leave the page.
-                        </p>
-                    )}
-                </form>
+  return (
+    <main className="pcheck-shell">
+      <header className="pcheck-header">
+        <Link className="pcheck-brand" to="/patient">
+          ✳ <span>Pulsko</span>
+        </Link>
 
-                <p className="checkin-safety">
-                    If you feel unsafe or need urgent help, contact your care
-                    team or local emergency services.
-                </p>
-            </section>
-        </main>
-    );
+        <Link to="/patient">← Back to overview</Link>
+      </header>
+
+      <section className="pcheck-intro">
+        <p className="pcheck-eyebrow">YOUR PATIENT SPACE</p>
+        <h1>Daily check-in</h1>
+
+        <p className="pcheck-muted">
+          Add today's activity and wellbeing information. You can update these
+          values every day.
+        </p>
+      </section>
+
+      <form className="pcheck-panel" onSubmit={save}>
+        <h2>Daily measurements</h2>
+
+        <div className="pcheck-grid">
+          <label>
+            Steps
+            <input
+              type="number"
+              min="0"
+              value={steps}
+              onChange={(event) => {
+                setSteps(event.target.value);
+                setSaved(false);
+              }}
+              placeholder="e.g. 6500"
+              required
+            />
+          </label>
+
+          <label>
+            Heart rate (bpm)
+            <input
+              type="number"
+              min="20"
+              max="250"
+              value={heartRate}
+              onChange={(event) => {
+                setHeartRate(event.target.value);
+                setSaved(false);
+              }}
+              placeholder="e.g. 72"
+              required
+            />
+          </label>
+
+          <label>
+            Sleep (hours)
+            <input
+              type="number"
+              min="0"
+              max="24"
+              step="0.1"
+              value={sleep}
+              onChange={(event) => {
+                setSleep(event.target.value);
+                setSaved(false);
+              }}
+              placeholder="e.g. 7.5"
+              required
+            />
+          </label>
+
+          <label>
+            How are you feeling?
+            <select
+              value={mood}
+              onChange={(event) => {
+                setMood(event.target.value);
+                setSaved(false);
+              }}
+              required
+            >
+              <option value="">Choose mood</option>
+              {["Great", "Good", "Okay", "Low", "Unwell"].map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Additional note
+          <textarea
+            rows="4"
+            value={note}
+            onChange={(event) => {
+              setNote(event.target.value);
+              setSaved(false);
+            }}
+            placeholder="Symptoms, observations or anything you want to remember..."
+          />
+        </label>
+
+        <p className="pcheck-disclaimer">
+          Daily measurements are self-reported and are not a diagnosis or a
+          substitute for medical advice.
+        </p>
+
+        <button className="pcheck-btn" type="submit">
+          Save daily check-in →
+        </button>
+
+        {saved && (
+          <p className="pcheck-success">
+            Check-in saved in this browser for the demo.
+          </p>
+        )}
+      </form>
+    </main>
+  );
 }
-
-export default PatientCheckIn;
