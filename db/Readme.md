@@ -1,4 +1,3 @@
-# Baza podataka (PostgreSQL)
 
 Pulsko koristi jednu PostgreSQL bazu (testirano na PostgreSQL 16, treba 14+). Model je prikazan ER dijagramom u [`docs/puml/4-2-pulsko-data-ERD.puml`](../docs/puml/4-2-pulsko-data-ERD.puml) (20 tablica).
 
