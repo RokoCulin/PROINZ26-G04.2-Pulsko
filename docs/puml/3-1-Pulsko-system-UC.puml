@@ -1,4 +1,19 @@
 
+' ==============================================================================
+' 3-1-pulsko-system-UC.puml
+'
+' Svrha:    Prikazuje tko i s kojim ciljem koristi sustav Pulsko (pacijenti,
+'           liječnici, administrator) te koje vanjske sustave sustav koristi.
+'           Interna logika, pohrana podataka i korisničko sučelje namjerno
+'           nisu obuhvaćeni.
+' Autor:    Roko, tim G04.2
+' AI:       Autor je naveo aktere, obrasce uporabe i njihove odnose; AI je korišten kao pomoć za lakše pisanje PlantUML koda i komentara.
+' Zahtjevi: UC-001 do UC-017
+'
+' Diagram level: System Requirements
+' Diagram type:  Use Case Diagram
+' Version:       1.0 (status: K)
+' ==============================================================================
 @startuml
 
 title Sustav Pulsko – obrasci uporabe
