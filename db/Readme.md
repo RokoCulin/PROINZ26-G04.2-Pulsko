@@ -22,8 +22,8 @@ Pulsko koristi jednu PostgreSQL bazu (testirano na PostgreSQL 16, treba 14+). Mo
 ```bash
 createdb pulsko_dev
 export DATABASE_URL="postgresql://<korisnik>:<lozinka>@localhost:5432/pulsko_dev"
-./scripts/seed-database.sh            # shema + šifrarnik
-./scripts/seed-database.sh --reset    # briše SVE tablice i gradi iznova (traži potvrdu)
+./scripts/setup-database.sh            # shema + šifrarnik
+./scripts/setup-database.sh --reset    # briše SVE tablice i gradi iznova (traži potvrdu)
 ```
 
 Ručno: `psql -d pulsko_dev -v ON_ERROR_STOP=1 -f db/001_create_schema.sql`, pa isto za `002`.
