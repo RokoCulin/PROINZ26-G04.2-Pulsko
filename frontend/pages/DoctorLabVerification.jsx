@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/DoctorLabVerification.css";
 
 const demoLabs = [
@@ -55,7 +56,8 @@ export default function DoctorLabVerification() {
     <main className="dlab-shell">
       <header className="dlab-header">
         <Link className="dlab-brand" to="/doctor">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
 
         <Link to="/doctor">← Doctor overview</Link>

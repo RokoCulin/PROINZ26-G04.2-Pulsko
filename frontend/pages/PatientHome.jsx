@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/PatientHome.css";
 
 const seedDoctors = [
@@ -69,7 +70,8 @@ export default function PatientHome() {
     <main className="phome-shell">
       <header className="phome-header">
         <Link className="phome-brand" to="/patient">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
 
         <nav className="phome-nav">

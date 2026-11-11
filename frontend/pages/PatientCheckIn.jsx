@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/PatientCheckIn.css";
 
 const load = () => {
@@ -41,7 +42,8 @@ export default function PatientCheckIn() {
     <main className="pcheck-shell">
       <header className="pcheck-header">
         <Link className="pcheck-brand" to="/patient">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
 
         <Link to="/patient">← Back to overview</Link>

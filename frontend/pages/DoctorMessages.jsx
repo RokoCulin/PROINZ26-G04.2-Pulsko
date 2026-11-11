@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/DoctorMessages.css";
 
 export default function DoctorMessages() {
@@ -10,7 +11,8 @@ export default function DoctorMessages() {
     <main className="dmsg-shell">
       <header className="dmsg-header">
         <Link className="dmsg-brand" to="/doctor">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
 
         <Link to="/doctor">← Doctor overview</Link>

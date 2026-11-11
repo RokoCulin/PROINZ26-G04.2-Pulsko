@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/DoctorPatients.css";
 
 const patients = [
@@ -23,7 +24,8 @@ export default function DoctorPatients() {
     <main className="dpat-shell">
       <header className="dpat-header">
         <Link className="dpat-brand" to="/doctor">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
 
         <Link to="/doctor">← Doctor overview</Link>

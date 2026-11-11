@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/SignIn.css";
 
 export default function SignIn() {
@@ -21,7 +22,8 @@ export default function SignIn() {
     <main className="pulsko-auth">
       <section className="auth-card">
         <a className="brand" href="/">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </a>
 
         <p className="eyebrow">WELCOME BACK</p>

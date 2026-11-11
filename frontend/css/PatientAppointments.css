@@ -24,17 +24,18 @@ body {
 .appointments-brand {
     display: flex;
     align-items: center;
-    gap: 9px;
-    color: #202943;
+    gap: 10px;
+    color: #263b32;
     font:
-        800 23px "Manrope",
+        800 24px "Manrope",
         sans-serif;
     letter-spacing: -1px;
+    white-space: nowrap;
     text-decoration: none;
 }
 .appointments-brand img {
-    width: 30px;
-    height: 30px;
+    height: 40px;
+    width: auto;
 }
 .appointments-back {
     color: #557444;

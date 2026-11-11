@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/DoctorHome.css";
 
 const links = [
@@ -42,7 +43,8 @@ export default function DoctorHome() {
     <main className="dhome-shell">
       <header className="dhome-header">
         <Link className="dhome-brand" to="/doctor">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
 
         <nav className="dhome-nav">

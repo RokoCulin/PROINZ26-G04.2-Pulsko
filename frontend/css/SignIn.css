@@ -24,13 +24,21 @@ button { cursor: pointer; }
 }
 
 .auth-card .brand {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   text-align: center;
   margin-bottom: 25px;
   font: 800 24px Manrope, sans-serif;
   letter-spacing: -1px;
   color: #263b32;
   white-space: nowrap;
+}
+
+.auth-card .brand img {
+  height: 40px;
+  width: auto;
 }
 
 .auth-card .eyebrow {

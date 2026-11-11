@@ -1,0 +1,294 @@
+' ==============================================================================
+' 4-2-pulsko-data-ERD.puml
+'
+' Svrha:    Prikazuje trajne entitete sustava Pulsko (korisnici i profili,
+'           veza pacijent-liječnik, dnevni check-in, laboratorijski nalazi i
+'           vrijednosti, terapija i doze, termini, poruke, obavijesti i
+'           podsjetnici, AI sadržaj, revizijski zapis), njihove ključeve,
+'           reprezentativne atribute i kardinalnosti.
+' Autor:    <upisati ime autora modela podataka>, kolegij Programsko inženjerstvo
+' AI:       Dijagram i SQL shemu pripremio je Claude (AI) na temelju poglavlja 1-3
+'           dokumentacije; autor ih je pregledao i odgovara za konačni sadržaj.
+' Praćenje: Entiteti, atributi i veze moraju ostati usklađeni sa shemom
+'           db/001_create_schema.sql; pri promjeni sheme ažurirati model.
+'
+' Diagram level: Logical data model
+' Diagram type:  Entity-Relationship Diagram (ERD), crow's foot
+' Version:       1.0
+' ==============================================================================
+
+@startuml
+title Sustav Pulsko – logički podatkovni model
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #212529
+skinparam nodesep 30
+skinparam ranksep 50
+
+skinparam entity {
+    BackgroundColor #E7F1FF
+    BorderColor #0D6EFD
+    FontColor #212529
+}
+
+' ==============================================================================
+' Korisnici i pristup
+' ==============================================================================
+
+entity "Korisnik" as User {
+    * user_id : ID <<PK>>
+    --
+    oidc_provider, oidc_subject : text <<UQ>>
+    email : text <<UQ>>
+    display_name : text
+    role : enum (patient, doctor, admin)
+}
+
+entity "Profil pacijenta" as PatientProfile {
+    * user_id : ID <<PK, FK>>
+    --
+    date_of_birth : date
+    sex : enum
+}
+
+entity "Profil liječnika" as DoctorProfile {
+    * user_id : ID <<PK, FK>>
+    --
+    institution : text
+    license_number : text <<UQ>>
+    approval_status : enum
+    reviewed_by : ID <<FK>>
+    reviewed_at : datetime
+    rejection_reason : text
+}
+
+entity "Veza pacijent–liječnik" as Link {
+    * link_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    * doctor_id : ID <<FK>>
+    status : enum
+    requested_at : datetime
+    responded_at : datetime
+}
+
+' ==============================================================================
+' Zdravstveni podaci
+' ==============================================================================
+
+entity "Dnevni check-in" as Checkin {
+    * checkin_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    checkin_date : date <<UQ s pacijentom>>
+    general_state : smallint
+    sleep_hours : decimal
+    steps : integer
+    heart_rate_bpm : smallint
+    activity_minutes : smallint
+}
+
+entity "Biomarker" as Biomarker {
+    * biomarker_id : ID <<PK>>
+    --
+    code : text <<UQ>>
+    name : text
+    unit : text
+    ref_low, ref_high : decimal
+}
+
+entity "Laboratorijski nalaz" as LabReport {
+    * report_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    status : enum
+    collected_on : date
+    reviewed_by : ID <<FK>>
+    reviewed_at : datetime
+    rejection_comment : text
+}
+
+entity "PDF datoteka nalaza" as LabFile {
+    * file_id : ID <<PK>>
+    --
+    * report_id : ID <<FK>>
+    file_no : 1..3
+    size_bytes : integer (≤ 10 MB)
+    storage_path : text
+}
+
+entity "Laboratorijska vrijednost" as LabValue {
+    * value_id : ID <<PK>>
+    --
+    * report_id : ID <<FK>>
+    * patient_id : ID <<FK>>
+    * biomarker_id : ID <<FK>>
+    value : decimal
+    unit : text
+    measured_on : date
+    source : enum (extracted, manual)
+    status : enum (unconfirmed, confirmed, rejected)
+    original_value : decimal
+    reviewed_by : ID <<FK>>
+}
+
+' ==============================================================================
+' Terapija i termini
+' ==============================================================================
+
+entity "Plan terapije" as Therapy {
+    * plan_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    * doctor_id : ID <<FK>>
+    medication_name : text
+    dose_amount : decimal
+    dose_unit : text
+    start_date, end_date : date
+    status : enum
+}
+
+entity "Raspored uzimanja" as Schedule {
+    * schedule_id : ID <<PK>>
+    --
+    * plan_id : ID <<FK>>
+    time_of_day : time
+    days_of_week : smallint[]
+}
+
+entity "Zakazana doza" as Dose {
+    * dose_id : ID <<PK>>
+    --
+    * plan_id : ID <<FK>>
+    scheduled_at : datetime
+    status : enum (pending, taken, missed)
+    recorded_at : datetime
+}
+
+entity "Termin" as Appointment {
+    * appointment_id : ID <<PK>>
+    --
+    * doctor_id : ID <<FK>>
+    * patient_id : ID <<FK>>
+    starts_at, ends_at : datetime
+    location : text
+    status : enum
+}
+
+' ==============================================================================
+' Komunikacija i podsjetnici
+' ==============================================================================
+
+entity "Poruka" as Message {
+    * message_id : ID <<PK>>
+    --
+    * link_id : ID <<FK>>
+    * sender_id : ID <<FK>>
+    body : text
+    sent_at : datetime
+    read_at : datetime
+}
+
+entity "Obavijest" as Notification {
+    * notification_id : ID <<PK>>
+    --
+    * user_id : ID <<FK>>
+    type : text
+    title : text
+    created_at : datetime
+    read_at : datetime
+}
+
+entity "Podsjetnik" as Reminder {
+    * reminder_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    kind : enum (dose, appointment)
+    dose_id : ID <<FK, UQ>>
+    appointment_id : ID <<FK, UQ>>
+    due_at : datetime
+    email_status : enum
+    email_sent_at : datetime
+}
+
+' ==============================================================================
+' AI i revizija
+' ==============================================================================
+
+entity "Poruka AI razgovora" as AiChat {
+    * message_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    role : enum (user, assistant)
+    content : text
+}
+
+entity "Pitanje za liječnika" as Question {
+    * question_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    question_text : text
+    source : enum
+}
+
+entity "AI sažetak" as Summary {
+    * summary_id : ID <<PK>>
+    --
+    * patient_id : ID <<FK>>
+    * doctor_id : ID <<FK>>
+    summary_text : text
+    shared_text : text
+    status : enum (draft, shared, discarded)
+    shared_at : datetime
+}
+
+entity "Revizijski zapis" as Audit {
+    * audit_id : ID <<PK>>
+    --
+    actor_id : ID <<FK>>
+    action : text
+    entity_type : text
+    entity_id : ID
+    old_value, new_value : jsonb
+    created_at : datetime
+}
+
+' ==============================================================================
+' Veze između entiteta
+' ==============================================================================
+
+User ||--o| PatientProfile : "je (uloga patient)"
+User ||--o| DoctorProfile  : "je (uloga doctor)"
+
+PatientProfile ||--o{ Link : "šalje zahtjev ►"
+DoctorProfile  ||--o{ Link : "prima zahtjev ►"
+Link ||--o{ Message : "sadrži ►"
+User ||--o{ Message : "šalje ►"
+
+PatientProfile ||--o{ Checkin : "bilježi ►"
+PatientProfile ||--o{ LabReport : "učitava ►"
+LabReport ||--|{ LabFile : "ima (1–3) ►"
+LabReport ||--o{ LabValue : "sadrži ►"
+Biomarker ||--o{ LabValue : "opisuje ►"
+DoctorProfile |o--o{ LabReport : "pregledava ►"
+
+PatientProfile ||--o{ Therapy : "ima ►"
+DoctorProfile  ||--o{ Therapy : "propisuje ►"
+Therapy ||--|{ Schedule : "ima ►"
+Therapy ||--o{ Dose : "generira ►"
+
+DoctorProfile  ||--o{ Appointment : "zakazuje ►"
+PatientProfile ||--o{ Appointment : "ima ►"
+
+PatientProfile ||--o{ Reminder : "prima ►"
+Dose |o--o| Reminder : "podsjeća na ►"
+Appointment |o--o| Reminder : "podsjeća na ►"
+User ||--o{ Notification : "prima ►"
+
+PatientProfile ||--o{ AiChat : "razgovara ►"
+PatientProfile ||--o{ Question : "sprema ►"
+PatientProfile ||--o{ Summary : "o njemu ►"
+DoctorProfile  ||--o{ Summary : "odobrava ►"
+
+User |o--o{ Audit : "izvršava ►"
+@enduml

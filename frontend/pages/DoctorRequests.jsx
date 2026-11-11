@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/DoctorRequests.css";
 
 const demoRequests = [
@@ -26,7 +27,8 @@ export default function DoctorRequests() {
     <main className="dreq-shell">
       <header className="dreq-header">
         <Link className="dreq-brand" to="/doctor">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
 
         <Link to="/doctor">← Doctor overview</Link>

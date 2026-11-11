@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../logo/logopulsko.png";
 import "../css/PatientLabs.css";
 
 const read = () => {
@@ -50,7 +51,8 @@ export default function PatientLabs() {
     <main className="plabs-shell">
       <header className="plabs-header">
         <Link className="plabs-brand" to="/patient">
-          ✳ <span>Pulsko</span>
+          <img src={logo} alt="Pulsko logo" />
+          <span>Pulsko</span>
         </Link>
         <Link to="/patient">← Back to overview</Link>
       </header>

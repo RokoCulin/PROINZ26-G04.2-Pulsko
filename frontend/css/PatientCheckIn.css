@@ -25,6 +25,14 @@ button { cursor: pointer; }
   letter-spacing: -1px;
   color: #263b32;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pcheck-brand img {
+  height: 40px;
+  width: auto;
 }
 
 .pcheck-intro { padding: 14px 0 22px; }

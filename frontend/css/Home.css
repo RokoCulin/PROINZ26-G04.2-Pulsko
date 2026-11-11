@@ -55,38 +55,18 @@ a {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    color: var(--ink);
+    color: #263b32;
     font:
-        800 27px/1 "Manrope",
+        800 24px/1 "Manrope",
         sans-serif;
-    letter-spacing: -0.07em;
+    letter-spacing: -1px;
+    white-space: nowrap;
 }
-.wordmark-icon {
-    width: 31px;
-    height: 31px;
-    display: grid;
-    place-items: center;
-    border-radius: 11px;
-    background: var(--green);
-    transform: rotate(-8deg);
+.wordmark img {
+    height: 40px;
+    width: auto;
 }
-.wordmark-icon span {
-    width: 12px;
-    height: 12px;
-    position: relative;
-    border: 2px solid var(--dark-green);
-    border-radius: 50%;
-}
-.wordmark-icon span::after {
-    content: "";
-    position: absolute;
-    width: 11px;
-    height: 2px;
-    top: 3px;
-    left: 4px;
-    background: var(--dark-green);
-    transform: rotate(-35deg);
-}
+
 .top-nav {
     display: flex;
     align-items: center;
@@ -583,6 +563,9 @@ a {
     .wordmark-icon {
         width: 28px;
         height: 28px;
+    }
+    .wordmark img {
+        height: 34px;
     }
     .top-nav {
         display: none;
