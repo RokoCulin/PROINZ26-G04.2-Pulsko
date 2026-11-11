@@ -1,0 +1,357 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+.agent-page {
+    min-height: 100vh;
+    background: #f7f8f5;
+    color: #202943;
+    font-family: "DM Sans", sans-serif;
+}
+.agent-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5vw;
+    border-bottom: 1px solid #e5e9e0;
+    background: white;
+}
+.agent-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #263b32;
+    font:
+        800 24px "Manrope",
+        sans-serif;
+    letter-spacing: -1px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+.agent-brand img {
+    height: 40px;
+    width: auto;
+}
+.agent-back {
+    color: #557444;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.agent-layout {
+    width: min(100% - 80px, 1560px);
+    margin: 0 auto;
+    padding: 46px 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+    gap: 28px;
+}
+.chat-title {
+    margin-bottom: 20px;
+}
+.agent-label {
+    margin: 0 0 7px;
+    color: #718460;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+.chat-title h1 {
+    margin: 0;
+    color: #202943;
+    font:
+        700 34px "Manrope",
+        sans-serif;
+    letter-spacing: -1.5px;
+}
+.chat-title > p:last-child {
+    margin: 8px 0 0;
+    color: #727b70;
+    font-size: 13px;
+}
+.chat-box {
+    min-height: min(68vh, 760px);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid #e3e8de;
+    border-radius: 13px;
+    background: white;
+}
+.chat-messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+.chat-message {
+    max-width: 78%;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+.chat-message p {
+    margin: 0;
+    padding: 13px 15px;
+    border-radius: 4px 12px 12px 12px;
+    background: #f0f5e8;
+    color: #485345;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.message-icon {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: #eaf2dc;
+    color: #587747;
+}
+.patient-message {
+    align-self: flex-end;
+}
+.patient-message p {
+    border-radius: 12px 4px 12px 12px;
+    background: #263b32;
+    color: white;
+}
+.suggestions {
+    margin: 22px 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+.suggestions span {
+    width: 100%;
+    color: #848c80;
+    font-size: 10px;
+}
+.suggestions button {
+    padding: 9px 12px;
+    border: 1px solid #e2e8dc;
+    border-radius: 18px;
+    background: #fff;
+    color: #62715b;
+    font-size: 11px;
+    cursor: pointer;
+}
+.suggestions button:hover {
+    background: #f1f7e8;
+}
+.chat-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 6px;
+    border: 1px solid #dfe5d9;
+    border-radius: 10px;
+    background: #f5f7f2;
+}
+.chat-form:focus-within {
+    border-color: #9bb878;
+    background: #fbfcf9;
+}
+.chat-form input {
+    min-width: 0;
+    flex: 1;
+    padding: 9px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #26352b;
+    font: inherit;
+    font-size: 14px;
+}
+.chat-form input::placeholder {
+    color: #899186;
+    opacity: 1;
+}
+.chat-form button {
+    padding: 9px 13px;
+    border: 0;
+    border-radius: 7px;
+    background: #263b32;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.chat-form button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.chat-form button span {
+    margin-left: 5px;
+    color: #c9f36a;
+}
+.chat-disclaimer {
+    margin: 9px 0 0;
+    color: #92988f;
+    font-size: 9px;
+    text-align: center;
+}
+.agent-info {
+    min-height: 640px;
+    margin-top: 66px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #dfe8d2;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 12px 30px #263b320c;
+}
+.assistant-art {
+    height: 270px;
+    flex: 0 0 auto;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #263b32, #42634a);
+}
+.art-orbit {
+    position: absolute;
+    border: 1px solid #a4c17a55;
+    border-radius: 50%;
+}
+.orbit-a {
+    width: 220px;
+    height: 220px;
+    right: -85px;
+    top: -90px;
+}
+.orbit-b {
+    width: 170px;
+    height: 170px;
+    left: -75px;
+    bottom: -100px;
+}
+.assistant-bubble {
+    width: 190px;
+    position: relative;
+    z-index: 1;
+    padding: 14px;
+    border: 1px solid #ffffff2b;
+    border-radius: 12px;
+    background: #ffffff16;
+    color: white;
+    box-shadow: 0 10px 30px #15251b33;
+}
+.assistant-bubble span {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #c9f36a;
+    color: #263b32;
+    font-size: 15px;
+}
+.assistant-bubble small {
+    display: block;
+    margin-bottom: 5px;
+    color: #d0e2bd;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+}
+.assistant-bubble strong {
+    font:
+        700 16px/1.25 "Manrope",
+        sans-serif;
+}
+.assistant-pulse {
+    position: absolute;
+    right: 0;
+    bottom: 12px;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    opacity: 0.8;
+}
+.assistant-pulse path {
+    fill: none;
+    stroke: #c9f36a;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.agent-info-copy {
+    flex: 1;
+    padding: 23px;
+    display: flex;
+    flex-direction: column;
+}
+.info-kicker {
+    margin: 0 0 7px;
+    color: #718460;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+.agent-info h2 {
+    margin: 0 0 12px;
+    color: #354a39;
+    font:
+        700 16px "Manrope",
+        sans-serif;
+}
+.agent-info ul {
+    margin: 0;
+    padding-left: 17px;
+    color: #687365;
+    font-size: 10px;
+    line-height: 1.7;
+}
+.agent-info li {
+    padding-left: 2px;
+    margin: 5px 0;
+}
+.info-note {
+    margin: auto 0 0;
+    padding-top: 16px;
+    border-top: 1px solid #e7ece2;
+    color: #899186;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+    .agent-layout {
+        width: calc(100% - 48px);
+        grid-template-columns: minmax(0, 1fr) 260px;
+        gap: 18px;
+    }
+}
+@media (max-width: 720px) {
+    .agent-layout {
+        width: 100%;
+        grid-template-columns: 1fr;
+        padding: 28px 16px;
+    }
+    .agent-info {
+        min-height: 0;
+        margin-top: 0;
+    }
+    .assistant-art {
+        height: 220px;
+    }
+    .chat-box {
+        min-height: 430px;
+        padding: 18px;
+    }
+    .chat-title h1 {
+        font-size: 30px;
+    }
+    .chat-message {
+        max-width: 92%;
+    }
+}

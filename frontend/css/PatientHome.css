@@ -1,0 +1,420 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap");
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: #f7f8f5; color: #202943; font-family: "DM Sans", sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+
+.phome-shell { max-width: 1320px; margin: auto; padding: 0 34px 40px; }
+
+.phome-header {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #e4e9df;
+  background: #fff;
+  padding: 0 max(24px, calc((100vw - 1320px)/2));
+  margin: 0 -34px 32px;
+}
+
+.phome-brand {
+  font: 800 24px Manrope, sans-serif;
+  letter-spacing: -1px;
+  color: #263b32;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phome-brand img {
+  height: 40px;
+  width: auto;
+}
+
+.phome-nav {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  color: #687365;
+  font-size: 13px;
+}
+
+.phome-nav a:hover { color: #587747; }
+
+.phome-chip {
+  border-radius: 30px;
+  padding: 8px 12px;
+  background: #edf3e6;
+  color: #587747;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.phome-welcome {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 34px;
+  align-items: center;
+  padding: 30px 0 45px;
+}
+
+.phome-eyebrow {
+  font-size: 10px;
+  letter-spacing: .16em;
+  font-weight: 800;
+  color: #718460;
+  margin: 0 0 12px;
+}
+
+.phome-welcome h1 {
+  font: 800 clamp(34px, 5vw, 54px)/1.1 Manrope, sans-serif;
+  letter-spacing: -2px;
+  margin: 0 0 14px;
+  color: #202943;
+}
+
+.phome-muted {
+  color: #788071;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.phome-welcome .phome-muted {
+  max-width: 510px;
+  margin-bottom: 24px;
+}
+
+.phome-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 17px;
+  background: #344f3d;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.phome-btn:hover { background: #253c2e; }
+
+.phome-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 17px;
+  background: #edf3e6;
+  color: #496640;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.phome-secondary:disabled { opacity: .65; }
+
+.phome-art {
+  height: 300px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #e8f0dc, #f3f7ec 65%, #dce9d0);
+}
+
+.phome-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: #cfe2b5;
+  opacity: 0.65;
+}
+
+.phome-circle-one {
+  width: 190px;
+  height: 190px;
+  top: -55px;
+  right: -25px;
+}
+
+.phome-circle-two {
+  width: 130px;
+  height: 130px;
+  bottom: -52px;
+  left: -20px;
+  background: #b9d59a;
+}
+
+.phome-preview {
+  width: min(78%, 430px);
+  position: relative;
+  z-index: 1;
+  padding: 22px;
+  border: 1px solid #e6ebdf;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 16px 35px #33442b18;
+  transform: rotate(-2deg);
+}
+
+.phome-preview-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phome-preview-icon {
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #edf3e4;
+  color: #587747;
+  font-size: 22px;
+}
+
+.phome-preview-heading div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.phome-preview-heading strong {
+  color: #354a39;
+  font: 700 13px "Manrope", sans-serif;
+}
+
+.phome-preview-heading small {
+  color: #788174;
+  font-size: 9px;
+}
+
+.phome-pulse-graphic {
+  width: 100%;
+  height: 94px;
+  margin: 10px 0 0;
+}
+
+.phome-pulse-graphic path {
+  fill: none;
+  stroke: #68884f;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.phome-preview-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 11px;
+  border-top: 1px solid #edf0e9;
+  color: #788174;
+  font-size: 9px;
+}
+
+.phome-preview-bottom span:first-child {
+  margin-right: auto;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.phome-connected-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8eb866;
+}
+
+.phome-block { margin: 28px 0 42px; }
+
+.phome-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.phome-heading h2 {
+  font: 700 25px Manrope, sans-serif;
+  margin: 0;
+  color: #202943;
+}
+
+.phome-heading > a {
+  color: #587747;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.phome-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 13px;
+  margin: 18px 0 32px;
+}
+
+.phome-metric {
+  background: white;
+  border: 1px solid #e4e9df;
+  border-radius: 13px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.phome-metric small, .phome-metric span { color: #788071; font-size: 11px; }
+.phome-metric strong { font: 800 28px Manrope; color: #344f3d; }
+
+.phome-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.phome-tile {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e3e9df;
+  border-radius: 13px;
+  transition: .2s;
+}
+
+.phome-tile:hover {
+  transform: translateY(-2px);
+  border-color: #a9bd92;
+  box-shadow: 0 10px 25px #253c2e0d;
+}
+
+.phome-tile > span {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #edf3e6;
+  color: #557747;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+}
+
+.phome-tile h3 { font: 700 17px Manrope; margin: 16px 0 6px; }
+.phome-tile p { font-size: 12px; color: #788071; line-height: 1.6; margin: 0; }
+
+.phome-connect {
+  background: #eef3e8;
+  border-radius: 16px;
+  padding: 25px;
+}
+
+.phome-connect h2 { font: 700 25px Manrope; margin: 0; }
+
+.phome-search {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4d5b4b;
+  max-width: 500px;
+  margin: 18px 0;
+}
+
+.phome-search input {
+  width: 100%;
+  border: 1px solid #dfe6d9;
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #fff;
+  color: #26352c;
+  outline: none;
+}
+
+.phome-search input:focus {
+  border-color: #8da979;
+  box-shadow: 0 0 0 3px #8da97922;
+}
+
+.phome-results { display: grid; gap: 9px; }
+
+.phome-result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e4e9df;
+  border-radius: 11px;
+}
+
+.phome-avatar {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 50%;
+  background: #e5edda;
+  color: #527348;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.phome-grow { flex: 1; min-width: 0; }
+.phome-grow b { display: block; font-size: 13px; }
+.phome-grow small { display: block; color: #7d8579; font-size: 11px; margin-top: 4px; }
+
+.phome-status { color: #527747; font-size: 12px; font-weight: 700; }
+
+.phome-footer {
+  border-top: 1px solid #e3e9df;
+  padding: 20px 0;
+  color: #687365;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.phome-footer span { color: #92998e; }
+
+@media (max-width: 850px) {
+  .phome-header {
+    flex-wrap: wrap;
+    padding: 15px 20px;
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+  .phome-shell { padding-left: 20px; padding-right: 20px; }
+  .phome-nav { order: 3; width: 100%; gap: 15px; overflow: auto; }
+  .phome-welcome { grid-template-columns: 1fr; }
+  .phome-art { height: 260px; }
+  .phome-tiles { grid-template-columns: repeat(2, 1fr); }
+  .phome-metrics { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .phome-tiles { grid-template-columns: 1fr; }
+  .phome-header { margin-bottom: 20px; }
+  .phome-chip { display: none; }
+  .phome-welcome { padding: 15px 0 25px; }
+  .phome-welcome h1 { font-size: 36px; }
+  .phome-art { height: 230px; }
+  .phome-preview { width: 82%; padding: 17px; }
+  .phome-heading { align-items: start; flex-direction: column; }
+  .phome-metrics { gap: 8px; }
+  .phome-metric { padding: 13px; }
+  .phome-metric strong { font-size: 23px; }
+  .phome-result { flex-wrap: wrap; }
+  .phome-result .phome-secondary { width: 100%; }
+  .phome-footer { flex-direction: column; }
+}

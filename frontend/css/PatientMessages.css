@@ -1,0 +1,317 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: #f7f8f5;
+    color: #202943;
+    font-family: "DM Sans", sans-serif;
+}
+.messages-page {
+    min-height: 100vh;
+}
+.messages-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5vw;
+    border-bottom: 1px solid #e5e9e0;
+    background: white;
+}
+.messages-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #263b32;
+    font:
+        800 24px "Manrope",
+        sans-serif;
+    letter-spacing: -1px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+.messages-brand img {
+    height: 40px;
+    width: auto;
+}
+.messages-back {
+    color: #557444;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.messages-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 36px 24px;
+}
+.messages-title {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.messages-title div {
+    margin-left: 25px;
+}
+.messages-label {
+    margin: 0 0 7px;
+    color: #718460;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+.messages-title h1 {
+    margin: 0;
+    color: #202943;
+    font:
+        700 34px "Manrope",
+        sans-serif;
+    letter-spacing: -1.5px;
+}
+.messages-title p:last-child {
+    margin: 7px 0 0;
+    color: #727b70;
+    font-size: 12px;
+}
+.demo-label {
+    padding: 7px 10px;
+    border-radius: 20px;
+    background: #f0f5e8;
+    color: #65745e;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+.messages-layout {
+    min-height: 590px;
+    display: grid;
+    grid-template-columns: 310px minmax(0, 1fr);
+    overflow: hidden;
+    border: 1px solid #e1e7dc;
+    border-radius: 13px;
+    background: white;
+}
+.doctor-list {
+    padding: 18px 12px;
+    border-right: 1px solid #e7ebe3;
+    background: #fbfcfa;
+}
+.doctor-list h2 {
+    margin: 0 7px 14px;
+    color: #465343;
+    font:
+        700 13px "Manrope",
+        sans-serif;
+}
+.doctor-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 8px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #344238;
+    text-align: left;
+    cursor: pointer;
+}
+.doctor-option:hover {
+    background: #f0f5e8;
+}
+.doctor-option.active {
+    background: #eaf2dc;
+}
+.doctor-avatar {
+    width: 37px;
+    height: 37px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #dce8d0;
+    color: #4f7042;
+    font-size: 10px;
+    font-weight: 700;
+}
+.doctor-summary {
+    min-width: 0;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+}
+.doctor-summary strong,
+.conversation-header strong {
+    overflow: hidden;
+    color: #354338;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.doctor-summary small,
+.conversation-header small {
+    color: #818a7e;
+    font-size: 12px;
+}
+.doctor-arrow {
+    color: #7a8c6c;
+    font-size: 19px;
+}
+.conversation {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+}
+.conversation-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #edf0e9;
+}
+.conversation-header > span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.conversation-note {
+    margin: 12px auto;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #f5f7f2;
+    color: #899186;
+    font-size: 9px;
+}
+.message-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 10px 2px;
+}
+.message-row {
+    max-width: 75%;
+}
+.message-row p {
+    margin: 4px 0 0;
+    padding: 11px 13px;
+    border-radius: 4px 12px 12px 12px;
+    background: #f0f5e8;
+    color: #485345;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.message-sender {
+    color: #8a9286;
+    font-size: 9px;
+}
+.from-patient {
+    align-self: flex-end;
+    text-align: right;
+}
+.from-patient p {
+    border-radius: 12px 4px 12px 12px;
+    background: #3c5544;
+    color: white;
+    text-align: left;
+}
+.message-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 6px;
+    border: 1px solid #dfe5d9;
+    border-radius: 9px;
+    background: #f5f7f2;
+}
+.message-form:focus-within {
+    border-color: #9bb878;
+    background: #fbfcf9;
+}
+.message-form input {
+    min-width: 0;
+    flex: 1;
+    padding: 8px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #26352b;
+    font: inherit;
+    font-size: 12px;
+}
+.message-form input::placeholder {
+    color: #899186;
+}
+.message-form button {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: #263b32;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.message-form button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.message-form button span {
+    margin-left: 4px;
+    color: #c9f36a;
+}
+.messages-disclaimer {
+    margin: 8px 0 0;
+    color: #92988f;
+    font-size: 9px;
+    text-align: center;
+}
+
+@media (max-width: 760px) {
+    .messages-content {
+        padding: 25px 15px;
+    }
+    .messages-layout {
+        grid-template-columns: 1fr;
+    }
+    .doctor-list {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        border-right: 0;
+        border-bottom: 1px solid #e7ebe3;
+    }
+    .doctor-list h2 {
+        display: none;
+    }
+    .doctor-option {
+        min-width: 205px;
+    }
+    .conversation {
+        min-height: 430px;
+        padding: 14px;
+    }
+    .messages-title h1 {
+        font-size: 30px;
+    }
+}
+@media (max-width: 430px) {
+    .messages-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .doctor-option {
+        min-width: 185px;
+    }
+    .message-row {
+        max-width: 90%;
+    }
+}
