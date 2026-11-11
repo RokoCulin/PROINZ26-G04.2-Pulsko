@@ -3,3 +3,7 @@ uvicorn
 pydantic-settings
 sqlalchemy
 psycopg[binary]
+authlib
+httpx
+itsdangerous
+python-dotenv

@@ -1,5 +1,0 @@
--r requirements.txt
-authlib
-httpx
-itsdangerous
-python-dotenv
