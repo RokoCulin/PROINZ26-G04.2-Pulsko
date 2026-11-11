@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
 import "../css/SignIn.css";
+
+const API_URL = "http://localhost:8000"
 
 export default function SignIn() {
   const [role, setRole] = useState("");
@@ -9,13 +11,53 @@ export default function SignIn() {
 
   const navigate = useNavigate();
 
+  const [error, setError] = useState("");
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+
+    async function checkSession() {
+      const res = await fetch(`${API_URL}/auth/me`, { credentials: "include" });
+      const me = await res.json();
+
+      if (me.authenticated) {
+        navigate(me.user.role === "doctor" ? "/doctor" : "/patient");
+        return;
+      }
+
+      if (me.registration_required) {
+        const savedRole = sessionStorage.getItem("pulsko-role");
+        if (!savedRole) return;
+
+        const reg = await fetch(`${API_URL}/auth/register`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": me.csrf_token,
+          },
+          body: JSON.stringify({ role: savedRole }),
+        });
+
+        sessionStorage.removeItem("pulsko-role");
+
+        if (reg.ok) {
+          navigate(savedRole === "doctor" ? "/doctor" : "/patient");
+        } else {
+          setError("Registracija nije uspjela.");
+        }
+      }
+    }
+
+    checkSession().catch(() => setError("Backend nije dostupan."));
+  }, [navigate]);
+
   function continueLogin() {
     if (!role || !provider) return;
-
-    localStorage.setItem("pulsko-demo-role", role);
-    localStorage.setItem("pulsko-demo-provider", provider);
-
-    navigate(role === "Patient" ? "/patient" : "/doctor");
+    sessionStorage.setItem("pulsko-role", role.toLowerCase());
+    window.location.href = `${API_URL}/auth/login`;
   }
 
   return (
@@ -98,6 +140,7 @@ export default function SignIn() {
           Continue to {role || "your workspace"} →
         </button>
 
+        {error && <p className="muted">{error}</p>}
         <p className="demo-hint">
           Academic prototype · Sign-in is simulated; no external identity
           provider is connected.
