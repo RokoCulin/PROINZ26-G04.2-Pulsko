@@ -54,6 +54,16 @@ def _csrf_token(request: Request) -> str:
     return token
 
 
+def _clear_pending_login(request: Request) -> None:
+    """Brise privremene podatke prijave (odabrana uloga, Authlib state).
+
+    Ne brise user_id: lazni callback ne smije odjaviti prijavljenog korisnika.
+    """
+    for key in list(request.session.keys()):
+        if key in ("requested_role", "pending_role", "pending_oidc") or key.startswith("_state_"):
+            request.session.pop(key, None)
+
+
 @router.get("/login")
 async def login(request: Request, role: SelectableRole | None = None):
     request.session.clear()
@@ -69,10 +79,20 @@ async def auth_callback(
     request: Request,
     db: Session = Depends(get_db),
 ):
+    # Korisnik je na Googleu kliknuo "Odustani" (error=access_denied) ili je
+    # Google vratio neku drugu gresku: vratiti ga na prijavu, ne JSON.
+    google_error = request.query_params.get("error")
+    if google_error:
+        _clear_pending_login(request)
+        code = "oauth_cancelled" if google_error == "access_denied" else "oauth_failed"
+        return _signin_redirect(error=code)
+
     try:
         userinfo = await get_google_userinfo(request)
-    except (OAuthError, ValueError) as error:
-        raise HTTPException(status_code=400, detail="Google prijava nije uspjela") from error
+    except (OAuthError, ValueError):
+        # Npr. mismatching_state (istekla sesija, ponovljen ili lazan callback).
+        _clear_pending_login(request)
+        return _signin_redirect(error="oauth_failed")
 
     if userinfo.get("email_verified") is not True:
         raise HTTPException(status_code=403, detail="Email adresa nije potvrdena")

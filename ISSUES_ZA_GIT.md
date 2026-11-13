@@ -138,8 +138,15 @@ Testovi backenda: `cd backend && TEST_DATABASE_URL=postgresql://<korisnik>@local
 ### Odustajanje na Googleu ostavlja korisnika na JSON greški backenda
 **Oznake:** bug
 **Zaduženi (prijedlog):** Hrvoje
-**Opis:** ako korisnik odustane na Googleu (`error=access_denied`) ili mail nije potvrđen, `/auth/callback` vraća JSON 400/403 na adresi backenda. UC-9 kaže da korisnik „ostaje neprijavljen i može pokušati ponovno”, pa bi ga trebalo preusmjeriti na `/signin?error=google_failed` (frontend tada prikaže poruku).
-**Kriterij gotovosti:** odustajanje vraća na `/signin` s porukom; test.
+**Opis:** kad korisnik na Googleu klikne „Odustani”, Google vraća na `/auth/callback?error=access_denied` (bez `code`), a backend je vraćao JSON 400 na adresi backenda. Sad callback prvo provjerava `error`: `access_denied` → `/signin?error=oauth_cancelled`, ostale Google greške → `/signin?error=oauth_failed`. Isto vrijedi kad `authorize_access_token` baci `OAuthError` (npr. `mismatching_state`). Prije preusmjeravanja brišu se privremeni podaci prijave (`requested_role`, `pending_*`, Authlib state). `user_id` se ne briše, pa lažni callback ne odjavljuje prijavljenog korisnika. Frontend prikazuje „Prijava je otkazana.” odnosno „Prijava nije uspjela, pokušaj ponovno.”
+**Kriterij gotovosti:** odustajanje vraća na `/signin` s porukom; testovi `test_odustajanje_na_googleu_vraca_na_signin`, `test_neispravan_state_vraca_oauth_failed`, `test_druga_google_greska_vraca_oauth_failed`, `test_lazni_callback_ne_odjavljuje_prijavljenog` prolaze.
+**Status:** napravljeno u commitu „Prijava: povratak na /signin kad korisnik odustane ili Google prijava ne uspije” (hash: `git log --oneline -1 -- ISSUES_ZA_GIT.md`; commit ne može sadržavati vlastiti hash)
+
+### Nepotvrđen e-mail i nedostajući podaci od Googlea još vraćaju JSON
+**Oznake:** bug
+**Zaduženi (prijedlog):** Hrvoje
+**Opis:** kad je `email_verified` različit od `true` (403) ili nedostaju `sub`/`email` (400), callback i dalje vraća JSON umjesto preusmjeravanja na `/signin?error=...`. To je rijetko kod Google računa.
+**Kriterij gotovosti:** preusmjeravanje s porukom na frontendu; test.
 **Status:** ostaje otvoreno
 
 ### Razlog odbijanja liječnika može biti prazan

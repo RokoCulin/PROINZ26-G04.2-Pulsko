@@ -18,6 +18,12 @@ function messageFromQuery(params) {
   if (error === "no_account") {
     return "Za ovaj Google račun ne postoji korisnički račun. Odaberite ulogu za registraciju.";
   }
+  if (error === "oauth_cancelled") {
+    return "Prijava je otkazana.";
+  }
+  if (error === "oauth_failed") {
+    return "Prijava nije uspjela, pokušaj ponovno.";
+  }
   return "";
 }
 
