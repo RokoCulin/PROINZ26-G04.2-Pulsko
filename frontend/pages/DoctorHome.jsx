@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import { LogoutButton, useAuth } from "../src/auth";
 import "../css/DoctorHome.css";
 
 const links = [
@@ -39,6 +40,8 @@ const stats = [
 ];
 
 export default function DoctorHome() {
+  const { user } = useAuth();
+
   return (
     <main className="dhome-shell">
       <header className="dhome-header">
@@ -54,14 +57,17 @@ export default function DoctorHome() {
           <Link to="/doctor/messages">Messages</Link>
         </nav>
 
-        <span className="dhome-chip">⚕ Dr. Alex Morgan</span>
+        <div className="auth-user">
+          <span className="dhome-chip">⚕ {user.display_name}</span>
+          <LogoutButton />
+        </div>
       </header>
 
       <section className="dhome-welcome">
         <div>
           <p className="dhome-eyebrow">YOUR DOCTOR SPACE</p>
 
-          <h1>Welcome back, Dr. Morgan.</h1>
+          <h1>Welcome back, {user.display_name}.</h1>
 
           <p className="dhome-muted">
             Review patient connections, follow health trends and coordinate
