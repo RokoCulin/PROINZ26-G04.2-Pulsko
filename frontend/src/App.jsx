@@ -17,6 +17,8 @@ import HealthAgent from "../pages/HealthAgent";
 import PatientTherapy from "../pages/PatientTherapy";
 import PatientAppointments from "../pages/PatientAppointments";
 import PatientMessages from "../pages/PatientMessages";
+import AdminHome from "../pages/AdminHome";
+import { RequireRole } from "./auth";
 
 export default function App() {
   return (
@@ -25,23 +27,32 @@ export default function App() {
 
       <Route path="/signin" element={<SignIn />} />
 
-      {/* PATIENT */}
-      <Route path="/patient" element={<PatientHome />} />
-      <Route path="/patient/check-in" element={<PatientCheckIn />} />
-      <Route path="/patient/labs" element={<PatientLabs />} />
-      <Route path="/patient/health-agent" element={<HealthAgent />} />
-      <Route path="/patient/therapy" element={<PatientTherapy />} />
-      <Route path="/patient/appointments" element={<PatientAppointments />} />
-      <Route path="/patient/messages" element={<PatientMessages />} />
+      {/* PATIENT (samo prijavljeni pacijent) */}
+      <Route element={<RequireRole role="patient" />}>
+        <Route path="/patient" element={<PatientHome />} />
+        <Route path="/patient/check-in" element={<PatientCheckIn />} />
+        <Route path="/patient/labs" element={<PatientLabs />} />
+        <Route path="/patient/health-agent" element={<HealthAgent />} />
+        <Route path="/patient/therapy" element={<PatientTherapy />} />
+        <Route path="/patient/appointments" element={<PatientAppointments />} />
+        <Route path="/patient/messages" element={<PatientMessages />} />
+      </Route>
 
-      {/* DOCTOR */}
-      <Route path="/doctor" element={<DoctorHome />} />
-      <Route path="/doctor/patients" element={<DoctorPatients />} />
-      <Route path="/doctor/requests" element={<DoctorRequests />} />
-      <Route path="/doctor/appointments" element={<DoctorAppointments />} />
-      <Route path="/doctor/messages" element={<DoctorMessages />} />
-      <Route path="/doctor/therapy" element={<DoctorTherapy />} />
-      <Route path="/doctor/lab-results" element={<DoctorLabVerification />} />
+      {/* DOCTOR (samo prijavljeni i odobreni liječnik) */}
+      <Route element={<RequireRole role="doctor" />}>
+        <Route path="/doctor" element={<DoctorHome />} />
+        <Route path="/doctor/patients" element={<DoctorPatients />} />
+        <Route path="/doctor/requests" element={<DoctorRequests />} />
+        <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+        <Route path="/doctor/messages" element={<DoctorMessages />} />
+        <Route path="/doctor/therapy" element={<DoctorTherapy />} />
+        <Route path="/doctor/lab-results" element={<DoctorLabVerification />} />
+      </Route>
+
+      {/* ADMIN */}
+      <Route element={<RequireRole role="admin" />}>
+        <Route path="/admin" element={<AdminHome />} />
+      </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
