@@ -1,17 +1,16 @@
-import hmac
 import secrets
 from datetime import datetime, timezone
 from typing import Literal
-
-from authlib.integrations.starlette_client import OAuthError
 from urllib.parse import urlencode
 
+from authlib.integrations.starlette_client import OAuthError
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.auth_dependencies import require_csrf
 from app.auth_settings import auth_settings
 from app.config import settings
 from app.db import get_db
@@ -53,13 +52,6 @@ def _csrf_token(request: Request) -> str:
         token = secrets.token_urlsafe(32)
         request.session["csrf_token"] = token
     return token
-
-
-def _require_csrf(request: Request) -> None:
-    expected = request.session.get("csrf_token")
-    received = request.headers.get("x-csrf-token", "")
-    if not isinstance(expected, str) or not hmac.compare_digest(expected, received):
-        raise HTTPException(status_code=403, detail="Neispravan sigurnosni token")
 
 
 @router.get("/login")
@@ -136,7 +128,7 @@ def complete_registration(
     body: RegisterIn | None = None,
     db: Session = Depends(get_db),
 ):
-    _require_csrf(request)
+    require_csrf(request)
     identity = get_pending_identity(request)
     role = request.session.get("pending_role")
     if identity is None or role not in ("patient", "doctor"):
@@ -204,6 +196,6 @@ def get_me(
 
 @router.post("/logout")
 def logout(request: Request):
-    _require_csrf(request)
+    require_csrf(request)
     request.session.clear()
     return {"message": "Logged out"}

@@ -1,3 +1,5 @@
+import hmac
+
 from fastapi import Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
@@ -32,4 +34,18 @@ def require_approved_doctor(
     if doctor is None or doctor.approval_status != "approved":
         raise HTTPException(status_code=403, detail="Lijecnicki racun nije odobren")
 
+    return user
+
+
+def require_csrf(request: Request) -> None:
+    """POST/PUT/DELETE: zaglavlje X-CSRF-Token mora odgovarati tokenu iz sesije."""
+    expected = request.session.get("csrf_token")
+    received = request.headers.get("x-csrf-token", "")
+    if not isinstance(expected, str) or not hmac.compare_digest(expected, received):
+        raise HTTPException(status_code=403, detail="Neispravan sigurnosni token")
+
+
+def require_patient(user: AppUser = Depends(get_session_user)) -> AppUser:
+    if user.role != "patient":
+        raise HTTPException(status_code=403, detail="Pristup je dopusten samo pacijentima")
     return user
