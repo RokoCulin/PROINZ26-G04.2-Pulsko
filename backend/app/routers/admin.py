@@ -3,6 +3,7 @@ from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.auth_dependencies import require_csrf
 from app.db import get_db
 from app.dependencies import require_admin
 from app.models import AppUser
@@ -30,14 +31,22 @@ def list_doctors(
     return DoctorService(db).list_by_status(status)
 
 
-@router.post("/doctors/{doctor_id}/approve", response_model=DoctorOut)
+@router.post(
+    "/doctors/{doctor_id}/approve",
+    response_model=DoctorOut,
+    dependencies=[Depends(require_csrf)],
+)
 def approve_doctor(
     doctor_id: int, db: Session = Depends(get_db), admin: AppUser = Depends(require_admin)
 ):
     return _handle(lambda: DoctorService(db).approve(doctor_id, admin.user_id))
 
 
-@router.post("/doctors/{doctor_id}/reject", response_model=DoctorOut)
+@router.post(
+    "/doctors/{doctor_id}/reject",
+    response_model=DoctorOut,
+    dependencies=[Depends(require_csrf)],
+)
 def reject_doctor(
     doctor_id: int,
     body: RejectDoctorIn,
