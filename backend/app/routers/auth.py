@@ -4,9 +4,11 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from authlib.integrations.starlette_client import OAuthError
+from urllib.parse import urlencode
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -29,10 +31,20 @@ from app.services.registration_service import (
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
+SelectableRole = Literal["patient", "doctor"]
+
+
 class RegisterIn(BaseModel):
-    role: Literal["patient", "doctor"]
-    institution: str | None = None
-    license_number: str | None = None
+    # Uloga se NE salje u tijelu: uzima se iz sesije (odabrana na /auth/login).
+    institution: str | None = Field(default=None, max_length=200)
+    license_number: str | None = Field(default=None, max_length=100)
+
+
+def _signin_redirect(**params: str) -> RedirectResponse:
+    url = f"{settings.frontend_url.rstrip('/')}/signin"
+    if params:
+        url += "?" + urlencode(params)
+    return RedirectResponse(url=url, status_code=303)
 
 
 def _csrf_token(request: Request) -> str:
@@ -51,8 +63,11 @@ def _require_csrf(request: Request) -> None:
 
 
 @router.get("/login")
-async def login(request: Request):
+async def login(request: Request, role: SelectableRole | None = None):
     request.session.clear()
+    # Odabrana uloga mora prezivjeti odlazak na Google, zato ide u sesiju.
+    if role is not None:
+        request.session["requested_role"] = role
     redirect_uri = auth_settings.google_redirect_uri or str(request.url_for("auth_callback"))
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
@@ -82,12 +97,24 @@ async def auth_callback(
         )
     )
 
+    # Procitati prije clear(), inace se izgubi.
+    requested_role = request.session.get("requested_role")
+    if requested_role not in ("patient", "doctor"):
+        requested_role = None
+
     request.session.clear()
     if user is not None:
+        # Jedan Google racun = jedna uloga. Admin ne bira ulogu.
+        if user.role != "admin" and requested_role != user.role:
+            return _signin_redirect(error="role_mismatch", registered_as=user.role)
+
         user.last_login_at = datetime.now(timezone.utc)
         db.commit()
         request.session["user_id"] = user.user_id
     else:
+        if requested_role is None:
+            return _signin_redirect(error="no_account")
+
         save_pending_identity(
             request,
             {
@@ -97,26 +124,29 @@ async def auth_callback(
                 "display_name": userinfo.get("name") or "",
             },
         )
+        request.session["pending_role"] = requested_role
 
     _csrf_token(request)
-    return RedirectResponse(url=f"{settings.frontend_url.rstrip('/')}/signin", status_code=303)
+    return _signin_redirect()
 
 
 @router.post("/register", status_code=201)
 def complete_registration(
-    body: RegisterIn,
     request: Request,
+    body: RegisterIn | None = None,
     db: Session = Depends(get_db),
 ):
     _require_csrf(request)
     identity = get_pending_identity(request)
-    if identity is None:
+    role = request.session.get("pending_role")
+    if identity is None or role not in ("patient", "doctor"):
         raise HTTPException(status_code=401, detail="Prvo se prijavite putem Googlea")
 
+    body = body or RegisterIn()
     try:
         user = RegistrationService(db).register(
             identity=identity,
-            role=body.role,
+            role=role,
             institution=body.institution,
             license_number=body.license_number,
         )
@@ -144,6 +174,7 @@ def get_me(
         return {
             "authenticated": False,
             "registration_required": registration_required,
+            "pending_role": request.session.get("pending_role") if registration_required else None,
             "csrf_token": _csrf_token(request) if registration_required else None,
         }
 
