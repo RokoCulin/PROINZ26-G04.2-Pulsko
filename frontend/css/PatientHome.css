@@ -418,3 +418,26 @@ button { cursor: pointer; }
   .phome-result .phome-secondary { width: 100%; }
   .phome-footer { flex-direction: column; }
 }
+/* Povijest check-inova (GET /patient/checkins) */
+.phome-history {
+  margin-top: 18px;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e2e8df;
+  border-radius: 12px;
+}
+
+.phome-history table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.phome-history caption {
+  text-align: left;
+  padding: 12px 14px 4px;
+  color: #6f786b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.phome-history th,
+.phome-history td { text-align: left; padding: 9px 14px; border-bottom: 1px solid #eef1eb; white-space: nowrap; }
+.phome-history th { color: #6f786b; font-size: 11px; }
+.phome-history tr:last-child td { border-bottom: 0; }

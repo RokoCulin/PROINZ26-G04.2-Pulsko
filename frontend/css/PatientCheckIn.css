@@ -123,7 +123,11 @@ button { cursor: pointer; }
 
 .pcheck-btn:hover { background: #253c2e; }
 
+.pcheck-btn:disabled { opacity: .45; cursor: not-allowed; }
+
 .pcheck-success { color: #527747; font-size: 12px; font-weight: 700; margin: 0; }
+.pcheck-error { color: #8a2f2f; font-size: 12px; font-weight: 700; margin: 0; }
+.pcheck-error a { text-decoration: underline; }
 
 @media (max-width: 850px) {
   .pcheck-shell { padding-left: 20px; padding-right: 20px; }

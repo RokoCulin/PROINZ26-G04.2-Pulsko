@@ -1,6 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import { apiFetch } from "../src/api";
+import { LogoutButton, useAuth } from "../src/auth";
+import { moodLabel, todayInZagreb } from "../src/checkin";
 import "../css/PatientHome.css";
 
 const seedDoctors = [
@@ -32,8 +35,26 @@ const read = (key, fallback) => {
   }
 };
 
+const formatDate = (isoDate) =>
+  new Date(`${isoDate}T12:00:00`).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
 export default function PatientHome() {
+  const { user } = useAuth();
   const [query, setQuery] = useState("");
+
+  // Zadnjih 7 check-inova s backenda (najnoviji prvi).
+  const [checkins, setCheckins] = useState(null);
+  const [checkinError, setCheckinError] = useState("");
+
+  useEffect(() => {
+    apiFetch("/patient/checkins?limit=7")
+      .then(setCheckins)
+      .catch((error) => setCheckinError(error.message));
+  }, []);
 
   const [requests, setRequests] = useState(() =>
     read("pulsko-patient-requests", []),
@@ -61,9 +82,11 @@ export default function PatientHome() {
     localStorage.setItem("pulsko-patient-requests", JSON.stringify(next));
   }
 
-  const metrics = read("pulsko-metrics", []);
-  const latest = metrics.at(-1);
+  const latest = checkins?.[0];
+  const doneToday = latest?.checkin_date === todayInZagreb();
+  const firstName = user.display_name.split(" ")[0];
 
+  // Nalazi su 2. ciklus; zasad se još čitaju iz preglednika (demo).
   const labs = read("pulsko-labs", []);
 
   return (
@@ -81,21 +104,24 @@ export default function PatientHome() {
           <Link to="/patient/messages">Messages</Link>
         </nav>
 
-        <span className="phome-chip">S&nbsp; Sample Patient</span>
+        <div className="auth-user">
+          <span className="phome-chip">{user.display_name}</span>
+          <LogoutButton />
+        </div>
       </header>
 
       <section className="phome-welcome">
         <div>
           <p className="phome-eyebrow">YOUR PATIENT SPACE</p>
 
-          <h1>Good to see you, Sam.</h1>
+          <h1>Good to see you, {firstName}.</h1>
 
           <p className="phome-muted">
             Your health information, care team and daily routines in one place.
           </p>
 
           <Link className="phome-btn" to="/patient/check-in">
-            Complete daily check-in →
+            {doneToday ? "Update today's check-in →" : "Complete daily check-in →"}
           </Link>
         </div>
 
@@ -139,29 +165,72 @@ export default function PatientHome() {
           <article className="phome-metric">
             <small>Steps</small>
             <strong>{latest?.steps ?? "—"}</strong>
-            <span>steps</span>
+            <span>{latest ? formatDate(latest.checkin_date) : "no check-in yet"}</span>
           </article>
 
           <article className="phome-metric">
             <small>Heart rate</small>
             <strong>
-              {latest?.heartRate ? `${latest.heartRate} bpm` : "—"}
+              {latest?.heart_rate_bpm != null ? `${latest.heart_rate_bpm} bpm` : "—"}
             </strong>
-            <span>latest measurement</span>
+            <span>latest check-in</span>
           </article>
 
           <article className="phome-metric">
             <small>Sleep</small>
-            <strong>{latest?.sleep ? `${latest.sleep} h` : "—"}</strong>
-            <span>last night</span>
+            <strong>{latest?.sleep_hours != null ? `${latest.sleep_hours} h` : "—"}</strong>
+            <span>latest check-in</span>
           </article>
 
           <article className="phome-metric">
-            <small>Lab results</small>
-            <strong>{labs.length}</strong>
-            <span>uploaded reports</span>
+            <small>Feeling</small>
+            <strong>{moodLabel(latest?.general_state) ?? "—"}</strong>
+            <span>latest check-in</span>
           </article>
         </div>
+
+        {checkinError && <p className="phome-status">{checkinError}</p>}
+
+        {!!checkins?.length && (
+          <div className="phome-history">
+            <table>
+              <caption>Last {checkins.length} check-ins</caption>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Steps</th>
+                  <th>Heart rate</th>
+                  <th>Sleep</th>
+                  <th>Feeling</th>
+                  <th>Activity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {checkins.map((row) => (
+                  <tr key={row.checkin_id}>
+                    <td>{formatDate(row.checkin_date)}</td>
+                    <td>{row.steps ?? "—"}</td>
+                    <td>{row.heart_rate_bpm != null ? `${row.heart_rate_bpm} bpm` : "—"}</td>
+                    <td>{row.sleep_hours != null ? `${row.sleep_hours} h` : "—"}</td>
+                    <td>{moodLabel(row.general_state) ?? "—"}</td>
+                    <td>
+                      {[
+                        row.activity_minutes != null && `${row.activity_minutes} min`,
+                        row.activity_description,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ") || "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <p className="phome-muted">
+          Lab results: {labs.length} uploaded (demo, stored in this browser).
+        </p>
       </section>
 
       <section className="phome-block">
