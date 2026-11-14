@@ -18,28 +18,12 @@ Za svaki UML dijagram čuvajte čitljivu sliku i PlantUML izvor, kako je opisano
 
 ## 4.1 Ključne arhitekturne odluke
 
-**Cilj:** Objasniti nekoliko arhitekturnih odluka koje najviše utječu na rješenje i navesti njihove projektno specifične razloge.
-
 | Odluka | Razmatrana alternativa | Projektno specifično obrazloženje i kompromis |
 | --- | --- | --- |
-|  |  |  |
-
-Objasnite glavne arhitekturne odluke bez ponavljanja popisa tehnologija. Ako važna odluka ima ADR, dovoljno je u tablici navesti njegov ID.
-
-<details>
-<summary><strong>Primjer arhitekturnih odluka i kompromisa</strong></summary>
-
-**Primjer — CrisisMap:**
-
-| Odluka | Razmatrana alternativa | Projektno specifično obrazloženje i kompromis |
-| --- | --- | --- |
-| Klijent u pregledniku i jedan poslužiteljski API | Više zasebno postavljenih poslužiteljskih usluga | Klijent prikazuje kartu, dok poslužiteljski sustav provjerava i pohranjuje prijave. Jedan poslužiteljski sustav upravljiv je za ovaj opseg; njegov kvar može privremeno prekinuti rad s prijavama. Obrazloženje je u ADR-01. |
-| Relacijska pohrana prijava | Dokumentno orijentirana pohrana | Prijave imaju prepoznatljive veze s korisnicima i lokacijama. Relacijska shema te veze čini eksplicitnima, ali zahtijeva migracije kada se shema promijeni. |
-
-**Analiza primjera:** Obje odluke navode razlog vezan uz aplikaciju za prijavljivanje kriznih događaja i priznaju kompromis. Odluka o poslužiteljskom sustavu upućuje na ADR-01 umjesto ponavljanja cijele usporedbe. Moduli unutar jedne aplikacije koja se postavlja kao cjelina nisu zasebne mikrousluge. U vlastitoj tablici navedite alternative koje je tim doista razmatrao.
-
-</details>
-
+| Web-klijent komunicira s jednim modularnim poslužiteljskim API-jem | Poslužiteljske usluge odvojene za pacijente, liječnike i administraciju | Pulsko treba podržati više korisničkih uloga koje koriste povezane zdravstvene podatke i funkcionalnosti. Jedan backend s odvojenim usmjernicima i servisima olakšava njihovu integraciju i postavljanje u okviru opsega projekta. Zauzvrat, kvar backenda može privremeno onemogućiti funkcionalnosti svih uloga. |
+| Podaci se pohranjuju u relacijskoj bazi, a ključna pravila integriteta provodi i sama baza | Dokumentno orijentirana pohrana ili provjera svih pravila samo u backendu | Podaci Pulska imaju važne veze: nalazi, terapije i check-inovi pripadaju pacijentima, a liječnik pristupa podacima samo povezanog pacijenta. Relacijski model i ograničenja baze pomažu očuvati te veze, uključujući pravila za termine, poruke i odobrene liječnike. Kompromis je da promjene modela zahtijevaju ažuriranje sheme i pripadajućih SQL skripti. |
+| Prijava koristi vanjskog pružatelja identiteta, a backend provjerava ulogu i ovlasti | Lokalni računi s lozinkama ili ovlasti provjeravane samo u korisničkom sučelju | Pulsko obrađuje osjetljive zdravstvene podatke, pa pristup ovisi o ulozi korisnika i vezi između liječnika i pacijenta. Backend provjerava prijavu, ulogu, odobrenje liječnika i CSRF token za zaštićene zahtjeve. Time se provjere ne oslanjaju samo na prikaz sučelja; kompromis je ovisnost o vanjskom pružatelju prijave. |
+| PDF datoteke nalaza čuvaju se izvan relacijske baze, a baza pohranjuje podatke o datoteci i njezinu putanju | Pohrana PDF sadržaja kao binarnih podataka u bazi | Pulsko omogućuje unos i pregled laboratorijskih nalaza, a strukturirane vrijednosti treba povezati s pacijentom i statusom liječničke provjere. Odvajanje PDF-a od podataka o nalazu drži bazu usmjerenom na strukturirane podatke. Kompromis je dodatna ovisnost o spremištu datoteka i potreba da se njegova putanja i pristup sigurno održavaju. |
 ## 4.2 Gradivni blokovi i UML dijagram komponenata
 
 **Cilj:** Prikazati logičku podjelu programa na komponente, njihova sučelja i vanjske integracije. Dijagram komponenata prikazuje logičku organizaciju, dok dijagram razmještaja prikazuje fizičko izvođenje. Ovaj prikaz ažurirajte kako sustav poprima konačan oblik.
