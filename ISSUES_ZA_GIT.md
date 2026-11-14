@@ -111,7 +111,7 @@ Koriste se postojeći `require_patient`, `require_approved_doctor` i `require_cs
 **Zaduženi (prijedlog):** Hrvoje
 **Opis:** `backend/tests/test_links.py`: sretni put, liječnik nije odobren ili ne postoji, duplikat (pending i accepted), tuđi zahtjev, ponovni zahtjev nakon odbijanja, krive uloge, CSRF.
 **Kriterij gotovosti:** svi testovi prolaze zajedno s postojećima.
-**Status:** ostaje otvoreno
+**Status:** napravljeno u commitu `15a74ac`
 
 ### F-003 frontend pacijent: sekcija „Moj liječnik” na /patient
 **Oznake:** frontend, feature

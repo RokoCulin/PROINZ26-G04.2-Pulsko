@@ -1,31 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
 import { apiFetch } from "../src/api";
 import { LogoutButton, useAuth } from "../src/auth";
 import { moodLabel, todayInZagreb } from "../src/checkin";
+import MyDoctorSection from "../src/MyDoctorSection";
 import "../css/PatientHome.css";
 
-const seedDoctors = [
-  {
-    id: "PUL-10021",
-    name: "Dr. Ana Novak",
-    specialty: "Internal medicine",
-    place: "Pulsko Health Centre",
-  },
-  {
-    id: "PUL-10034",
-    name: "Dr. Marko Kovač",
-    specialty: "Cardiology",
-    place: "Pulsko Health Centre",
-  },
-  {
-    id: "PUL-10058",
-    name: "Dr. Lea Horvat",
-    specialty: "Clinical pharmacy",
-    place: "Pulsko Health Centre",
-  },
-];
 
 const read = (key, fallback) => {
   try {
@@ -46,7 +27,6 @@ export default function PatientHome() {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [query, setQuery] = useState("");
 
   // Poruka s forme check-ina (navigation state). Pamti se u stanju, a state se
   // briše iz povijesti da se poruka ne pojavi ponovno nakon osvježavanja.
@@ -66,32 +46,6 @@ export default function PatientHome() {
       .then(setCheckins)
       .catch((error) => setCheckinError(error.message));
   }, []);
-
-  const [requests, setRequests] = useState(() =>
-    read("pulsko-patient-requests", []),
-  );
-
-  const doctors = useMemo(
-    () =>
-      seedDoctors.filter((doctor) =>
-        (doctor.name + " " + doctor.id + " " + doctor.specialty)
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      ),
-    [query],
-  );
-
-  function requestDoctor(doctor) {
-    if (requests.some((item) => item.id === doctor.id)) {
-      return;
-    }
-
-    const next = [...requests, { ...doctor, status: "Pending" }];
-
-    setRequests(next);
-
-    localStorage.setItem("pulsko-patient-requests", JSON.stringify(next));
-  }
 
   const latest = checkins?.[0];
   const doneToday = latest?.checkin_date === todayInZagreb();
@@ -297,64 +251,7 @@ export default function PatientHome() {
         </div>
       </section>
 
-      <section className="phome-block phome-connect">
-        <div>
-          <p className="phome-eyebrow">BUILD YOUR CARE TEAM</p>
-          <h2>Find your doctor</h2>
-          <p className="phome-muted">
-            Search by doctor name or unique profile ID and send a connection
-            request.
-          </p>
-        </div>
-
-        <label className="phome-search">
-          Doctor name or profile ID
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="e.g. Ana Novak or PUL-10021"
-          />
-        </label>
-
-        <div className="phome-results">
-          {doctors.map((doctor) => (
-            <article className="phome-result" key={doctor.id}>
-              <div className="phome-avatar">
-                {doctor.name.split(" ").slice(-1)[0][0]}N
-              </div>
-
-              <div className="phome-grow">
-                <b>{doctor.name}</b>
-                <small>
-                  {doctor.specialty} · {doctor.id}
-                </small>
-              </div>
-
-              <button
-                className="phome-secondary"
-                onClick={() => requestDoctor(doctor)}
-                disabled={requests.some((item) => item.id === doctor.id)}
-              >
-                {requests.some((item) => item.id === doctor.id)
-                  ? "Request pending"
-                  : "Request connection"}
-              </button>
-            </article>
-          ))}
-
-          {!doctors.length && (
-            <p className="phome-muted">
-              No doctors found. Check the name or profile ID.
-            </p>
-          )}
-        </div>
-
-        {!!requests.length && (
-          <p className="phome-status">
-            Pending requests: {requests.map((item) => item.name).join(", ")}
-          </p>
-        )}
-      </section>
+      <MyDoctorSection />
 
       <footer className="phome-footer">
         Pulsko · Care feels better when we're connected.

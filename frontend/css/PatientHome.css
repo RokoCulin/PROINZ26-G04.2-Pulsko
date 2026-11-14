@@ -452,3 +452,22 @@ button { cursor: pointer; }
   font-size: 13px;
   font-weight: 700;
 }
+
+/* F-003: Moj liječnik */
+.phome-link-form { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.phome-link-form .phome-search { flex: 1 1 280px; margin: 18px 0 0; }
+.phome-link-form .phome-secondary { margin-bottom: 1px; }
+.phome-error { color: #8a2f2f; font-size: 12px; font-weight: 700; }
+.phome-results { margin-top: 16px; }
+.phome-link-status {
+  border-radius: 30px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: #f1f3ef;
+  color: #687365;
+}
+.phome-link-pending { background: #fff4dd; color: #8a6200; }
+.phome-link-accepted { background: #e5f0dc; color: #3f5f34; }
+.phome-link-rejected { background: #fbeeee; color: #8a2f2f; }
