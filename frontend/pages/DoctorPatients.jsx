@@ -1,25 +1,12 @@
 import { Link } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import { formatDate, initials, useDoctorLinkList } from "../src/doctorLinks";
 import "../css/DoctorPatients.css";
 
-const patients = [
-  {
-    id: "PT-2041",
-    name: "Sam Taylor",
-    age: 34,
-    condition: "Routine monitoring",
-    last: "Today",
-  },
-  {
-    id: "PT-2042",
-    name: "Jamie Lee",
-    age: 51,
-    condition: "Cardiology follow-up",
-    last: "Yesterday",
-  },
-];
-
+// F-003: prihvaćeni pacijenti liječnika (GET /doctor/patients).
 export default function DoctorPatients() {
+  const patients = useDoctorLinkList("/doctor/patients");
+
   return (
     <main className="dpat-shell">
       <header className="dpat-header">
@@ -34,39 +21,36 @@ export default function DoctorPatients() {
       <section className="dpat-intro">
         <p className="dpat-eyebrow">DOCTOR WORKSPACE</p>
         <h1>My patients</h1>
-        <p className="dpat-muted">
-          Manage care activities and review patient-submitted information.
-        </p>
+        <p className="dpat-muted">Pacijenti s kojima si povezan.</p>
       </section>
 
       <section className="dpat-panel">
-        <p className="dpat-muted">Demo profiles available in this prototype.</p>
+        {patients.error && (
+          <p className="dpat-error" role="alert">
+            {patients.error}
+          </p>
+        )}
 
-        {patients.map((patient) => (
-          <article className="dpat-item" key={patient.id}>
-            <div className="dpat-avatar">
-              {patient.name
-                .split(" ")
-                .map((word) => word[0])
-                .slice(0, 2)
-                .join("")}
-            </div>
+        {patients.rows === null && !patients.error && (
+          <p className="dpat-muted">Učitavanje…</p>
+        )}
+
+        {patients.rows?.length === 0 && (
+          <div className="dpat-empty">Još nemaš pacijenata.</div>
+        )}
+
+        {patients.rows?.map((link) => (
+          <article className="dpat-item" key={link.link_id}>
+            <div className="dpat-avatar">{initials(link.patient.display_name)}</div>
 
             <div className="dpat-grow">
-              <b>{patient.name}</b>
-              <small>
-                {patient.id} · Age {patient.age} · {patient.condition}
-              </small>
+              <b>{link.patient.display_name}</b>
+              <small>{link.patient.email}</small>
             </div>
 
-            <span className="dpat-pill">{patient.last}</span>
+            <span className="dpat-pill">Povezano {formatDate(link.responded_at)}</span>
           </article>
         ))}
-
-        <p className="dpat-disclaimer">
-          Academic prototype: actions are local demo interactions. No real
-          patient records, notifications or messages are sent.
-        </p>
       </section>
     </main>
   );
