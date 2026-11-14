@@ -122,7 +122,7 @@ Koriste se postojeći `require_patient`, `require_approved_doctor` i `require_cs
 - greške 404 i 409 prikazuju se korisniku;
 - nakon osvježavanja status je i dalje točan.
 
-**Status:** ostaje otvoreno
+**Status:** napravljeno u commitu `7a85a6e`
 
 ### F-003 frontend liječnik: „Zahtjevi pacijenata” i popis pacijenata na /doctor
 **Oznake:** frontend, feature
