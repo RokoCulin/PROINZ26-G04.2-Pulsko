@@ -94,7 +94,7 @@ Testovi backenda: `cd backend && TEST_DATABASE_URL=postgresql://<korisnik>@local
 **Zaduženi (prijedlog):** Jakov
 **Opis:** `db/Readme.md` ima samo `INSERT` za admina s ručno upisanim `oidc_subject`. Plan traži skriptu koja postojećem korisniku postavi `role='admin'`. **Pazi:** `patient_profile` i `doctor_profile` imaju FK `(user_id, role)` na `app_user`, pa običan `UPDATE app_user SET role='admin'` pada ako korisnik već ima profil. Skripta zato mora u istoj transakciji prvo obrisati profil (i check-inove pacijenta), ili admin treba poseban Google račun: taj se jednom prijavi kao pacijent da se sazna `oidc_subject`, pa se profil obriše i uloga promijeni.
 **Kriterij gotovosti:** skripta u `scripts/` ili `db/`, opisana u README; admin se prijavi i vidi `/admin`.
-**Status:** ostaje otvoreno
+**Status:** zamijenjeno issueom „Postavljanje prvog admina preko ADMIN_EMAILS” (skripta više nije potrebna za prvog admina)
 
 ### Provjera renderiranja UML dijagrama i ugradnja u docs 4.3.2
 **Oznake:** docs
@@ -134,6 +134,29 @@ Testovi backenda: `cd backend && TEST_DATABASE_URL=postgresql://<korisnik>@local
 ---
 
 ## Bugovi primijećeni usput
+
+### Postavljanje prvog admina preko ADMIN_EMAILS
+**Oznake:** backend
+**Zaduženi (prijedlog):** Hrvoje (auth)
+**Opis:**
+- *Problem:* administrator se ne može registrirati kroz aplikaciju (namjerno, F-001: ulogu admina nije moguće odabrati). Jedini način bio je ručni `INSERT` u `app_user` s `oidc_subject`, koji se ne zna prije prve Google prijave. Promjena uloge postojećeg korisnika (`UPDATE role='admin'`) pada zbog FK `(user_id, role)` s `patient_profile`/`doctor_profile`.
+- *Rješenje:* varijabla okruženja `ADMIN_EMAILS` (popis e-mailova odvojenih zarezom; razmaci i velika slova se zanemaruju; prazno = nema automatskog admina). U `/auth/callback`, nakon što Google vrati potvrđen e-mail: ako je e-mail na popisu, a korisnik ne postoji, stvara se `app_user` s `role='admin'`, bez profila pacijenta ili liječnika, i preusmjerava na `/admin`. Odabrana uloga s `/signin` se tada ignorira. Postojeći korisnik s drugom ulogom se **ne** mijenja: u log ide upozorenje, a prijava ide dosadašnjim tokom. Postojeći admin i svi ostali korisnici ponašaju se kao i prije.
+
+**Kriterij gotovosti:**
+- novi e-mail s popisa nakon Google prijave postaje admin bez `patient_profile` i `doctor_profile` i završava na `/admin`;
+- e-mail izvan popisa ide normalnim tokom registracije;
+- popis je neosjetljiv na velika/mala slova i razmake;
+- postojeći pacijent ili liječnik s popisa ostaje nepromijenjen;
+- pytest testovi prolaze, a postupak je opisan u `backend/README.md` i `backend/.env.example`.
+
+**Status:** napravljeno u commitu „Auth: prvi administrator preko ADMIN_EMAILS” (hash: `git log --oneline -1 -- backend/app/config.py`; commit ne može sadržavati vlastiti hash)
+
+### Prijedlog: promaknuće postojećeg korisnika u admina (nije implementirano)
+**Oznake:** pitanje
+**Zaduženi (prijedlog):** Hrvoje
+**Opis:** ako je postojeći pacijent ili liječnik na `ADMIN_EMAILS`, sada ga se namjerno ne promiče automatski. Promaknuće bi moralo obrisati profil (i kod pacijenta njegove check-inove, nalaze i veze), jer FK `(user_id, role)` ne dopušta admina s profilom, a F-002 kaže da admin ne smije vidjeti zdravstvene podatke. To je nepovratno brisanje zdravstvenih podataka pokrenuto samo varijablom okruženja. **Prijedlog:** ne promicati automatski. Za prvog admina koristiti zaseban Google račun. Ako ikad zatreba promaknuće, napraviti ga kao ručnu SQL skriptu u transakciji, uz izričitu potvrdu i zapis u `audit_log`.
+**Kriterij gotovosti:** odluka tima.
+**Status:** ostaje otvoreno
 
 ### Nakon spremanja dnevnog check-ina vratiti pacijenta na početnu stranicu
 **Oznake:** frontend, bug/UX

@@ -1,3 +1,4 @@
+import logging
 import secrets
 from datetime import datetime, timezone
 from typing import Literal
@@ -7,7 +8,8 @@ from authlib.integrations.starlette_client import OAuthError
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.auth_dependencies import require_csrf
@@ -28,6 +30,7 @@ from app.services.registration_service import (
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+logger = logging.getLogger(__name__)
 
 
 SelectableRole = Literal["patient", "doctor"]
@@ -39,11 +42,15 @@ class RegisterIn(BaseModel):
     license_number: str | None = Field(default=None, max_length=100)
 
 
+def _frontend_redirect(path: str) -> RedirectResponse:
+    return RedirectResponse(url=f"{settings.frontend_url.rstrip('/')}{path}", status_code=303)
+
+
 def _signin_redirect(**params: str) -> RedirectResponse:
-    url = f"{settings.frontend_url.rstrip('/')}/signin"
+    path = "/signin"
     if params:
-        url += "?" + urlencode(params)
-    return RedirectResponse(url=url, status_code=303)
+        path += "?" + urlencode(params)
+    return _frontend_redirect(path)
 
 
 def _csrf_token(request: Request) -> str:
@@ -62,6 +69,29 @@ def _clear_pending_login(request: Request) -> None:
     for key in list(request.session.keys()):
         if key in ("requested_role", "pending_role", "pending_oidc") or key.startswith("_state_"):
             request.session.pop(key, None)
+
+
+def _create_bootstrap_admin(db: Session, subject: str, email: str, display_name: str) -> AppUser | None:
+    """Stvara admina s ADMIN_EMAILS popisa (samo app_user, bez profila).
+
+    Vraća None ako e-mail već koristi drugi račun (jedinstveni lower(email)).
+    """
+    user = AppUser(
+        oidc_provider="google",
+        oidc_subject=subject,
+        email=email,
+        display_name=display_name or email,
+        role="admin",
+        last_login_at=datetime.now(timezone.utc),
+    )
+    try:
+        db.add(user)
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        return None
+    db.refresh(user)
+    return user
 
 
 @router.get("/login")
@@ -108,6 +138,35 @@ async def auth_callback(
             AppUser.oidc_subject == subject,
         )
     )
+
+    is_listed_admin = email.strip().lower() in settings.admin_email_set
+    if is_listed_admin and user is not None and user.role != "admin":
+        # Namjerno bez automatskog promaknuća (profil i zdravstveni podaci).
+        logger.warning(
+            "ADMIN_EMAILS sadrzi postojeceg korisnika user_id=%s s ulogom %s; uloga se ne mijenja",
+            user.user_id,
+            user.role,
+        )
+    elif is_listed_admin and user is None:
+        email_taken = db.scalar(
+            select(AppUser.user_id).where(func.lower(AppUser.email) == email.strip().lower())
+        )
+        admin = None
+        if email_taken is None:
+            admin = _create_bootstrap_admin(
+                db, subject, email.strip().lower(), (userinfo.get("name") or "").strip()
+            )
+        if admin is None:
+            logger.warning(
+                "ADMIN_EMAILS: e-mail vec koristi drugi racun (user_id=%s); admin nije stvoren",
+                email_taken,
+            )
+        else:
+            logger.info("ADMIN_EMAILS: stvoren administrator user_id=%s", admin.user_id)
+            request.session.clear()
+            request.session["user_id"] = admin.user_id
+            _csrf_token(request)
+            return _frontend_redirect("/admin")
 
     # Procitati prije clear(), inace se izgubi.
     requested_role = request.session.get("requested_role")

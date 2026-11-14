@@ -37,6 +37,16 @@ Baza: vidi `db/Readme.md`.
 
 Jedan Google račun ima točno jednu ulogu; uloga se nikad ne mijenja automatski.
 
+## Prvi administrator
+
+Uloga administratora ne može se odabrati u aplikaciji. Prvi admin postavlja se varijablom okruženja:
+
+1. U `.env` upisati Google e-mail(ove), odvojene zarezom: `ADMIN_EMAILS=ime.prezime@gmail.com`
+2. Ponovno pokrenuti backend.
+3. Tim se računom prijaviti na `/signin`, s bilo kojom odabranom ulogom. Backend stvara korisnika s ulogom `admin` (bez profila pacijenta ili liječnika) i preusmjerava na `/admin`.
+
+Vrijedi samo za račun koji se **još nije** registrirao. Ako je e-mail već registriran kao pacijent ili liječnik, uloga se ne mijenja (backend samo zapiše upozorenje u log), pa za admina treba koristiti zaseban Google račun. Nakon što je admin stvoren, e-mail može ostati na popisu ili se maknuti.
+
 ## Testovi
 
 Testovi trebaju zasebnu bazu čije ime završava na `_test` (shema se pri svakom pokretanju briše i gradi iznova iz `db/001_create_schema.sql`):
