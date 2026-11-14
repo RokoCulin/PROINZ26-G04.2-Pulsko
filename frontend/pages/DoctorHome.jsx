@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
-import { apiFetch } from "../src/api";
 import { LogoutButton, useAuth } from "../src/auth";
 import DoctorLinksSection from "../src/DoctorLinksSection";
+import { useDoctorLinkList } from "../src/doctorLinks";
 import "../css/DoctorHome.css";
 
 const links = [
@@ -45,27 +44,12 @@ export default function DoctorHome() {
   const { user } = useAuth();
 
   // F-003: zahtjevi na čekanju i povezani pacijenti s backenda.
-  const [requests, setRequests] = useState(null);
-  const [patients, setPatients] = useState(null);
-  const [linkError, setLinkError] = useState("");
-
-  useEffect(() => {
-    Promise.all([apiFetch("/doctor/requests"), apiFetch("/doctor/patients")])
-      .then(([pending, accepted]) => {
-        setRequests(pending);
-        setPatients(accepted);
-      })
-      .catch((error) => setLinkError(error.message));
-  }, []);
-
-  function handleLinkChange(link) {
-    setRequests((rows) => rows.filter((row) => row.link_id !== link.link_id));
-    if (link.status === "accepted") setPatients((rows) => [link, ...rows]);
-  }
+  const requests = useDoctorLinkList("/doctor/requests");
+  const patients = useDoctorLinkList("/doctor/patients");
 
   const stats = [
-    ["Pending requests", requests?.length ?? "—", "awaiting review"],
-    ["Connected patients", patients?.length ?? "—", "accepted"],
+    ["Pending requests", requests.rows?.length ?? "—", "awaiting review"],
+    ["Connected patients", patients.rows?.length ?? "—", "accepted"],
     ...demoStats,
   ];
 
@@ -146,12 +130,7 @@ export default function DoctorHome() {
       </section>
 
       <div id="zahtjevi">
-        <DoctorLinksSection
-          requests={requests}
-          patients={patients}
-          error={linkError}
-          onChange={handleLinkChange}
-        />
+        <DoctorLinksSection requests={requests} patients={patients} />
       </div>
 
       <section className="dhome-block">

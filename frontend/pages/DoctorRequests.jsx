@@ -1,27 +1,18 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import {
+  formatDate,
+  initials,
+  useDoctorLinkList,
+  useRespondToRequest,
+} from "../src/doctorLinks";
 import "../css/DoctorRequests.css";
 
-const demoRequests = [
-  {
-    id: "PT-2043",
-    name: "Mia Kovač",
-    reason: "General check-up",
-  },
-  {
-    id: "PT-2044",
-    name: "Luka Babić",
-    reason: "Therapy review",
-  },
-];
-
+// F-003 / UC-5.3: zahtjevi pacijenata na čekanju (GET /doctor/requests).
 export default function DoctorRequests() {
-  const [requests, setRequests] = useState(demoRequests);
-
-  function decide(id) {
-    setRequests(requests.filter((request) => request.id !== id));
-  }
+  const requests = useDoctorLinkList("/doctor/requests");
+  const { respond, busyId, error: actionError } = useRespondToRequest(requests.reload);
+  const error = actionError || requests.error;
 
   return (
     <main className="dreq-shell">
@@ -38,53 +29,52 @@ export default function DoctorRequests() {
         <p className="dreq-eyebrow">DOCTOR WORKSPACE</p>
         <h1>Connection requests</h1>
         <p className="dreq-muted">
-          Manage care activities and review patient-submitted information.
+          Prihvati ili odbij zahtjeve pacijenata za povezivanje.
         </p>
       </section>
 
       <section className="dreq-panel">
-        {requests.length ? (
-          requests.map((request) => (
-            <article className="dreq-item" key={request.id}>
-              <div className="dreq-avatar">
-                {request.name
-                  .split(" ")
-                  .map((word) => word[0])
-                  .slice(0, 2)
-                  .join("")}
-              </div>
-
-              <div className="dreq-grow">
-                <b>{request.name}</b>
-                <small>
-                  {request.id} · {request.reason}
-                </small>
-                <small>Requested connection · Pending</small>
-              </div>
-
-              <button
-                className="dreq-accept"
-                onClick={() => decide(request.id)}
-              >
-                Accept
-              </button>
-
-              <button
-                className="dreq-decline"
-                onClick={() => decide(request.id)}
-              >
-                Decline
-              </button>
-            </article>
-          ))
-        ) : (
-          <div className="dreq-empty">No pending connection requests.</div>
+        {error && (
+          <p className="dreq-error" role="alert">
+            {error}
+          </p>
         )}
 
-        <p className="dreq-disclaimer">
-          Academic prototype: actions are local demo interactions. No real
-          patient records, notifications or messages are sent.
-        </p>
+        {requests.rows === null && !requests.error && (
+          <p className="dreq-muted">Učitavanje…</p>
+        )}
+
+        {requests.rows?.length === 0 && <div className="dreq-empty">Nema zahtjeva.</div>}
+
+        {requests.rows?.map((link) => (
+          <article className="dreq-item" key={link.link_id}>
+            <div className="dreq-avatar">{initials(link.patient.display_name)}</div>
+
+            <div className="dreq-grow">
+              <b>{link.patient.display_name}</b>
+              <small>{link.patient.email}</small>
+              <small>Poslano {formatDate(link.requested_at)} · Na čekanju</small>
+            </div>
+
+            <button
+              type="button"
+              className="dreq-accept"
+              disabled={busyId !== null}
+              onClick={() => respond(link, "accept")}
+            >
+              Prihvati
+            </button>
+
+            <button
+              type="button"
+              className="dreq-decline"
+              disabled={busyId !== null}
+              onClick={() => respond(link, "reject")}
+            >
+              Odbij
+            </button>
+          </article>
+        ))}
       </section>
     </main>
   );

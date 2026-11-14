@@ -1,31 +1,11 @@
-import { useState } from "react";
-import { apiFetch } from "./api";
-import { useAuth } from "./auth";
+import { formatDate, useDoctorLinkList, useRespondToRequest } from "./doctorLinks";
 
 // F-003 / UC-5.3: liječnik obrađuje zahtjeve pacijenata i vidi povezane pacijente.
-const formatDate = (iso) =>
-  new Date(iso).toLocaleDateString("hr-HR", { day: "numeric", month: "numeric", year: "numeric" });
-
-export default function DoctorLinksSection({ requests, patients, error, onChange }) {
-  const { csrfToken } = useAuth();
-  const [busyId, setBusyId] = useState(null);
-  const [actionError, setActionError] = useState("");
-
-  async function respond(link, action) {
-    setBusyId(link.link_id);
-    setActionError("");
-    try {
-      const updated = await apiFetch(`/doctor/requests/${link.link_id}/${action}`, {
-        method: "POST",
-        csrfToken,
-      });
-      onChange(updated);
-    } catch (err) {
-      setActionError(err.message);
-    } finally {
-      setBusyId(null);
-    }
-  }
+// requests i patients su rezultati useDoctorLinkList (dijele ih i brojke na /doctor).
+export default function DoctorLinksSection({ requests, patients }) {
+  const { respond, busyId, error: actionError } = useRespondToRequest(() =>
+    Promise.all([requests.reload(), patients.reload()]),
+  );
 
   return (
     <section className="dhome-block dlink-grid">
@@ -33,16 +13,16 @@ export default function DoctorLinksSection({ requests, patients, error, onChange
         <p className="dhome-eyebrow">PATIENT REQUESTS</p>
         <h2>Zahtjevi pacijenata</h2>
 
-        {(error || actionError) && (
+        {(requests.error || actionError) && (
           <p className="dlink-error" role="alert">
-            {actionError || error}
+            {actionError || requests.error}
           </p>
         )}
-        {requests === null && !error && <p className="dhome-muted">Učitavanje…</p>}
-        {requests?.length === 0 && <p className="dhome-muted">Nema zahtjeva na čekanju.</p>}
+        {requests.rows === null && !requests.error && <p className="dhome-muted">Učitavanje…</p>}
+        {requests.rows?.length === 0 && <p className="dhome-muted">Nema zahtjeva.</p>}
 
         <ul className="dlink-list">
-          {requests?.map((link) => (
+          {requests.rows?.map((link) => (
             <li key={link.link_id}>
               <div className="dlink-grow">
                 <b>{link.patient.display_name}</b>
@@ -53,7 +33,7 @@ export default function DoctorLinksSection({ requests, patients, error, onChange
               <button
                 type="button"
                 className="dlink-accept"
-                disabled={busyId === link.link_id}
+                disabled={busyId !== null}
                 onClick={() => respond(link, "accept")}
               >
                 Prihvati
@@ -61,7 +41,7 @@ export default function DoctorLinksSection({ requests, patients, error, onChange
               <button
                 type="button"
                 className="dlink-reject"
-                disabled={busyId === link.link_id}
+                disabled={busyId !== null}
                 onClick={() => respond(link, "reject")}
               >
                 Odbij
@@ -75,11 +55,16 @@ export default function DoctorLinksSection({ requests, patients, error, onChange
         <p className="dhome-eyebrow">CONNECTED PATIENTS</p>
         <h2>Moji pacijenti</h2>
 
-        {patients === null && !error && <p className="dhome-muted">Učitavanje…</p>}
-        {patients?.length === 0 && <p className="dhome-muted">Još nemate povezanih pacijenata.</p>}
+        {patients.error && (
+          <p className="dlink-error" role="alert">
+            {patients.error}
+          </p>
+        )}
+        {patients.rows === null && !patients.error && <p className="dhome-muted">Učitavanje…</p>}
+        {patients.rows?.length === 0 && <p className="dhome-muted">Još nemaš pacijenata.</p>}
 
         <ul className="dlink-list">
-          {patients?.map((link) => (
+          {patients.rows?.map((link) => (
             <li key={link.link_id}>
               <div className="dlink-grow">
                 <b>{link.patient.display_name}</b>

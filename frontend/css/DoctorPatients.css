@@ -103,6 +103,24 @@ button { cursor: pointer; }
   white-space: nowrap;
 }
 
+.dpat-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #fff0ed;
+  color: #a64e40;
+  font-size: 13px;
+}
+
+.dpat-empty {
+  padding: 25px;
+  text-align: center;
+  border: 1px dashed #d7e0d0;
+  border-radius: 10px;
+  color: #818a7d;
+  font-size: 13px;
+}
+
 @media (max-width: 850px) {
   .dpat-shell { padding-left: 20px; padding-right: 20px; }
   .dpat-header { flex-wrap: wrap; margin-left: -20px; margin-right: -20px; }

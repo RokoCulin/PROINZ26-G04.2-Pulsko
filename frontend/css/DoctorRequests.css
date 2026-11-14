@@ -130,6 +130,17 @@ button { cursor: pointer; }
   font-size: 13px;
 }
 
+.dreq-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #fff0ed;
+  color: #a64e40;
+  font-size: 13px;
+}
+
+.dreq-item button:disabled { opacity: .5; cursor: wait; }
+
 @media (max-width: 850px) {
   .dreq-shell { padding-left: 20px; padding-right: 20px; }
   .dreq-header { flex-wrap: wrap; margin-left: -20px; margin-right: -20px; }
