@@ -80,6 +80,97 @@ Testovi backenda: `cd backend && TEST_DATABASE_URL=postgresql://<korisnik>@local
 
 ---
 
+## F-003: povezivanje pacijenta s liječnikom (UC-3, UC-5.3)
+
+Tablica `doctor_patient_link` već ima sve što treba: `status` (`pending`/`accepted`/`rejected`, uz `withdrawn`/`ended`), `requested_at`, `responded_at` i djelomični jedinstveni indeks `link_active_pair_uq` za par u stanju pending/accepted. Triger `enforce_link_rules` dopušta `accepted` samo odobrenom liječniku i najviše 2125 pacijenata. **Migracija nije potrebna.** Projekt nema Alembic; shema se gradi iz `db/*.sql`.
+
+### F-003 backend: servis i endpointi za povezivanje
+**Oznake:** backend, feature
+**Zaduženi (prijedlog):** Roko
+**Opis:** `LinkService` i endpointi:
+- `POST /patient/doctors` – pacijent šalje zahtjev po e-mailu liječnika;
+- `GET /patient/doctors` – pacijent vidi svoje veze i njihov status;
+- `GET /doctor/requests` – liječnik vidi zahtjeve na čekanju upućene njemu;
+- `POST /doctor/requests/{id}/accept` i `/reject`;
+- `GET /doctor/patients` – liječnik vidi prihvaćene pacijente.
+
+Koriste se postojeći `require_patient`, `require_approved_doctor` i `require_csrf`.
+
+**Kriterij gotovosti:**
+- zahtjev se može poslati samo odobrenom liječniku; inače 404 „Liječnik nije pronađen”;
+- za par s pending ili accepted vezom vraća se 409;
+- nakon `rejected` pacijent smije poslati novi zahtjev;
+- liječnik obrađuje samo zahtjeve upućene njemu (tuđi → 404) i samo one na čekanju (inače 409);
+- `responded_at` se postavlja pri odgovoru;
+- krive uloge dobivaju 403, a neprijavljeni 401.
+
+**Status:** ostaje otvoreno
+
+### F-003 testovi (pytest)
+**Oznake:** backend, test
+**Zaduženi (prijedlog):** Hrvoje
+**Opis:** `backend/tests/test_links.py`: sretni put, liječnik nije odobren ili ne postoji, duplikat (pending i accepted), tuđi zahtjev, ponovni zahtjev nakon odbijanja, krive uloge, CSRF.
+**Kriterij gotovosti:** svi testovi prolaze zajedno s postojećima.
+**Status:** ostaje otvoreno
+
+### F-003 frontend pacijent: sekcija „Moj liječnik” na /patient
+**Oznake:** frontend, feature
+**Zaduženi (prijedlog):** Dora+Antonio
+**Opis:** na `/patient` se lažni popis liječnika i `localStorage` (`pulsko-patient-requests`) zamjenjuju formom za e-mail liječnika i popisom veza sa statusom (na čekanju / povezano / odbijeno).
+**Kriterij gotovosti:**
+- zahtjev se šalje na backend, a novi zahtjev odmah se vidi sa statusom „na čekanju”;
+- greške 404 i 409 prikazuju se korisniku;
+- nakon osvježavanja status je i dalje točan.
+
+**Status:** ostaje otvoreno
+
+### F-003 frontend liječnik: „Zahtjevi pacijenata” i popis pacijenata na /doctor
+**Oznake:** frontend, feature
+**Zaduženi (prijedlog):** Dora+Antonio
+**Opis:** na ploči liječnika dodaju se zahtjevi na čekanju s gumbima Prihvati i Odbij te popis povezanih pacijenata. Brojke „Pending requests” i „Connected patients” dolaze s backenda.
+**Kriterij gotovosti:**
+- Prihvati premješta pacijenta u popis pacijenata;
+- Odbij uklanja zahtjev;
+- greške se prikazuju;
+- pacijent nakon osvježavanja vidi novi status.
+
+**Status:** ostaje otvoreno
+
+### F-003 dogovor API-ja s JSON primjerima
+**Oznake:** docs
+**Zaduženi (prijedlog):** Roko
+**Opis:** novi `backend/API.md` s endpointima za povezivanje (i za check-in, jer `checkin_api.md` ne postoji), JSON primjerima i kodovima grešaka. Poveznica iz `backend/README.md`.
+**Kriterij gotovosti:** primjeri odgovaraju stvarnim odgovorima (provjereno testovima).
+**Status:** ostaje otvoreno
+
+### F-003 / F-020: obavijest e-poštom o zahtjevu i odgovoru (nije u ovom opsegu)
+**Oznake:** feature
+**Zaduženi (prijedlog):** Borna O.
+**Opis:** UC-5.3 kaže „sustav obavještava pacijenta”. Za M1 nije potrebno, pa obavijest (u aplikaciji i/ili e-poštom) liječniku o novom zahtjevu i pacijentu o odgovoru ostaje za kasnije.
+**Kriterij gotovosti:** pri slanju i obradi zahtjeva nastaje zapis u `notification` i/ili e-mail.
+**Status:** ostaje otvoreno
+
+### F-017: audit_log se još nigdje ne koristi
+**Oznake:** backend, feature
+**Zaduženi (prijedlog):** Hrvoje
+**Opis:** model `AuditLog` postoji, ali ga nijedan servis ne piše: ni odobravanje liječnika, ni povezivanje. Zato ga u F-003 nisam uvodio. Kad se uvede, treba bilježiti zahtjev, prihvaćanje i odbijanje veze te odluke admina.
+**Kriterij gotovosti:** zajednička pomoćna funkcija za audit, korištena u `DoctorService` i `LinkService`, uz testove.
+**Status:** ostaje otvoreno
+
+### F-003: povlačenje zahtjeva i prekid veze
+**Oznake:** feature, pitanje
+**Zaduženi (prijedlog):** Roko
+**Opis:** baza podržava `withdrawn` i `ended`, a UC-5.3 spominje povlačenje zahtjeva. Nije traženo za M1, pa nije implementirano.
+**Kriterij gotovosti:** odluka tima; po potrebi `POST /patient/doctors/{id}/withdraw`.
+**Status:** ostaje otvoreno
+
+### Stranice /doctor/requests i /doctor/patients i dalje imaju demo podatke
+**Oznake:** frontend
+**Zaduženi (prijedlog):** Dora+Antonio
+**Opis:** F-003 je dodan na samu ploču `/doctor`. Zasebne stranice `DoctorRequests.jsx` i `DoctorPatients.jsx` i dalje prikazuju izmišljene podatke. Treba ih prebaciti na iste endpointe ili ukloniti poveznice.
+**Kriterij gotovosti:** nema demo podataka o vezama ni na jednoj stranici.
+**Status:** ostaje otvoreno
+
 ## Ostaje otvoreno
 
 ### Ručna provjera cijelog toka s pravim Google računom
