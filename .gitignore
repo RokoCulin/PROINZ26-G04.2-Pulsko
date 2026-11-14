@@ -84,4 +84,5 @@ out
 # pnpm
 .pnpm-store
 
-.DS_Storebackend/tests/
+.DS_Store
+backend/tests/
