@@ -1,5 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import { apiFetch } from "../src/api";
+import { LogoutButton, useAuth } from "../src/auth";
+import DoctorLinksSection from "../src/DoctorLinksSection";
 import "../css/DoctorHome.css";
 
 const links = [
@@ -31,14 +35,40 @@ const links = [
   ],
 ];
 
-const stats = [
-  ["Pending requests", 2, "awaiting review"],
-  ["Connected patients", 2, "demo profiles"],
-  ["Lab reports", 2, "submitted"],
-  ["To verify", 1, "lab reports"],
+// Nalazi su 2. ciklus: te dvije brojke su i dalje demo.
+const demoStats = [
+  ["Lab reports", 2, "submitted (demo)"],
+  ["To verify", 1, "lab reports (demo)"],
 ];
 
 export default function DoctorHome() {
+  const { user } = useAuth();
+
+  // F-003: zahtjevi na čekanju i povezani pacijenti s backenda.
+  const [requests, setRequests] = useState(null);
+  const [patients, setPatients] = useState(null);
+  const [linkError, setLinkError] = useState("");
+
+  useEffect(() => {
+    Promise.all([apiFetch("/doctor/requests"), apiFetch("/doctor/patients")])
+      .then(([pending, accepted]) => {
+        setRequests(pending);
+        setPatients(accepted);
+      })
+      .catch((error) => setLinkError(error.message));
+  }, []);
+
+  function handleLinkChange(link) {
+    setRequests((rows) => rows.filter((row) => row.link_id !== link.link_id));
+    if (link.status === "accepted") setPatients((rows) => [link, ...rows]);
+  }
+
+  const stats = [
+    ["Pending requests", requests?.length ?? "—", "awaiting review"],
+    ["Connected patients", patients?.length ?? "—", "accepted"],
+    ...demoStats,
+  ];
+
   return (
     <main className="dhome-shell">
       <header className="dhome-header">
@@ -54,23 +84,26 @@ export default function DoctorHome() {
           <Link to="/doctor/messages">Messages</Link>
         </nav>
 
-        <span className="dhome-chip">⚕ Dr. Alex Morgan</span>
+        <div className="auth-user">
+          <span className="dhome-chip">⚕ {user.display_name}</span>
+          <LogoutButton />
+        </div>
       </header>
 
       <section className="dhome-welcome">
         <div>
           <p className="dhome-eyebrow">YOUR DOCTOR SPACE</p>
 
-          <h1>Welcome back, Dr. Morgan.</h1>
+          <h1>Welcome back, {user.display_name}.</h1>
 
           <p className="dhome-muted">
             Review patient connections, follow health trends and coordinate
             care.
           </p>
 
-          <Link className="dhome-btn" to="/doctor/requests">
+          <a className="dhome-btn" href="#zahtjevi">
             Review requests →
-          </Link>
+          </a>
         </div>
 
         <div
@@ -111,6 +144,15 @@ export default function DoctorHome() {
           </article>
         ))}
       </section>
+
+      <div id="zahtjevi">
+        <DoctorLinksSection
+          requests={requests}
+          patients={patients}
+          error={linkError}
+          onChange={handleLinkChange}
+        />
+      </div>
 
       <section className="dhome-block">
         <div className="dhome-heading">

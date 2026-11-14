@@ -1,41 +1,91 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import { apiFetch, ApiError } from "../src/api";
+import { useAuth } from "../src/auth";
+import { MOODS, todayInZagreb } from "../src/checkin";
 import "../css/PatientCheckIn.css";
 
-const load = () => {
-  try {
-    return JSON.parse(localStorage.getItem("pulsko-metrics")) || [];
-  } catch {
-    return [];
-  }
+const EMPTY = {
+  steps: "",
+  heartRate: "",
+  sleep: "",
+  mood: "",
+  activityMinutes: "",
+  activityDescription: "",
 };
 
+// Prazno polje -> null (backend sprema samo ono što je uneseno).
+const toNumber = (value) => (value === "" ? null : Number(value));
+
+function toForm(checkin) {
+  const text = (value) => (value === null || value === undefined ? "" : String(value));
+  return {
+    steps: text(checkin.steps),
+    heartRate: text(checkin.heart_rate_bpm),
+    sleep: text(checkin.sleep_hours),
+    mood: text(checkin.general_state),
+    activityMinutes: text(checkin.activity_minutes),
+    activityDescription: checkin.activity_description || "",
+  };
+}
+
 export default function PatientCheckIn() {
-  const [steps, setSteps] = useState("");
-  const [heartRate, setHeartRate] = useState("");
-  const [sleep, setSleep] = useState("");
-  const [mood, setMood] = useState("");
-  const [note, setNote] = useState("");
-  const [saved, setSaved] = useState(false);
+  const { csrfToken } = useAuth();
+  const navigate = useNavigate();
+  const [form, setForm] = useState(EMPTY);
+  const [status, setStatus] = useState({ type: "idle" });
+  const [hasToday, setHasToday] = useState(false);
 
-  function save(event) {
-    event.preventDefault();
+  // Ako je današnji check-in već spremljen, forma se popuni njime.
+  useEffect(() => {
+    apiFetch("/patient/checkins?limit=1")
+      .then(([latest]) => {
+        if (latest && latest.checkin_date === todayInZagreb()) {
+          setForm(toForm(latest));
+          setHasToday(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
-    const row = {
-      date: new Date().toISOString().slice(0, 10),
-      steps: Number(steps),
-      heartRate: Number(heartRate),
-      sleep: Number(sleep),
-      mood,
-      note,
+  function update(field) {
+    return (event) => {
+      setForm((current) => ({ ...current, [field]: event.target.value }));
+      if (status.type !== "saving") setStatus({ type: "idle" });
     };
+  }
 
-    const all = [...load(), row];
+  const isEmpty = Object.values(form).every((value) => value.trim() === "");
 
-    localStorage.setItem("pulsko-metrics", JSON.stringify(all));
+  async function save(event) {
+    event.preventDefault();
+    setStatus({ type: "saving" });
 
-    setSaved(true);
+    try {
+      await apiFetch("/patient/checkins", {
+        method: "POST",
+        csrfToken,
+        body: {
+          steps: toNumber(form.steps),
+          heart_rate_bpm: toNumber(form.heartRate),
+          sleep_hours: toNumber(form.sleep),
+          general_state: toNumber(form.mood),
+          activity_minutes: toNumber(form.activityMinutes),
+          activity_description: form.activityDescription.trim() || null,
+        },
+      });
+      // Samo nakon uspješnog odgovora: natrag na početnu, poruka ide kroz state.
+      navigate("/patient", { state: { flash: "Check-in spremljen" } });
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        setStatus({ type: "expired" });
+      } else if (error instanceof ApiError) {
+        setStatus({ type: "error", message: error.message });
+      } else {
+        setStatus({ type: "error", message: "Backend nije dostupan." });
+      }
+    }
   }
 
   return (
@@ -54,13 +104,13 @@ export default function PatientCheckIn() {
         <h1>Daily check-in</h1>
 
         <p className="pcheck-muted">
-          Add today's activity and wellbeing information. You can update these
-          values every day.
+          Add today's activity and wellbeing information. Fill in only what you
+          know; you can update today's check-in until midnight.
         </p>
       </section>
 
       <form className="pcheck-panel" onSubmit={save}>
-        <h2>Daily measurements</h2>
+        <h2>{hasToday ? "Today's check-in (saved)" : "Daily measurements"}</h2>
 
         <div className="pcheck-grid">
           <label>
@@ -68,13 +118,10 @@ export default function PatientCheckIn() {
             <input
               type="number"
               min="0"
-              value={steps}
-              onChange={(event) => {
-                setSteps(event.target.value);
-                setSaved(false);
-              }}
+              max="100000"
+              value={form.steps}
+              onChange={update("steps")}
               placeholder="e.g. 6500"
-              required
             />
           </label>
 
@@ -82,15 +129,11 @@ export default function PatientCheckIn() {
             Heart rate (bpm)
             <input
               type="number"
-              min="20"
-              max="250"
-              value={heartRate}
-              onChange={(event) => {
-                setHeartRate(event.target.value);
-                setSaved(false);
-              }}
+              min="30"
+              max="220"
+              value={form.heartRate}
+              onChange={update("heartRate")}
               placeholder="e.g. 72"
-              required
             />
           </label>
 
@@ -100,45 +143,46 @@ export default function PatientCheckIn() {
               type="number"
               min="0"
               max="24"
-              step="0.1"
-              value={sleep}
-              onChange={(event) => {
-                setSleep(event.target.value);
-                setSaved(false);
-              }}
+              step="0.25"
+              value={form.sleep}
+              onChange={update("sleep")}
               placeholder="e.g. 7.5"
-              required
             />
           </label>
 
           <label>
             How are you feeling?
-            <select
-              value={mood}
-              onChange={(event) => {
-                setMood(event.target.value);
-                setSaved(false);
-              }}
-              required
-            >
+            <select value={form.mood} onChange={update("mood")}>
               <option value="">Choose mood</option>
-              {["Great", "Good", "Okay", "Low", "Unwell"].map((item) => (
-                <option key={item}>{item}</option>
+              {MOODS.map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
               ))}
             </select>
+          </label>
+
+          <label>
+            Activity (minutes)
+            <input
+              type="number"
+              min="0"
+              max="1440"
+              value={form.activityMinutes}
+              onChange={update("activityMinutes")}
+              placeholder="e.g. 30"
+            />
           </label>
         </div>
 
         <label>
-          Additional note
+          Activity description
           <textarea
-            rows="4"
-            value={note}
-            onChange={(event) => {
-              setNote(event.target.value);
-              setSaved(false);
-            }}
-            placeholder="Symptoms, observations or anything you want to remember..."
+            rows="3"
+            maxLength={1000}
+            value={form.activityDescription}
+            onChange={update("activityDescription")}
+            placeholder="e.g. 30 min walk, light cycling…"
           />
         </label>
 
@@ -147,13 +191,22 @@ export default function PatientCheckIn() {
           substitute for medical advice.
         </p>
 
-        <button className="pcheck-btn" type="submit">
-          Save daily check-in →
+        <button
+          className="pcheck-btn"
+          type="submit"
+          disabled={isEmpty || status.type === "saving"}
+        >
+          {status.type === "saving" ? "Saving…" : "Save daily check-in →"}
         </button>
 
-        {saved && (
-          <p className="pcheck-success">
-            Check-in saved in this browser for the demo.
+        {status.type === "error" && (
+          <p className="pcheck-error" role="alert">
+            {status.message}
+          </p>
+        )}
+        {status.type === "expired" && (
+          <p className="pcheck-error" role="alert">
+            Your session has expired. <Link to="/signin">Sign in again</Link>.
           </p>
         )}
       </form>

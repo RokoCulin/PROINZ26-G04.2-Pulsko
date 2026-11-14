@@ -418,3 +418,56 @@ button { cursor: pointer; }
   .phome-result .phome-secondary { width: 100%; }
   .phome-footer { flex-direction: column; }
 }
+/* Povijest check-inova (GET /patient/checkins) */
+.phome-history {
+  margin-top: 18px;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e2e8df;
+  border-radius: 12px;
+}
+
+.phome-history table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.phome-history caption {
+  text-align: left;
+  padding: 12px 14px 4px;
+  color: #6f786b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.phome-history th,
+.phome-history td { text-align: left; padding: 9px 14px; border-bottom: 1px solid #eef1eb; white-space: nowrap; }
+.phome-history th { color: #6f786b; font-size: 11px; }
+.phome-history tr:last-child td { border-bottom: 0; }
+
+/* Poruka nakon spremanja check-ina */
+.phome-flash {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: #edf3e6;
+  color: #3f5f34;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* F-003: Moj liječnik */
+.phome-link-form { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.phome-link-form .phome-search { flex: 1 1 280px; margin: 18px 0 0; }
+.phome-link-form .phome-secondary { margin-bottom: 1px; }
+.phome-error { color: #8a2f2f; font-size: 12px; font-weight: 700; }
+.phome-results { margin-top: 16px; }
+.phome-link-status {
+  border-radius: 30px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: #f1f3ef;
+  color: #687365;
+}
+.phome-link-pending { background: #fff4dd; color: #8a6200; }
+.phome-link-accepted { background: #e5f0dc; color: #3f5f34; }
+.phome-link-rejected { background: #fbeeee; color: #8a2f2f; }

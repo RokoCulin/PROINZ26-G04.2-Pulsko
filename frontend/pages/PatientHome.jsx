@@ -1,28 +1,12 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import { apiFetch } from "../src/api";
+import { LogoutButton, useAuth } from "../src/auth";
+import { moodLabel, todayInZagreb } from "../src/checkin";
+import MyDoctorSection from "../src/MyDoctorSection";
 import "../css/PatientHome.css";
 
-const seedDoctors = [
-  {
-    id: "PUL-10021",
-    name: "Dr. Ana Novak",
-    specialty: "Internal medicine",
-    place: "Pulsko Health Centre",
-  },
-  {
-    id: "PUL-10034",
-    name: "Dr. Marko Kovač",
-    specialty: "Cardiology",
-    place: "Pulsko Health Centre",
-  },
-  {
-    id: "PUL-10058",
-    name: "Dr. Lea Horvat",
-    specialty: "Clinical pharmacy",
-    place: "Pulsko Health Centre",
-  },
-];
 
 const read = (key, fallback) => {
   try {
@@ -32,38 +16,42 @@ const read = (key, fallback) => {
   }
 };
 
+const formatDate = (isoDate) =>
+  new Date(`${isoDate}T12:00:00`).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
 export default function PatientHome() {
-  const [query, setQuery] = useState("");
+  const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [requests, setRequests] = useState(() =>
-    read("pulsko-patient-requests", []),
-  );
-
-  const doctors = useMemo(
-    () =>
-      seedDoctors.filter((doctor) =>
-        (doctor.name + " " + doctor.id + " " + doctor.specialty)
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      ),
-    [query],
-  );
-
-  function requestDoctor(doctor) {
-    if (requests.some((item) => item.id === doctor.id)) {
-      return;
+  // Poruka s forme check-ina (navigation state). Pamti se u stanju, a state se
+  // briše iz povijesti da se poruka ne pojavi ponovno nakon osvježavanja.
+  const [flash] = useState(() => location.state?.flash ?? "");
+  useEffect(() => {
+    if (location.state?.flash) {
+      navigate(location.pathname, { replace: true, state: null });
     }
+  }, [location, navigate]);
 
-    const next = [...requests, { ...doctor, status: "Pending" }];
+  // Zadnjih 7 check-inova s backenda (najnoviji prvi).
+  const [checkins, setCheckins] = useState(null);
+  const [checkinError, setCheckinError] = useState("");
 
-    setRequests(next);
+  useEffect(() => {
+    apiFetch("/patient/checkins?limit=7")
+      .then(setCheckins)
+      .catch((error) => setCheckinError(error.message));
+  }, []);
 
-    localStorage.setItem("pulsko-patient-requests", JSON.stringify(next));
-  }
+  const latest = checkins?.[0];
+  const doneToday = latest?.checkin_date === todayInZagreb();
+  const firstName = user.display_name.split(" ")[0];
 
-  const metrics = read("pulsko-metrics", []);
-  const latest = metrics.at(-1);
-
+  // Nalazi su 2. ciklus; zasad se još čitaju iz preglednika (demo).
   const labs = read("pulsko-labs", []);
 
   return (
@@ -81,21 +69,30 @@ export default function PatientHome() {
           <Link to="/patient/messages">Messages</Link>
         </nav>
 
-        <span className="phome-chip">S&nbsp; Sample Patient</span>
+        <div className="auth-user">
+          <span className="phome-chip">{user.display_name}</span>
+          <LogoutButton />
+        </div>
       </header>
+
+      {flash && (
+        <p className="phome-flash" role="status">
+          {flash}
+        </p>
+      )}
 
       <section className="phome-welcome">
         <div>
           <p className="phome-eyebrow">YOUR PATIENT SPACE</p>
 
-          <h1>Good to see you, Sam.</h1>
+          <h1>Good to see you, {firstName}.</h1>
 
           <p className="phome-muted">
             Your health information, care team and daily routines in one place.
           </p>
 
           <Link className="phome-btn" to="/patient/check-in">
-            Complete daily check-in →
+            {doneToday ? "Update today's check-in →" : "Complete daily check-in →"}
           </Link>
         </div>
 
@@ -139,29 +136,72 @@ export default function PatientHome() {
           <article className="phome-metric">
             <small>Steps</small>
             <strong>{latest?.steps ?? "—"}</strong>
-            <span>steps</span>
+            <span>{latest ? formatDate(latest.checkin_date) : "no check-in yet"}</span>
           </article>
 
           <article className="phome-metric">
             <small>Heart rate</small>
             <strong>
-              {latest?.heartRate ? `${latest.heartRate} bpm` : "—"}
+              {latest?.heart_rate_bpm != null ? `${latest.heart_rate_bpm} bpm` : "—"}
             </strong>
-            <span>latest measurement</span>
+            <span>latest check-in</span>
           </article>
 
           <article className="phome-metric">
             <small>Sleep</small>
-            <strong>{latest?.sleep ? `${latest.sleep} h` : "—"}</strong>
-            <span>last night</span>
+            <strong>{latest?.sleep_hours != null ? `${latest.sleep_hours} h` : "—"}</strong>
+            <span>latest check-in</span>
           </article>
 
           <article className="phome-metric">
-            <small>Lab results</small>
-            <strong>{labs.length}</strong>
-            <span>uploaded reports</span>
+            <small>Feeling</small>
+            <strong>{moodLabel(latest?.general_state) ?? "—"}</strong>
+            <span>latest check-in</span>
           </article>
         </div>
+
+        {checkinError && <p className="phome-status">{checkinError}</p>}
+
+        {!!checkins?.length && (
+          <div className="phome-history">
+            <table>
+              <caption>Last {checkins.length} check-ins</caption>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Steps</th>
+                  <th>Heart rate</th>
+                  <th>Sleep</th>
+                  <th>Feeling</th>
+                  <th>Activity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {checkins.map((row) => (
+                  <tr key={row.checkin_id}>
+                    <td>{formatDate(row.checkin_date)}</td>
+                    <td>{row.steps ?? "—"}</td>
+                    <td>{row.heart_rate_bpm != null ? `${row.heart_rate_bpm} bpm` : "—"}</td>
+                    <td>{row.sleep_hours != null ? `${row.sleep_hours} h` : "—"}</td>
+                    <td>{moodLabel(row.general_state) ?? "—"}</td>
+                    <td>
+                      {[
+                        row.activity_minutes != null && `${row.activity_minutes} min`,
+                        row.activity_description,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ") || "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <p className="phome-muted">
+          Lab results: {labs.length} uploaded (demo, stored in this browser).
+        </p>
       </section>
 
       <section className="phome-block">
@@ -211,64 +251,7 @@ export default function PatientHome() {
         </div>
       </section>
 
-      <section className="phome-block phome-connect">
-        <div>
-          <p className="phome-eyebrow">BUILD YOUR CARE TEAM</p>
-          <h2>Find your doctor</h2>
-          <p className="phome-muted">
-            Search by doctor name or unique profile ID and send a connection
-            request.
-          </p>
-        </div>
-
-        <label className="phome-search">
-          Doctor name or profile ID
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="e.g. Ana Novak or PUL-10021"
-          />
-        </label>
-
-        <div className="phome-results">
-          {doctors.map((doctor) => (
-            <article className="phome-result" key={doctor.id}>
-              <div className="phome-avatar">
-                {doctor.name.split(" ").slice(-1)[0][0]}N
-              </div>
-
-              <div className="phome-grow">
-                <b>{doctor.name}</b>
-                <small>
-                  {doctor.specialty} · {doctor.id}
-                </small>
-              </div>
-
-              <button
-                className="phome-secondary"
-                onClick={() => requestDoctor(doctor)}
-                disabled={requests.some((item) => item.id === doctor.id)}
-              >
-                {requests.some((item) => item.id === doctor.id)
-                  ? "Request pending"
-                  : "Request connection"}
-              </button>
-            </article>
-          ))}
-
-          {!doctors.length && (
-            <p className="phome-muted">
-              No doctors found. Check the name or profile ID.
-            </p>
-          )}
-        </div>
-
-        {!!requests.length && (
-          <p className="phome-status">
-            Pending requests: {requests.map((item) => item.name).join(", ")}
-          </p>
-        )}
-      </section>
+      <MyDoctorSection />
 
       <footer className="phome-footer">
         Pulsko · Care feels better when we're connected.

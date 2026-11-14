@@ -7,3 +7,4 @@ authlib
 httpx
 itsdangerous
 python-dotenv
+pytest

@@ -1,63 +1,124 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
+import { apiFetch, ApiError, getMe, homePathFor, loginUrl } from "../src/api";
 import "../css/SignIn.css";
 
-const API_URL = "http://localhost:8000"
+const ROLE_LABEL = { patient: "pacijent", doctor: "liječnik" };
+
+// Poruke za ?error=... koje backend šalje nakon Google prijave.
+function messageFromQuery(params) {
+  const error = params.get("error");
+  if (error === "role_mismatch") {
+    const role = ROLE_LABEL[params.get("registered_as")];
+    return role
+      ? `Ovaj račun je registriran kao ${role}. Odaberite tu ulogu za prijavu.`
+      : "Ovaj račun je registriran s drugom ulogom.";
+  }
+  if (error === "no_account") {
+    return "Za ovaj Google račun ne postoji korisnički račun. Odaberite ulogu za registraciju.";
+  }
+  if (error === "oauth_cancelled") {
+    return "Prijava je otkazana.";
+  }
+  if (error === "oauth_failed") {
+    return "Prijava nije uspjela, pokušaj ponovno.";
+  }
+  return "";
+}
+
+function registrationError(error) {
+  if (error instanceof ApiError) {
+    if (error.status === 409) {
+      return "Registracija nije uspjela: račun ili broj licence već postoji.";
+    }
+    if (error.status === 401) {
+      return "Prijava je istekla. Odaberite ulogu i prijavite se ponovno.";
+    }
+    return error.message;
+  }
+  return "Backend nije dostupan.";
+}
 
 export default function SignIn() {
-  const [role, setRole] = useState("");
-  const [provider, setProvider] = useState("");
-
   const navigate = useNavigate();
+  const [params] = useSearchParams();
 
-  const [error, setError] = useState("");
+  const [role, setRole] = useState("");
+  const [error, setError] = useState(() => messageFromQuery(params));
+  const [checking, setChecking] = useState(true);
+
+  // Registracija liječnika (nakon Google prijave).
+  const [doctorForm, setDoctorForm] = useState(null); // { csrfToken } kad je forma vidljiva
+  const [institution, setInstitution] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
   const started = useRef(false);
 
   useEffect(() => {
+    // StrictMode u razvoju pokreće efekt dvaput; registracija se smije poslati samo jednom.
     if (started.current) return;
     started.current = true;
 
     async function checkSession() {
-      const res = await fetch(`${API_URL}/auth/me`, { credentials: "include" });
-      const me = await res.json();
+      const me = await getMe();
 
       if (me.authenticated) {
-        navigate(me.user.role === "doctor" ? "/doctor" : "/patient");
+        navigate(homePathFor(me.user), { replace: true });
         return;
       }
 
-      if (me.registration_required) {
-        const savedRole = sessionStorage.getItem("pulsko-role");
-        if (!savedRole) return;
-
-        const reg = await fetch(`${API_URL}/auth/register`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-Token": me.csrf_token,
-          },
-          body: JSON.stringify({ role: savedRole }),
-        });
-
-        sessionStorage.removeItem("pulsko-role");
-
-        if (reg.ok) {
-          navigate(savedRole === "doctor" ? "/doctor" : "/patient");
-        } else {
-          setError("Registracija nije uspjela.");
+      if (me.registration_required && me.pending_role === "patient") {
+        try {
+          await apiFetch("/auth/register", {
+            method: "POST",
+            body: {},
+            csrfToken: me.csrf_token,
+          });
+          navigate("/patient", { replace: true });
+        } catch (err) {
+          setError(registrationError(err));
         }
+        return;
+      }
+
+      if (me.registration_required && me.pending_role === "doctor") {
+        setDoctorForm({ csrfToken: me.csrf_token });
       }
     }
 
-    checkSession().catch(() => setError("Backend nije dostupan."));
+    checkSession()
+      .catch(() => setError("Backend nije dostupan."))
+      .finally(() => setChecking(false));
   }, [navigate]);
 
   function continueLogin() {
-    if (!role || !provider) return;
-    sessionStorage.setItem("pulsko-role", role.toLowerCase());
-    window.location.href = `${API_URL}/auth/login`;
+    if (!role) return;
+    window.location.href = loginUrl(role);
+  }
+
+  async function submitDoctor(event) {
+    event.preventDefault();
+    setSubmitting(true);
+    setError("");
+    try {
+      await apiFetch("/auth/register", {
+        method: "POST",
+        body: {
+          institution: institution.trim(),
+          license_number: licenseNumber.trim(),
+        },
+        csrfToken: doctorForm.csrfToken,
+      });
+      // /doctor prikazuje poruku "čeka odobrenje" dok admin ne odobri račun.
+      navigate("/doctor", { replace: true });
+    } catch (err) {
+      setError(registrationError(err));
+      if (err instanceof ApiError && err.status === 401) setDoctorForm(null);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -68,83 +129,104 @@ export default function SignIn() {
           <span>Pulsko</span>
         </a>
 
-        <p className="eyebrow">WELCOME BACK</p>
+        {doctorForm ? (
+          <form onSubmit={submitDoctor}>
+            <p className="eyebrow">REGISTRACIJA LIJEČNIKA</p>
+            <h1>Podaci o liječniku</h1>
+            <p className="muted">
+              Administrator će provjeriti ustanovu i broj licence prije nego
+              što odobri vaš račun.
+            </p>
 
-        <h1>Sign in to Pulsko</h1>
+            <label className="auth-field">
+              Ustanova
+              <input
+                value={institution}
+                onChange={(event) => setInstitution(event.target.value)}
+                maxLength={200}
+                placeholder="npr. KBC Zagreb"
+                required
+              />
+            </label>
 
-        <p className="muted">Choose a sign-in method and your workspace.</p>
+            <label className="auth-field">
+              Broj licence
+              <input
+                value={licenseNumber}
+                onChange={(event) => setLicenseNumber(event.target.value)}
+                maxLength={100}
+                placeholder="npr. HLK-12345"
+                required
+              />
+            </label>
 
-        <div className="provider-list">
-          <button
-            className={
-              provider === "oidc"
-                ? "provider-choice selected"
-                : "provider-choice"
-            }
-            onClick={() => setProvider("oidc")}
-          >
-            <b>◎</b>
-            Continue with OpenID Connect
-            <span>{provider === "oidc" ? "✓" : "○"}</span>
-          </button>
+            <button
+              className="primary-btn full"
+              type="submit"
+              disabled={submitting || !institution.trim() || !licenseNumber.trim()}
+            >
+              {submitting ? "Šaljem…" : "Pošalji zahtjev →"}
+            </button>
 
-          <button
-            className={
-              provider === "oauth"
-                ? "provider-choice selected"
-                : "provider-choice"
-            }
-            onClick={() => setProvider("oauth")}
-          >
-            <b>G</b>
-            Continue with OAuth 2.0
-            <span>{provider === "oauth" ? "✓" : "○"}</span>
-          </button>
-        </div>
+            {error && <p className="auth-error" role="alert">{error}</p>}
+          </form>
+        ) : (
+          <>
+            <p className="eyebrow">DOBRO DOŠLI</p>
+            <h1>Prijava u Pulsko</h1>
+            <p className="muted">
+              Odaberite ulogu, zatim se prijavite Google računom. Jedan račun
+              ima jednu ulogu.
+            </p>
 
-        <div className="auth-divider">
-          <span />
-          YOUR ROLE
-          <span />
-        </div>
+            <div className="auth-divider">
+              <span />
+              VAŠA ULOGA
+              <span />
+            </div>
 
-        <div className="role-grid">
-          <button
-            className={
-              role === "Patient" ? "role-choice selected" : "role-choice"
-            }
-            onClick={() => setRole("Patient")}
-          >
-            <span className="role-symbol">♡</span>
-            <b>Patient</b>
-            <small>Track your health and stay connected.</small>
-          </button>
+            <div className="role-grid">
+              <button
+                type="button"
+                className={role === "patient" ? "role-choice selected" : "role-choice"}
+                aria-pressed={role === "patient"}
+                onClick={() => setRole("patient")}
+              >
+                <span className="role-symbol">♡</span>
+                <b>Pacijent</b>
+                <small>Pratite svoje zdravlje i budite povezani.</small>
+              </button>
 
-          <button
-            className={
-              role === "Doctor" ? "role-choice selected" : "role-choice"
-            }
-            onClick={() => setRole("Doctor")}
-          >
-            <span className="role-symbol">⚕</span>
-            <b>Doctor</b>
-            <small>Manage patients and coordinate care.</small>
-          </button>
-        </div>
+              <button
+                type="button"
+                className={role === "doctor" ? "role-choice selected" : "role-choice"}
+                aria-pressed={role === "doctor"}
+                onClick={() => setRole("doctor")}
+              >
+                <span className="role-symbol">⚕</span>
+                <b>Liječnik</b>
+                <small>Upravljajte pacijentima i koordinirajte skrb.</small>
+              </button>
+            </div>
 
-        <button
-          className="primary-btn full"
-          disabled={!role || !provider}
-          onClick={continueLogin}
-        >
-          Continue to {role || "your workspace"} →
-        </button>
+            <button
+              type="button"
+              className="primary-btn full"
+              disabled={!role || checking}
+              onClick={continueLogin}
+            >
+              <b className="google-mark">G</b> Prijava putem Googlea
+            </button>
 
-        {error && <p className="muted">{error}</p>}
-        <p className="demo-hint">
-          Academic prototype · Sign-in is simulated; no external identity
-          provider is connected.
-        </p>
+            {error && <p className="auth-error" role="alert">{error}</p>}
+
+            <p className="demo-hint">
+              Prijava putem Google računa (OAuth 2.0 / OpenID Connect).
+              Administrator može odabrati bilo koju ulogu; sustav ga prepozna
+              i otvori administratorsku stranicu.
+            </p>
+          </>
+        )}
       </section>
     </main>
   );

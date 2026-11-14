@@ -85,3 +85,4 @@ out
 .pnpm-store
 
 .DS_Store
+backend/tests/

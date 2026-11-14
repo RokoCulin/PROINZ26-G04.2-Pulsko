@@ -1,0 +1,227 @@
+' ==============================================================================
+' 4-3-pulsko-domain-CD.puml
+'
+' Svrha:    Reprezentativni dijagram razreda sustava Pulsko: prijava i
+'           registracija korisnika putem Googlea (UC-001, F-001, F-019) i
+'           dnevni check-in pacijenta (UC-004, F-005/F-009). Prikazuje
+'           routere (HTTP sučelje), ovisnosti za provjeru prava, servise s
+'           poslovnim pravilima, Pydantic sheme i SQLAlchemy modele.
+' Autor:    <upisati ime autora>, kolegij Programsko inženjerstvo
+' AI:       Dijagram je pripremio Claude (AI) prema kodu u backend/app;
+'           autor ga je pregledao i odgovara za konačni sadržaj.
+' Praćenje: Razredi i operacije odgovaraju datotekama:
+'           routers/auth.py, routers/patient.py, auth_dependencies.py,
+'           services/auth_service.py, services/registration_service.py,
+'           services/checkin_service.py, schemas/checkin.py,
+'           models/user.py, models/checkin.py.
+'           Pri promjeni koda ažurirati dijagram.
+'
+' Diagram level: Design (implementacija backenda)
+' Diagram type:  UML Class Diagram
+' Version:       1.0
+' ==============================================================================
+
+@startuml
+title Pulsko – prijava/registracija i dnevni check-in (dijagram razreda)
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam ArrowColor #212529
+skinparam nodesep 40
+skinparam ranksep 50
+hide empty members
+
+skinparam class {
+    BackgroundColor #FFFFFF
+    BorderColor #0D6EFD
+    HeaderBackgroundColor #E7F1FF
+}
+
+' ------------------------------------------------------------------------------
+package "routers (HTTP sučelje)" {
+    class AuthRouter <<router /auth>> {
+        + login(role: SelectableRole [0..1]): RedirectResponse
+        + auth_callback(): RedirectResponse
+        + complete_registration(body: RegisterIn [0..1]): dict
+        + get_me(): dict
+        + logout(): dict
+        - _csrf_token(): str
+        - _signin_redirect(params): RedirectResponse
+    }
+
+    class PatientRouter <<router /patient>> {
+        + save_checkin(body: CheckinIn): CheckinOut
+        + list_checkins(limit: int = 7): CheckinOut [0..*]
+    }
+}
+
+package "auth_dependencies (provjera prava)" {
+    class AuthDependencies <<module>> {
+        + get_session_user(): AppUser
+        + require_patient(): AppUser
+        + require_approved_doctor(): AppUser
+        + require_csrf(): void
+    }
+}
+
+package "services (poslovna logika)" {
+    class AuthService <<module auth_service>> {
+        + oauth: OAuth
+        + get_google_userinfo(): dict
+        + save_pending_identity(identity: dict): void
+        + get_pending_identity(): dict [0..1]
+    }
+
+    class RegistrationService {
+        - db: Session
+        + register(identity: dict, role: str, institution: str [0..1], license_number: str [0..1]): AppUser
+    }
+
+    class CheckinService {
+        - db: Session
+        + save_today(patient_id: int, data: CheckinIn): (DailyCheckin, created: bool)
+        + list_recent(patient_id: int, limit: int): DailyCheckin [0..*]
+    }
+
+    class InvalidRegistration <<exception>>
+    class RegistrationConflict <<exception>>
+    class CheckinConflict <<exception>>
+}
+
+package "schemas (Pydantic)" {
+    class RegisterIn {
+        + institution: str [0..1]
+        + license_number: str [0..1]
+    }
+
+    class CheckinIn {
+        + general_state: int [0..1] {1..5}
+        + sleep_hours: float [0..1] {0..24}
+        + steps: int [0..1] {0..100000}
+        + heart_rate_bpm: int [0..1] {30..220}
+        + activity_minutes: int [0..1] {0..1440}
+        + activity_description: str [0..1]
+        --
+        + not_empty(): CheckinIn
+    }
+
+    class CheckinOut {
+        + checkin_id: int
+        + checkin_date: date
+        + general_state: int [0..1]
+        + sleep_hours: float [0..1]
+        + steps: int [0..1]
+        + heart_rate_bpm: int [0..1]
+        + activity_minutes: int [0..1]
+        + activity_description: str [0..1]
+        + created_at: datetime
+        + updated_at: datetime
+    }
+}
+
+package "models (SQLAlchemy)" {
+    enum Role {
+        patient
+        doctor
+        admin
+    }
+
+    enum ApprovalStatus {
+        pending
+        approved
+        rejected
+    }
+
+    class AppUser {
+        + user_id: int
+        + oidc_provider: str
+        + oidc_subject: str
+        + email: str
+        + display_name: str
+        + role: Role
+        + created_at: datetime
+        + last_login_at: datetime [0..1]
+    }
+
+    class PatientProfile {
+        + user_id: int
+        + date_of_birth: date [0..1]
+        + sex: str [0..1]
+    }
+
+    class DoctorProfile {
+        + user_id: int
+        + institution: str
+        + license_number: str
+        + approval_status: ApprovalStatus
+        + reviewed_at: datetime [0..1]
+        + rejection_reason: str [0..1]
+    }
+
+    class DailyCheckin {
+        + checkin_id: int
+        + checkin_date: date
+        + general_state: int [0..1]
+        + sleep_hours: Decimal [0..1]
+        + steps: int [0..1]
+        + heart_rate_bpm: int [0..1]
+        + activity_minutes: int [0..1]
+        + activity_description: str [0..1]
+        + created_at: datetime
+        + updated_at: datetime
+    }
+}
+
+class SessionData <<Starlette sesija>> {
+    + requested_role: SelectableRole [0..1]
+    + pending_oidc: str [0..1] {šifrirani Google identitet, TTL 15 min}
+    + pending_role: SelectableRole [0..1]
+    + user_id: int [0..1]
+    + csrf_token: str
+}
+
+note right of SessionData
+  Jedan Google račun = jedna uloga.
+  login spremi requested_role;
+  callback ga pročita prije clear():
+  postojeći korisnik druge uloge
+  (osim admina) NE dobiva user_id.
+end note
+
+' ------------------------------------------------------------------------------
+' Veze među modelima (kardinalnosti kao u bazi)
+AppUser "1" -- "0..1" PatientProfile : profil pacijenta >
+AppUser "1" -- "0..1" DoctorProfile : profil liječnika >
+DoctorProfile "0..*" -- "0..1" AppUser : reviewed_by >
+PatientProfile "1" *-- "0..*" DailyCheckin : jedan po danu >
+AppUser ..> Role
+DoctorProfile ..> ApprovalStatus
+
+' Routeri koriste ovisnosti, servise i sheme
+AuthRouter ..> AuthService : Google OIDC
+AuthRouter ..> RegistrationService : register()
+AuthRouter ..> AuthDependencies : require_csrf
+AuthRouter ..> RegisterIn
+AuthRouter ..> SessionData : čita / piše
+
+PatientRouter ..> AuthDependencies : require_patient,\nrequire_csrf
+PatientRouter ..> CheckinService
+PatientRouter ..> CheckinIn
+PatientRouter ..> CheckinOut
+
+AuthDependencies ..> SessionData : user_id, csrf_token
+AuthDependencies ..> AppUser
+
+' Servisi stvaraju i čitaju modele
+RegistrationService ..> AppUser : <<create>>
+RegistrationService ..> PatientProfile : <<create>>
+RegistrationService ..> DoctorProfile : <<create>> (pending)
+RegistrationService ..> InvalidRegistration : <<throws>>
+RegistrationService ..> RegistrationConflict : <<throws>>
+
+CheckinService ..> DailyCheckin : <<create / update>>
+CheckinService ..> CheckinIn
+CheckinService ..> CheckinConflict : <<throws>>
+CheckinOut ..> DailyCheckin : from_attributes
+@enduml
