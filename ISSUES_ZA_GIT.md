@@ -135,6 +135,21 @@ Testovi backenda: `cd backend && TEST_DATABASE_URL=postgresql://<korisnik>@local
 
 ## Bugovi primijećeni usput
 
+### Nakon spremanja dnevnog check-ina vratiti pacijenta na početnu stranicu
+**Oznake:** frontend, bug/UX
+**Zaduženi (prijedlog):** Dora+Antonio (frontend pacijent)
+**Opis:**
+- *Trenutno ponašanje:* nakon klika na „Save daily check-in” na `/patient/check-in` pacijent ostaje na formi i vidi samo kratku poruku ispod gumba.
+- *Očekivano ponašanje:* nakon uspješnog spremanja pacijent se vraća na `/patient`, gdje vidi poruku „Check-in spremljen” i upravo spremljene vrijednosti.
+
+**Kriterij gotovosti:**
+- preusmjeravanje na `/patient` događa se samo nakon uspješnog odgovora backenda (201 ili 200);
+- kod greške (401, 422, 409, backend nedostupan) pacijent ostaje na formi s porukom i unesenim vrijednostima;
+- `/patient` ponovno dohvaća `GET /patient/checkins` i prikazuje upravo spremljene vrijednosti, bez zastarjelih podataka;
+- na `/patient` je vidljiva poruka „Check-in spremljen”, koja se ne pojavljuje ponovno nakon osvježavanja stranice.
+
+**Status:** napravljeno u commitu „Check-in: nakon spremanja povratak na /patient s porukom” (hash: `git log --oneline -1 -- ISSUES_ZA_GIT.md`; commit ne može sadržavati vlastiti hash)
+
 ### Odustajanje na Googleu ostavlja korisnika na JSON greški backenda
 **Oznake:** bug
 **Zaduženi (prijedlog):** Hrvoje

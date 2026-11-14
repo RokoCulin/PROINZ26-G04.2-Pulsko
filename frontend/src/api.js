@@ -32,6 +32,7 @@ export async function apiFetch(path, { method = "GET", body, csrfToken } = {}) {
   const response = await fetch(`${API_URL}${path}`, {
     method,
     credentials: "include",
+    cache: "no-store", // uvijek svježi podaci (npr. /patient nakon check-ina)
     headers,
     body: body === undefined ? undefined : JSON.stringify(body),
   });

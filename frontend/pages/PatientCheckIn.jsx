@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
 import { apiFetch, ApiError } from "../src/api";
 import { useAuth } from "../src/auth";
@@ -32,6 +32,7 @@ function toForm(checkin) {
 
 export default function PatientCheckIn() {
   const { csrfToken } = useAuth();
+  const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState({ type: "idle" });
   const [hasToday, setHasToday] = useState(false);
@@ -62,7 +63,7 @@ export default function PatientCheckIn() {
     setStatus({ type: "saving" });
 
     try {
-      const saved = await apiFetch("/patient/checkins", {
+      await apiFetch("/patient/checkins", {
         method: "POST",
         csrfToken,
         body: {
@@ -74,9 +75,8 @@ export default function PatientCheckIn() {
           activity_description: form.activityDescription.trim() || null,
         },
       });
-      setForm(toForm(saved));
-      setHasToday(true);
-      setStatus({ type: "saved" });
+      // Samo nakon uspješnog odgovora: natrag na početnu, poruka ide kroz state.
+      navigate("/patient", { state: { flash: "Check-in spremljen" } });
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         setStatus({ type: "expired" });
@@ -199,11 +199,6 @@ export default function PatientCheckIn() {
           {status.type === "saving" ? "Saving…" : "Save daily check-in →"}
         </button>
 
-        {status.type === "saved" && (
-          <p className="pcheck-success" role="status">
-            Check-in saved.
-          </p>
-        )}
         {status.type === "error" && (
           <p className="pcheck-error" role="alert">
             {status.message}

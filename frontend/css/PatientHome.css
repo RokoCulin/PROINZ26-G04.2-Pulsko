@@ -441,3 +441,14 @@ button { cursor: pointer; }
 .phome-history td { text-align: left; padding: 9px 14px; border-bottom: 1px solid #eef1eb; white-space: nowrap; }
 .phome-history th { color: #6f786b; font-size: 11px; }
 .phome-history tr:last-child td { border-bottom: 0; }
+
+/* Poruka nakon spremanja check-ina */
+.phome-flash {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: #edf3e6;
+  color: #3f5f34;
+  font-size: 13px;
+  font-weight: 700;
+}

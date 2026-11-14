@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../logo/logopulsko.png";
 import { apiFetch } from "../src/api";
 import { LogoutButton, useAuth } from "../src/auth";
@@ -44,7 +44,18 @@ const formatDate = (isoDate) =>
 
 export default function PatientHome() {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
+
+  // Poruka s forme check-ina (navigation state). Pamti se u stanju, a state se
+  // briše iz povijesti da se poruka ne pojavi ponovno nakon osvježavanja.
+  const [flash] = useState(() => location.state?.flash ?? "");
+  useEffect(() => {
+    if (location.state?.flash) {
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location, navigate]);
 
   // Zadnjih 7 check-inova s backenda (najnoviji prvi).
   const [checkins, setCheckins] = useState(null);
@@ -109,6 +120,12 @@ export default function PatientHome() {
           <LogoutButton />
         </div>
       </header>
+
+      {flash && (
+        <p className="phome-flash" role="status">
+          {flash}
+        </p>
+      )}
 
       <section className="phome-welcome">
         <div>
