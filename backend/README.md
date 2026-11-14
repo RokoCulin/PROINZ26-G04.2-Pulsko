@@ -13,6 +13,8 @@ uvicorn app.main:app --reload
 
 API dokumentacija: http://127.0.0.1:8000/docs
 
+Dogovor API-ja s JSON primjerima: [`API.md`](API.md).
+
 Baza: vidi `db/Readme.md`.
 
 ## Struktura

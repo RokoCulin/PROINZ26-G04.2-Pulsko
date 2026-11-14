@@ -134,14 +134,14 @@ Koriste se postojeći `require_patient`, `require_approved_doctor` i `require_cs
 - greške se prikazuju;
 - pacijent nakon osvježavanja vidi novi status.
 
-**Status:** ostaje otvoreno
+**Status:** napravljeno u commitu `4eb2165`
 
 ### F-003 dogovor API-ja s JSON primjerima
 **Oznake:** docs
 **Zaduženi (prijedlog):** Roko
 **Opis:** novi `backend/API.md` s endpointima za povezivanje (i za check-in, jer `checkin_api.md` ne postoji), JSON primjerima i kodovima grešaka. Poveznica iz `backend/README.md`.
 **Kriterij gotovosti:** primjeri odgovaraju stvarnim odgovorima (provjereno testovima).
-**Status:** ostaje otvoreno
+**Status:** napravljeno u commitu „F-003 dogovor API-ja: backend/API.md s JSON primjerima” (hash: `git log --oneline -1 -- backend/API.md`; commit ne može sadržavati vlastiti hash)
 
 ### F-003 / F-020: obavijest e-poštom o zahtjevu i odgovoru (nije u ovom opsegu)
 **Oznake:** feature
