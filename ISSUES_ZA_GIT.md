@@ -104,7 +104,7 @@ Koriste se postojeći `require_patient`, `require_approved_doctor` i `require_cs
 - `responded_at` se postavlja pri odgovoru;
 - krive uloge dobivaju 403, a neprijavljeni 401.
 
-**Status:** ostaje otvoreno
+**Status:** napravljeno u commitu `63eaf14`
 
 ### F-003 testovi (pytest)
 **Oznake:** backend, test
