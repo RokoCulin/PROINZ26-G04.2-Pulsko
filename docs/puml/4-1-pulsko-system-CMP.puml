@@ -1,0 +1,55 @@
+@startuml
+' Pulsko, odjeljak 4.2; GitHub zadatak #53.
+' Izvori: frontend/src/App.jsx, frontend/src/api.js, backend/app/main.py,
+' backend/app/routers/, backend/app/services/, backend/app/db.py.
+top to bottom direction
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam componentStyle uml2
+skinparam roundcorner 10
+skinparam linetype polyline
+skinparam ArrowColor #53647B
+skinparam DefaultFontColor #172B46
+skinparam packageStyle folder
+skinparam packageBorderColor #8FA6C0
+skinparam packageBackgroundColor #F5F8FC
+skinparam componentBackgroundColor #FFFFFF
+skinparam componentBorderColor #517191
+skinparam databaseBackgroundColor #EAF7F4
+skinparam databaseBorderColor #34766C
+skinparam actorBorderColor #344F71
+skinparam nodesep 36
+skinparam ranksep 43
+
+title Pulsko - UML dijagram komponenata
+
+actor "Pacijent" as Patient
+actor "Liječnik" as Doctor
+actor "Administrator" as Admin
+
+package "Sustav Pulsko" {
+  component "Web-klijent\nReact" as Web #E7F0FE
+
+  package "Poslužiteljska aplikacija · FastAPI" {
+    component "HTTP API\n/auth, /patient, /doctor, /admin" as Api
+    component "Prijava i provjera ovlasti\nGoogle OIDC, sesija, uloge i CSRF" as Auth
+    component "Aplikacijski servisi\nregistracija i odobravanje liječnika,\ndnevni check-in, povezivanje" as Services
+    component "Pristup bazi\nSQLAlchemy" as Data
+  }
+
+  database "PostgreSQL\nPodaci aplikacije" as Db
+}
+
+component "Google Identity\nVanjski pružatelj identiteta" as Google #FFF5E3
+
+Patient --> Web
+Doctor --> Web
+Admin --> Web
+Web --> Api : HTTP / JSON\nsesijski kolačić i CSRF token
+Api --> Auth : prijava i autorizacija
+Api --> Services : zahtjevi po ulozi
+Auth --> Data : računi i status liječnika
+Services --> Data : profili, check-inovi i veze
+Data --> Db : SQL
+Auth -left-> Google
+@enduml
