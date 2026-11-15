@@ -1,227 +1,282 @@
 ' ==============================================================================
 ' 4-3-pulsko-domain-CD.puml
 '
-' Svrha:    Reprezentativni dijagram razreda sustava Pulsko: prijava i
-'           registracija korisnika putem Googlea (UC-001, F-001, F-019) i
-'           dnevni check-in pacijenta (UC-004, F-005/F-009). Prikazuje
-'           routere (HTTP sučelje), ovisnosti za provjeru prava, servise s
-'           poslovnim pravilima, Pydantic sheme i SQLAlchemy modele.
-' Autor:    <upisati ime autora>, kolegij Programsko inženjerstvo
-' AI:       Dijagram je pripremio Claude (AI) prema kodu u backend/app;
-'           autor ga je pregledao i odgovara za konačni sadržaj.
-' Praćenje: Razredi i operacije odgovaraju datotekama:
-'           routers/auth.py, routers/patient.py, auth_dependencies.py,
-'           services/auth_service.py, services/registration_service.py,
-'           services/checkin_service.py, schemas/checkin.py,
-'           models/user.py, models/checkin.py.
-'           Pri promjeni koda ažurirati dijagram.
+' Svrha:    Prikazuje domenski model i aplikacijske servise za temeljne tijekove
+'           sustava Pulsko: registraciju korisnika i odobravanje liječnika
+'           (UC-001, F-001, F-019), povezivanje pacijenta s liječnikom (UC-3,
+'           UC-5.3, F-003) i dnevni check-in (UC-004, F-005, F-009). Agregati
+'           User, DoctorPatientLink i DailyCheckin imaju dijelove prikazane
+'           kompozicijom; servisi ovise o sučeljima repozitorija (trajnost je
+'           apstrahirana). Slojevi su razdvojeni na aplikacijski i domenski.
+' Autor:    Dora Marusevec, kolegij Programsko inženjerstvo
+' AI:       Dijagram je izradio autor. AI je pomogao u reviziji i komentarima;
+'           autor ih je pregledao i odgovara za konačni sadržaj.
+' Praćenje: Model je polazište za implementaciju i odgovara kodu u
+'           services/registration_service.py, services/doctor_service.py,
+'           services/link_service.py, services/checkin_service.py,
+'           models/user.py, models/link.py, models/message.py,
+'           models/checkin.py, patient_access.py. Kad se dizajn promijeni
+'           tijekom razvoja, ažurirati model; nazivi operacija su konceptualni.
 '
-' Diagram level: Design (implementacija backenda)
-' Diagram type:  UML Class Diagram
+' Diagram level: Structural / Domain Design
+' Diagram type:  Class Diagram
 ' Version:       1.0
 ' ==============================================================================
 
 @startuml
-title Pulsko – prijava/registracija i dnevni check-in (dijagram razreda)
+title Sustav Pulsko – domenski model (korisnici, povezivanje i check-in)
+
 skinparam shadowing false
 skinparam defaultFontName Arial
-skinparam classAttributeIconSize 0
 skinparam packageStyle rectangle
 skinparam ArrowColor #212529
-skinparam nodesep 40
-skinparam ranksep 50
-hide empty members
 
 skinparam class {
-    BackgroundColor #FFFFFF
+    BackgroundColor #E7F1FF
     BorderColor #0D6EFD
-    HeaderBackgroundColor #E7F1FF
 }
 
-' ------------------------------------------------------------------------------
-package "routers (HTTP sučelje)" {
-    class AuthRouter <<router /auth>> {
-        + login(role: SelectableRole [0..1]): RedirectResponse
-        + auth_callback(): RedirectResponse
-        + complete_registration(body: RegisterIn [0..1]): dict
-        + get_me(): dict
-        + logout(): dict
-        - _csrf_token(): str
-        - _signin_redirect(params): RedirectResponse
-    }
-
-    class PatientRouter <<router /patient>> {
-        + save_checkin(body: CheckinIn): CheckinOut
-        + list_checkins(limit: int = 7): CheckinOut [0..*]
-    }
+skinparam note {
+    BackgroundColor #F8F9FA
+    BorderColor #212529
+    FontColor #212529
 }
 
-package "auth_dependencies (provjera prava)" {
-    class AuthDependencies <<module>> {
-        + get_session_user(): AppUser
-        + require_patient(): AppUser
-        + require_approved_doctor(): AppUser
-        + require_csrf(): void
-    }
+' ==============================================================================
+' Aplikacijski sloj: orkestrira slučajeve korištenja i delegira domeni.
+' ==============================================================================
+package "Aplikacijski sloj" {
+
+  class RegistrationService <<ApplicationService>> {
+    +register(): UUID
+  }
+
+  class DoctorApprovalService <<ApplicationService>> {
+    +approve(): void
+    +reject(): void
+  }
+
+  class LinkService <<ApplicationService>> {
+    +request(): UUID
+    +accept(): void
+    +reject(): void
+  }
+
+  class CheckinService <<ApplicationService>> {
+    +saveToday(): UUID
+    +listRecent(): void
+  }
+
 }
 
-package "services (poslovna logika)" {
-    class AuthService <<module auth_service>> {
-        + oauth: OAuth
-        + get_google_userinfo(): dict
-        + save_pending_identity(identity: dict): void
-        + get_pending_identity(): dict [0..1]
-    }
+' ==============================================================================
+' Domenski sloj: sadrži poslovno stanje i pravila.
+' ==============================================================================
+package "Domenski sloj" {
 
-    class RegistrationService {
-        - db: Session
-        + register(identity: dict, role: str, institution: str [0..1], license_number: str [0..1]): AppUser
-    }
+  ' Agregati se međusobno referenciraju samo identifikatorom (patientId,
+  ' doctorId, senderId, reviewedBy), a ne objektom. Profili i poruke su
+  ' dijelovi agregata i prikazani su kompozicijom, a ne atributima.
 
-    class CheckinService {
-        - db: Session
-        + save_today(patient_id: int, data: CheckinIn): (DailyCheckin, created: bool)
-        + list_recent(patient_id: int, limit: int): DailyCheckin [0..*]
-    }
+  ' ------------------------------ Korisnik -----------------------------------
+  class User <<Entity>> <<AggregateRoot>> {
+    -id: UUID
+    -oidcProvider: String
+    -oidcSubject: String
+    -email: String
+    -displayName: String
+    -role: Role
+    -createdAt: DateTime
+    -lastLoginAt: DateTime [0..1]
+  }
 
-    class InvalidRegistration <<exception>>
-    class RegistrationConflict <<exception>>
-    class CheckinConflict <<exception>>
+  class PatientProfile <<Entity>> {
+    -dateOfBirth: Date [0..1]
+    -sex: String [0..1]
+  }
+
+  class DoctorProfile <<Entity>> {
+    -institution: String
+    -licenseNumber: String
+    -approvalStatus: ApprovalStatus
+    -reviewedBy: UUID [0..1]
+    -reviewedAt: DateTime [0..1]
+    -rejectionReason: String [0..1]
+    +approve(adminId: UUID): void
+    +reject(adminId: UUID, reason: String): void
+  }
+
+  enum Role {
+    PATIENT
+    DOCTOR
+    ADMIN
+  }
+
+  enum ApprovalStatus {
+    PENDING
+    APPROVED
+    REJECTED
+  }
+
+  ' ------------------- Veza pacijenta i liječnika ----------------------------
+  class DoctorPatientLink <<Entity>> <<AggregateRoot>> {
+    -id: UUID
+    -patientId: UUID
+    -doctorId: UUID
+    -status: LinkStatus
+    -requestedAt: DateTime
+    -respondedAt: DateTime [0..1]
+    +accept(): void
+    +reject(): void
+  }
+
+  class Message <<Entity>> {
+    -id: UUID
+    -senderId: UUID
+    -body: String
+    -sentAt: DateTime
+    -readAt: DateTime [0..1]
+  }
+
+  enum LinkStatus {
+    PENDING
+    ACCEPTED
+    REJECTED
+  }
+
+  ' ----------------------------- Dnevni check-in -----------------------------
+  class DailyCheckin <<Entity>> <<AggregateRoot>> {
+    -id: UUID
+    -patientId: UUID
+    -checkinDate: Date
+    -generalState: Integer [0..1]
+    -sleepHours: Decimal [0..1]
+    -steps: Integer [0..1]
+    -heartRateBpm: Integer [0..1]
+    -activityMinutes: Integer [0..1]
+    -activityDescription: String [0..1]
+    -createdAt: DateTime
+    -updatedAt: DateTime
+    +update(values): void
+  }
+
+  ' ------------------------------ Repozitoriji -------------------------------
+  interface UserRepository <<Repository>> {
+    +findById(id: UUID): User
+    +findByIdentity(provider: String, subject: String): User
+    +findApprovedDoctorByEmail(email: String): User
+    +save(user: User): void
+  }
+
+  interface LinkRepository <<Repository>> {
+    +findById(id: UUID): DoctorPatientLink
+    +findActive(patientId: UUID, doctorId: UUID): DoctorPatientLink
+    +findByDoctor(doctorId: UUID, status: LinkStatus): DoctorPatientLink [0..*]
+    +findByPatient(patientId: UUID): DoctorPatientLink [0..*]
+    +save(link: DoctorPatientLink): void
+  }
+
+  interface CheckinRepository <<Repository>> {
+    +findByDate(patientId: UUID, date: Date): DailyCheckin
+    +findRecent(patientId: UUID, limit: Integer): DailyCheckin [0..*]
+    +save(checkin: DailyCheckin): void
+  }
+
 }
 
-package "schemas (Pydantic)" {
-    class RegisterIn {
-        + institution: str [0..1]
-        + license_number: str [0..1]
-    }
+' ==============================================================================
+' Veze i višestrukosti
+' ==============================================================================
 
-    class CheckinIn {
-        + general_state: int [0..1] {1..5}
-        + sleep_hours: float [0..1] {0..24}
-        + steps: int [0..1] {0..100000}
-        + heart_rate_bpm: int [0..1] {30..220}
-        + activity_minutes: int [0..1] {0..1440}
-        + activity_description: str [0..1]
-        --
-        + not_empty(): CheckinIn
-    }
+' Profili i poruke imaju smisla samo uz svoj korijen: životni ciklus im je
+' vezan uz korijen (kompozicija). Korisnik ima profil prema svojoj ulozi.
+User "1" *-- "0..1" PatientProfile : sadrži ►
+User "1" *-- "0..1" DoctorProfile : sadrži ►
+DoctorPatientLink "1" *-- "0..*" Message : sadrži ►
 
-    class CheckinOut {
-        + checkin_id: int
-        + checkin_date: date
-        + general_state: int [0..1]
-        + sleep_hours: float [0..1]
-        + steps: int [0..1]
-        + heart_rate_bpm: int [0..1]
-        + activity_minutes: int [0..1]
-        + activity_description: str [0..1]
-        + created_at: datetime
-        + updated_at: datetime
-    }
-}
+' Servisi ovise o sučeljima repozitorija, a ne o konkretnoj implementaciji.
+RegistrationService ..> User : stvara ►
+RegistrationService ..> UserRepository : učitava / sprema ►
 
-package "models (SQLAlchemy)" {
-    enum Role {
-        patient
-        doctor
-        admin
-    }
+DoctorApprovalService ..> User : mijenja profil liječnika ►
+DoctorApprovalService ..> UserRepository : učitava / sprema ►
 
-    enum ApprovalStatus {
-        pending
-        approved
-        rejected
-    }
+LinkService ..> DoctorPatientLink : stvara / mijenja ►
+LinkService ..> LinkRepository : učitava / sprema ►
+LinkService ..> UserRepository : traži odobrenog liječnika ►
 
-    class AppUser {
-        + user_id: int
-        + oidc_provider: str
-        + oidc_subject: str
-        + email: str
-        + display_name: str
-        + role: Role
-        + created_at: datetime
-        + last_login_at: datetime [0..1]
-    }
+CheckinService ..> DailyCheckin : stvara / mijenja ►
+CheckinService ..> CheckinRepository : učitava / sprema ►
 
-    class PatientProfile {
-        + user_id: int
-        + date_of_birth: date [0..1]
-        + sex: str [0..1]
-    }
+UserRepository ..> User : vraća / sprema ►
+LinkRepository ..> DoctorPatientLink : vraća / sprema ►
+CheckinRepository ..> DailyCheckin : vraća / sprema ►
 
-    class DoctorProfile {
-        + user_id: int
-        + institution: str
-        + license_number: str
-        + approval_status: ApprovalStatus
-        + reviewed_at: datetime [0..1]
-        + rejection_reason: str [0..1]
-    }
+' ==============================================================================
+' Ograničenja
+' ==============================================================================
 
-    class DailyCheckin {
-        + checkin_id: int
-        + checkin_date: date
-        + general_state: int [0..1]
-        + sleep_hours: Decimal [0..1]
-        + steps: int [0..1]
-        + heart_rate_bpm: int [0..1]
-        + activity_minutes: int [0..1]
-        + activity_description: str [0..1]
-        + created_at: datetime
-        + updated_at: datetime
-    }
-}
-
-class SessionData <<Starlette sesija>> {
-    + requested_role: SelectableRole [0..1]
-    + pending_oidc: str [0..1] {šifrirani Google identitet, TTL 15 min}
-    + pending_role: SelectableRole [0..1]
-    + user_id: int [0..1]
-    + csrf_token: str
-}
-
-note right of SessionData
-  Jedan Google račun = jedna uloga.
-  login spremi requested_role;
-  callback ga pročita prije clear():
-  postojeći korisnik druge uloge
-  (osim admina) NE dobiva user_id.
+note right of User
+  Jedan Google račun (oidcProvider + oidcSubject)
+  odgovara jednom korisniku i jednoj ulozi;
+  duplikat se odbija (RegistrationConflict).
+  Pri registraciji nastaje korisnik i profil prema
+  ulozi (PATIENT ili DOCTOR); liječnik mora navesti
+  ustanovu i broj licence (InvalidRegistration).
 end note
 
-' ------------------------------------------------------------------------------
-' Veze među modelima (kardinalnosti kao u bazi)
-AppUser "1" -- "0..1" PatientProfile : profil pacijenta >
-AppUser "1" -- "0..1" DoctorProfile : profil liječnika >
-DoctorProfile "0..*" -- "0..1" AppUser : reviewed_by >
-PatientProfile "1" *-- "0..*" DailyCheckin : jedan po danu >
-AppUser ..> Role
-DoctorProfile ..> ApprovalStatus
+note right of DoctorProfile
+  Novi liječnik nastaje sa statusom PENDING.
+  Dopušteni prijelazi stanja:
+  - approve() : PENDING -> APPROVED
+  - reject()  : PENDING -> REJECTED
+                (sprema rejectionReason)
+  APPROVED i REJECTED su završna stanja.
+  Odobrava administrator; funkcije liječnika
+  dostupne su samo odobrenom liječniku.
+end note
 
-' Routeri koriste ovisnosti, servise i sheme
-AuthRouter ..> AuthService : Google OIDC
-AuthRouter ..> RegistrationService : register()
-AuthRouter ..> AuthDependencies : require_csrf
-AuthRouter ..> RegisterIn
-AuthRouter ..> SessionData : čita / piše
+note right of DoctorPatientLink
+  Novi zahtjev nastaje sa statusom PENDING
+  i vremenom zahtjeva.
 
-PatientRouter ..> AuthDependencies : require_patient,\nrequire_csrf
-PatientRouter ..> CheckinService
-PatientRouter ..> CheckinIn
-PatientRouter ..> CheckinOut
+  Dopušteni prijelazi stanja:
+  - accept() : PENDING -> ACCEPTED
+  - reject() : PENDING -> REJECTED
+  ACCEPTED i REJECTED su završna stanja.
 
-AuthDependencies ..> SessionData : user_id, csrf_token
-AuthDependencies ..> AppUser
+  Za par pacijent–liječnik smije postojati samo
+  jedna aktivna veza (PENDING ili ACCEPTED).
+  Liječnik smije čitati podatke pacijenta samo uz
+  vezu u stanju ACCEPTED. Najveći broj pacijenata
+  po liječniku provodi baza (okidač).
+end note
 
-' Servisi stvaraju i čitaju modele
-RegistrationService ..> AppUser : <<create>>
-RegistrationService ..> PatientProfile : <<create>>
-RegistrationService ..> DoctorProfile : <<create>> (pending)
-RegistrationService ..> InvalidRegistration : <<throws>>
-RegistrationService ..> RegistrationConflict : <<throws>>
+note right of DailyCheckin
+  Jedan check-in po pacijentu po danu (po
+  hrvatskom vremenu); ponovno spremanje istog
+  dana zamjenjuje vrijednosti. Dopušten je
+  djelomičan unos, ali barem jedno polje mora
+  biti uneseno. Rasponi: generalState 1–5,
+  sleepHours 0–24, steps 0–100000,
+  heartRateBpm 30–220, activityMinutes 0–1440;
+  inače se unos odbija pogreškom.
+end note
 
-CheckinService ..> DailyCheckin : <<create / update>>
-CheckinService ..> CheckinIn
-CheckinService ..> CheckinConflict : <<throws>>
-CheckinOut ..> DailyCheckin : from_attributes
+note bottom of LinkService
+  request() smije izvesti pacijent, a accept() i
+  reject() samo odobreni liječnik kojem je zahtjev
+  upućen (tuđi zahtjev ponaša se kao nepostojeći).
+  Provjera dopuštenja (uloga, odobrenje liječnika,
+  CSRF) je u aplikacijskom sloju. Nazivi operacija
+  su konceptualni (u kodu: LinkService.request()
+  i respond(accept)).
+end note
+
+note bottom of UserRepository
+  U kodu zasebna sučelja repozitorija još ne
+  postoje: servisi koriste SQLAlchemy sesiju.
+  Sučelja su konceptualna i apstrahiraju trajnost.
+end note
+
 @enduml
