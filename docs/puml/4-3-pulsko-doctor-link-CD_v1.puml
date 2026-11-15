@@ -1,0 +1,83 @@
+@startuml
+' Pulsko, odjeljak 4.3.2; GitHub zadatak #56, nacrt v1.
+' UC-3 i UC-5.3; routers/{patient,doctor}.py, services/link_service.py,
+' models/{user,link}.py i schemas/link.py u backend/app/.
+top to bottom direction
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam ArrowColor #53647B
+skinparam DefaultFontColor #172B46
+skinparam classAttributeIconSize 0
+skinparam classBorderColor #517191
+skinparam classBackgroundColor #FFFFFF
+skinparam noteBackgroundColor #FFF5E3
+skinparam noteBorderColor #92703C
+skinparam nodesep 72
+skinparam ranksep 42
+hide empty members
+hide circle
+
+title Pulsko - povezivanje pacijenta i liječnika
+caption UML dijagram razreda · UC-3 i UC-5.3
+
+class "routers.patient" as PatientRoutes <<modul>> #E7F0FE {
+  +request_doctor(body: LinkRequestIn): PatientLinkOut
+  +list_my_doctors(): list<PatientLinkOut>
+}
+
+class "routers.doctor" as DoctorRoutes <<modul>> #E7F0FE {
+  +list_requests(): list<DoctorLinkOut>
+  +accept_request(link_id: int): DoctorLinkOut
+  +reject_request(link_id: int): DoctorLinkOut
+  +list_patients(): list<DoctorLinkOut>
+}
+
+class LinkService <<servis>> #E7F0FE {
+  +request(patient_id: int, doctor_email: str): PatientLinkOut
+  +list_for_patient(patient_id: int): list<PatientLinkOut>
+  +list_for_doctor(doctor_id: int, status: str): list<DoctorLinkOut>
+  +respond(doctor_id: int, link_id: int, accept: bool): DoctorLinkOut
+}
+
+class PatientProfile <<model>> #EAF7F4 {
+  user_id: int
+}
+
+class DoctorPatientLink <<model>> #EAF7F4 {
+  link_id: int
+  status: str
+  requested_at: datetime
+  responded_at: datetime [0..1]
+}
+
+class DoctorProfile <<model>> #EAF7F4 {
+  user_id: int
+  institution: str
+  approval_status: str
+}
+
+class AppUser <<model>> #EAF7F4 {
+  user_id: int
+  email: str
+  display_name: str
+}
+
+PatientRoutes ..> LinkService : šalje i pregledava zahtjeve
+DoctorRoutes ..> LinkService : pregledava i odlučuje
+LinkService ..> DoctorPatientLink : stvara i obrađuje
+LinkService ..> DoctorProfile : traži odobrenog liječnika
+
+PatientProfile "1" -right- "0..*" DoctorPatientLink
+DoctorPatientLink "0..*" -right- "1" DoctorProfile
+PatientProfile "0..1" -- "1" AppUser
+DoctorProfile "0..1" -- "1" AppUser
+
+note bottom of DoctorPatientLink
+  Novi zahtjev ima status pending.
+  Dodijeljeni liječnik može ga prihvatiti
+  (accepted) ili odbiti (rejected).
+  Za isti par dopušten je najviše jedan
+  zahtjev ili veza u statusu pending ili accepted.
+end note
+@enduml
