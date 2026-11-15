@@ -28,12 +28,12 @@ export function RequireRole({ role }) {
   }, []);
 
   if (state.status === "loading") {
-    return <p className="auth-gate-loading">Učitavanje…</p>;
+    return <p className="auth-gate-loading">Loading…</p>;
   }
   if (state.status === "error") {
     return (
-      <AuthMessage title="Backend nije dostupan">
-        Pokušajte ponovno za nekoliko trenutaka.
+      <AuthMessage title="The server is not available">
+        Please try again in a few moments.
       </AuthMessage>
     );
   }
@@ -50,13 +50,13 @@ export function RequireRole({ role }) {
         <AuthMessage
           title={
             me.user.approval_status === "rejected"
-              ? "Zahtjev za liječnički račun je odbijen"
-              : "Vaš račun čeka odobrenje administratora"
+              ? "Your doctor account request was rejected"
+              : "Your account is awaiting administrator approval"
           }
         >
           {me.user.approval_status === "rejected"
-            ? "Administrator nije odobrio vaš liječnički račun. Za više informacija javite se administratoru."
-            : "Administrator mora provjeriti podatke o ustanovi i broju licence. Nakon odobrenja moći ćete pristupiti nadzornoj ploči."}
+            ? "The administrator did not approve your doctor account. Please contact the administrator for more information."
+            : "An administrator has to check your institution and licence number. After approval you will be able to open your dashboard."}
         </AuthMessage>
       </AuthContext.Provider>
     );
@@ -86,7 +86,7 @@ export function LogoutButton({ className = "auth-logout" }) {
 
   return (
     <button type="button" className={className} onClick={logout} disabled={busy}>
-      Odjava
+      Log out
     </button>
   );
 }

@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class CheckinIn(BaseModel):
-    """Današnji check-in pacijenta (F-005, UC-004). Prazno polje = null."""
+    """Današnji check-in pacijenta (F-005, UC-1.1). Prazno polje = null."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -22,7 +22,7 @@ class CheckinIn(BaseModel):
         if self.activity_description is not None:
             self.activity_description = self.activity_description.strip() or None
         if all(value is None for value in self.model_dump().values()):
-            raise ValueError("Unesite barem jednu vrijednost")
+            raise ValueError("Enter at least one value")
         return self
 
 

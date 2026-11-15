@@ -125,12 +125,12 @@ async def auth_callback(
         return _signin_redirect(error="oauth_failed")
 
     if userinfo.get("email_verified") is not True:
-        raise HTTPException(status_code=403, detail="Email adresa nije potvrdena")
+        raise HTTPException(status_code=403, detail="E-mail address is not verified")
 
     subject = userinfo.get("sub")
     email = userinfo.get("email")
     if not subject or not email:
-        raise HTTPException(status_code=400, detail="Nedostaju podatci o korisniku")
+        raise HTTPException(status_code=400, detail="Missing user data")
 
     user = db.scalar(
         select(AppUser).where(
@@ -211,7 +211,7 @@ def complete_registration(
     identity = get_pending_identity(request)
     role = request.session.get("pending_role")
     if identity is None or role not in ("patient", "doctor"):
-        raise HTTPException(status_code=401, detail="Prvo se prijavite putem Googlea")
+        raise HTTPException(status_code=401, detail="Sign in with Google first")
 
     body = body or RegisterIn()
     try:

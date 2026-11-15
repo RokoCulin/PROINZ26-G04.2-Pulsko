@@ -15,7 +15,7 @@ class LinkRequestIn(BaseModel):
     def normalize(cls, value: str) -> str:
         value = value.strip().lower()
         if "@" not in value:
-            raise ValueError("Neispravna e-mail adresa")
+            raise ValueError("Invalid e-mail address")
         return value
 
 

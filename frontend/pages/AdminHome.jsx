@@ -22,10 +22,10 @@ export default function AdminHome() {
   async function review(doctor, action) {
     let body;
     if (action === "reject") {
-      const reason = window.prompt(`Razlog odbijanja za ${doctor.display_name}:`);
+      const reason = window.prompt(`Reason for rejecting ${doctor.display_name}:`);
       if (reason === null) return;
       if (!reason.trim()) {
-        setError("Razlog odbijanja je obavezan.");
+        setError("A rejection reason is required.");
         return;
       }
       body = { reason: reason.trim() };
@@ -61,22 +61,22 @@ export default function AdminHome() {
       </header>
 
       <section className="admin-panel">
-        <h1>Liječnici koji čekaju odobrenje</h1>
+        <h1>Doctors awaiting approval</h1>
         {error && <p className="admin-error" role="alert">{error}</p>}
-        {doctors === null && !error && <p className="admin-muted">Učitavanje…</p>}
+        {doctors === null && !error && <p className="admin-muted">Loading…</p>}
         {doctors?.length === 0 && (
-          <p className="admin-muted">Nema liječnika koji čekaju odobrenje.</p>
+          <p className="admin-muted">No doctors are awaiting approval.</p>
         )}
 
         {!!doctors?.length && (
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Ime</th>
+                <th>Name</th>
                 <th>E-mail</th>
-                <th>Ustanova</th>
-                <th>Broj licence</th>
-                <th aria-label="Akcije" />
+                <th>Institution</th>
+                <th>Licence number</th>
+                <th aria-label="Actions" />
               </tr>
             </thead>
             <tbody>
@@ -92,7 +92,7 @@ export default function AdminHome() {
                       disabled={busyId === doctor.user_id}
                       onClick={() => review(doctor, "approve")}
                     >
-                      Odobri
+                      Approve
                     </button>
                     <button
                       type="button"
@@ -100,7 +100,7 @@ export default function AdminHome() {
                       disabled={busyId === doctor.user_id}
                       onClick={() => review(doctor, "reject")}
                     >
-                      Odbij
+                      Reject
                     </button>
                   </td>
                 </tr>

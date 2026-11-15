@@ -21,7 +21,7 @@ def today() -> date:
 
 
 class CheckinService:
-    """F-005 / UC-004: jedan check-in po pacijentu po danu."""
+    """F-005 / UC-1.1: jedan check-in po pacijentu po danu."""
 
     def __init__(self, db: Session):
         self.db = db
@@ -51,7 +51,7 @@ class CheckinService:
         except IntegrityError as error:
             # Npr. dva istovremena prva unosa istog dana.
             self.db.rollback()
-            raise CheckinConflict("Check-in za danas je upravo spremljen, pokušajte ponovno") from error
+            raise CheckinConflict("Today's check-in was just saved, please try again") from error
 
         self.db.refresh(checkin)
         return checkin, created

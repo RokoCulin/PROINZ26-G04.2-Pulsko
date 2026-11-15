@@ -29,11 +29,11 @@ async def get_google_userinfo(request):
     userinfo = token.get("userinfo")
 
     if not userinfo:
-        raise ValueError("Nedostaju podatci o korisniku")
+        raise ValueError("Missing user data")
     if not userinfo.get("sub"):
-        raise ValueError("Nedostaje Google ID")
+        raise ValueError("Missing Google ID")
     if not userinfo.get("email"):
-        raise ValueError("Nedostaje email")
+        raise ValueError("Missing e-mail")
 
     return userinfo
 

@@ -16,11 +16,11 @@
 --   NF-01  najviše 2.125 prihvaćenih pacijenata po liječniku  (trigger)
 --   F-002  samo odobreni liječnik može imati prihvaćenu vezu   (trigger)
 --   F-017  audit_log je samo za dodavanje                      (trigger)
---   UC-003 3a  nema dva aktivna zahtjeva za isti par           (partial unique)
---   UC-004 4b  jedan check-in po pacijentu po danu             (unique)
---   UC-006 1a  najviše 3 PDF-a po nalazu, svaki <= 10 MB       (unique + check)
---   UC-012 3a  liječnik/pacijent ne mogu imati preklapajuće termine (EXCLUDE)
---   UC-015     isti podsjetnik se ne šalje dvaput              (unique)
+--   UC-3.2 3b  nema dva aktivna zahtjeva za isti par           (partial unique)
+--   UC-1.1 4b  jedan check-in po pacijentu po danu             (unique)
+--   UC-1.2     najviše 3 PDF-a po nalazu, svaki <= 10 MB       (unique + check)
+--   UC-8.1     liječnik/pacijent ne mogu imati preklapajuće termine (EXCLUDE)
+--   UC-4.4     isti podsjetnik se ne šalje dvaput              (unique)
 -- =============================================================================
 
 BEGIN;
@@ -71,7 +71,7 @@ CREATE TABLE patient_profile (
 );
 
 -- Liječnik se prijavljuje kao 'doctor', ali dobiva funkcije tek kad ga
--- administrator odobri (UC-001 4a, UC-014).
+-- administrator odobri (UC-9 4a, UC-10).
 CREATE TABLE doctor_profile (
     user_id           bigint PRIMARY KEY,
     role              text   NOT NULL DEFAULT 'doctor' CHECK (role = 'doctor'),
@@ -96,7 +96,7 @@ CREATE TABLE doctor_profile (
 );
 CREATE INDEX doctor_profile_status_idx ON doctor_profile (approval_status);
 
--- Veza pacijent - liječnik (UC-003, UC-008, UC-016).
+-- Veza pacijent - liječnik (UC-3.2, UC-5.3, UC-5.2).
 CREATE TABLE doctor_patient_link (
     link_id       bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     patient_id    bigint NOT NULL REFERENCES patient_profile (user_id),
@@ -115,7 +115,7 @@ CREATE UNIQUE INDEX link_active_pair_uq
 CREATE INDEX link_doctor_status_idx  ON doctor_patient_link (doctor_id, status);
 CREATE INDEX link_patient_status_idx ON doctor_patient_link (patient_id, status);
 
--- NF-01 / UC-008 3c: najviše 2.125 prihvaćenih pacijenata po liječniku.
+-- NF-01 / UC-5.3 3b: najviše 2.125 prihvaćenih pacijenata po liječniku.
 -- Redak liječnika zaključava se da dva istodobna prihvaćanja ne probiju granicu.
 CREATE FUNCTION enforce_link_rules() RETURNS trigger
 LANGUAGE plpgsql AS $$
@@ -159,8 +159,8 @@ CREATE TRIGGER link_rules_trg
 -- 2. ZDRAVSTVENI PODACI  (F-005, F-006, F-007, F-008, F-009, F-010)
 -- =============================================================================
 
--- Dnevni check-in (UC-004). Sva mjerna polja su nullable jer je dopušten
--- djelomičan unos (UC-004 3a); barem jedno polje mora biti uneseno.
+-- Dnevni check-in (UC-1.1). Sva mjerna polja su nullable jer je dopušten
+-- djelomičan unos (UC-1.1 3a); barem jedno polje mora biti uneseno.
 -- Rasponi su razumne zadane vrijednosti: uskladite ih s timom (F-009).
 CREATE TABLE daily_checkin (
     checkin_id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -197,7 +197,7 @@ CREATE TABLE biomarker (
                                           OR ref_low <= ref_high)
 );
 
--- Jedan učitani laboratorijski nalaz (UC-006). Status prati cijeli tijek:
+-- Jedan učitani laboratorijski nalaz (UC-1.2). Status prati cijeli tijek:
 -- uploaded -> pending_confirmation -> confirmed | rejected
 -- (extraction_failed: AI nije prepoznao vrijednosti, pacijent unosi ručno).
 CREATE TABLE lab_report (
@@ -321,7 +321,7 @@ CREATE TABLE therapy_schedule (
     CONSTRAINT therapy_schedule_uq UNIQUE (plan_id, time_of_day)
 );
 
--- Konkretna zakazana doza i njezin status (UC-017).
+-- Konkretna zakazana doza i njezin status (UC-4.1).
 -- Retke se generiraju pozadinskim zadatkom (ili pri izradi plana).
 CREATE TABLE dose_event (
     dose_id       bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -338,7 +338,7 @@ CREATE TABLE dose_event (
 );
 CREATE INDEX dose_due_idx ON dose_event (scheduled_at) WHERE status = 'pending';
 
--- Termini (UC-012). Preklapanja se sprječavaju EXCLUDE ograničenjem,
+-- Termini (UC-8.1). Preklapanja se sprječavaju EXCLUDE ograničenjem,
 -- i za liječnika i za pacijenta, samo među zakazanim terminima.
 -- "Termin ne smije biti u prošlosti" ne može biti CHECK (now() nije
 -- nepromjenjiv) pa se to provjerava u aplikaciji.
@@ -422,7 +422,7 @@ CREATE TABLE notification (
 CREATE INDEX notification_user_idx ON notification (user_id, created_at DESC);
 CREATE INDEX notification_unread_idx ON notification (user_id) WHERE read_at IS NULL;
 
--- Povijest podsjetnika i stanje slanja e-pošte (UC-015, F-014).
+-- Povijest podsjetnika i stanje slanja e-pošte (UC-4.4, F-014).
 -- UNIQUE na dose_id / appointment_id jamči da se isti podsjetnik ne stvori dvaput.
 CREATE TABLE reminder (
     reminder_id     bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -461,7 +461,7 @@ CREATE TABLE ai_chat_message (
 );
 CREATE INDEX ai_chat_patient_idx ON ai_chat_message (patient_id, created_at);
 
--- Pitanja za liječnika koja je pacijent spremio (UC-007, korak 5).
+-- Pitanja za liječnika koja je pacijent spremio (UC-2.1).
 CREATE TABLE patient_question (
     question_id    bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     patient_id     bigint NOT NULL REFERENCES patient_profile (user_id),
@@ -472,7 +472,7 @@ CREATE TABLE patient_question (
 );
 CREATE INDEX patient_question_idx ON patient_question (patient_id, created_at DESC);
 
--- Liječnički AI sažetak (UC-013). Pacijent vidi isključivo shared_text,
+-- Liječnički AI sažetak (UC-6.4). Pacijent vidi isključivo shared_text,
 -- i to tek kad je status 'shared' (liječnik je pregledao i odobrio).
 CREATE TABLE ai_summary (
     summary_id           bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

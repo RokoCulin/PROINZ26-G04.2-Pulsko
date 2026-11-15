@@ -29,7 +29,7 @@ export default function DoctorRequests() {
         <p className="dreq-eyebrow">DOCTOR WORKSPACE</p>
         <h1>Connection requests</h1>
         <p className="dreq-muted">
-          Prihvati ili odbij zahtjeve pacijenata za povezivanje.
+          Accept or reject patients’ connection requests.
         </p>
       </section>
 
@@ -41,10 +41,10 @@ export default function DoctorRequests() {
         )}
 
         {requests.rows === null && !requests.error && (
-          <p className="dreq-muted">Učitavanje…</p>
+          <p className="dreq-muted">Loading…</p>
         )}
 
-        {requests.rows?.length === 0 && <div className="dreq-empty">Nema zahtjeva.</div>}
+        {requests.rows?.length === 0 && <div className="dreq-empty">No requests.</div>}
 
         {requests.rows?.map((link) => (
           <article className="dreq-item" key={link.link_id}>
@@ -53,7 +53,7 @@ export default function DoctorRequests() {
             <div className="dreq-grow">
               <b>{link.patient.display_name}</b>
               <small>{link.patient.email}</small>
-              <small>Poslano {formatDate(link.requested_at)} · Na čekanju</small>
+              <small>Sent {formatDate(link.requested_at)} · Pending</small>
             </div>
 
             <button
@@ -62,7 +62,7 @@ export default function DoctorRequests() {
               disabled={busyId !== null}
               onClick={() => respond(link, "accept")}
             >
-              Prihvati
+              Accept
             </button>
 
             <button
@@ -71,7 +71,7 @@ export default function DoctorRequests() {
               disabled={busyId !== null}
               onClick={() => respond(link, "reject")}
             >
-              Odbij
+              Reject
             </button>
           </article>
         ))}

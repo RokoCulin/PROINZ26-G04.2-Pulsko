@@ -4,11 +4,11 @@ import { useAuth } from "./auth";
 
 // F-003 / UC-3: pacijent šalje zahtjev liječniku po e-mailu i vidi status veza.
 const STATUS_LABEL = {
-  pending: "Na čekanju",
-  accepted: "Povezano",
-  rejected: "Odbijeno",
-  withdrawn: "Povučeno",
-  ended: "Završeno",
+  pending: "Pending",
+  accepted: "Connected",
+  rejected: "Rejected",
+  withdrawn: "Withdrawn",
+  ended: "Ended",
 };
 
 const initials = (name) =>
@@ -44,7 +44,7 @@ export default function MyDoctorSection() {
       });
       setLinks((current) => [link, ...(current ?? [])]);
       setEmail("");
-      setMessage({ type: "ok", text: `Zahtjev je poslan: ${link.doctor.display_name}.` });
+      setMessage({ type: "ok", text: `Request sent to ${link.doctor.display_name}.` });
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {
@@ -56,27 +56,27 @@ export default function MyDoctorSection() {
     <section className="phome-block phome-connect">
       <div>
         <p className="phome-eyebrow">BUILD YOUR CARE TEAM</p>
-        <h2>Moj liječnik</h2>
+        <h2>My doctors</h2>
         <p className="phome-muted">
-          Upišite e-mail adresu svojeg liječnika i pošaljite zahtjev za
-          povezivanje. Liječnik ga mora prihvatiti.
+          Enter your doctor’s e-mail address and send a connection
+          request. The doctor has to accept it.
         </p>
       </div>
 
       <form className="phome-link-form" onSubmit={send}>
         <label className="phome-search">
-          E-mail liječnika
+          Doctor’s e-mail
           <input
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="npr. ana.novak@kbc.hr"
+            placeholder="e.g. ana.novak@kbc.hr"
             maxLength={320}
             required
           />
         </label>
         <button className="phome-secondary" type="submit" disabled={sending || !email.trim()}>
-          {sending ? "Šaljem…" : "Pošalji zahtjev"}
+          {sending ? "Sending…" : "Send request"}
         </button>
       </form>
 
@@ -106,7 +106,7 @@ export default function MyDoctorSection() {
         ))}
 
         {links?.length === 0 && (
-          <p className="phome-muted">Još niste povezani ni s jednim liječnikom.</p>
+          <p className="phome-muted">You are not connected with any doctor yet.</p>
         )}
       </div>
     </section>

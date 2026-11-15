@@ -17,7 +17,7 @@ class AuthSettings(BaseSettings):
     @model_validator(mode="after")
     def check_cookie_settings(self):
         if self.auth_cookie_samesite == "none" and not self.auth_cookie_secure:
-            raise ValueError("Neispravne sigurnosne postavke sesije")
+            raise ValueError("Invalid session security settings")
         return self
 
 

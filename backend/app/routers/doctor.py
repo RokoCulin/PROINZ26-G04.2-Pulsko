@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.auth_dependencies import require_approved_doctor, require_csrf
 from app.db import get_db
 from app.models import AppUser
+from app.patient_access import require_patient_access
+from app.schemas.checkin import CheckinOut
 from app.schemas.link import DoctorLinkOut
+from app.services.checkin_service import CheckinService
 from app.services.link_service import (
     LinkNotFound,
     LinkNotPending,
@@ -28,11 +31,11 @@ def _respond(db: Session, doctor: AppUser, link_id: int, accept: bool) -> Doctor
     try:
         return LinkService(db).respond(doctor.user_id, link_id, accept)
     except LinkNotFound as error:
-        raise HTTPException(status_code=404, detail="Zahtjev nije pronađen") from error
+        raise HTTPException(status_code=404, detail="Request not found") from error
     except LinkNotPending as error:
-        raise HTTPException(status_code=409, detail="Zahtjev je već obrađen") from error
+        raise HTTPException(status_code=409, detail="Request has already been handled") from error
     except LinkRejectedByDatabase as error:
-        raise HTTPException(status_code=409, detail="Zahtjev nije moguće prihvatiti") from error
+        raise HTTPException(status_code=409, detail="Request cannot be accepted") from error
 
 
 @router.post(
@@ -68,3 +71,20 @@ def list_patients(
 ):
     """Prihvaćeni (povezani) pacijenti ovog liječnika."""
     return LinkService(db).list_for_doctor(doctor.user_id, "accepted")
+
+
+@router.get(
+    "/patients/{patient_id}/checkins",
+    response_model=list[CheckinOut],
+    dependencies=[Depends(require_approved_doctor), Depends(require_patient_access)],
+)
+def list_patient_checkins(
+    patient_id: int,
+    limit: int = Query(default=14, ge=1, le=90),
+    db: Session = Depends(get_db),
+):
+    """Check-inovi povezanog pacijenta (F-005, F-009, UC-5.2).
+
+    require_patient_access vraća 403 ako liječnik nije povezan s pacijentom.
+    """
+    return CheckinService(db).list_recent(patient_id, limit)

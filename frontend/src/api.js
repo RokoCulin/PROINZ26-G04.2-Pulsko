@@ -21,7 +21,7 @@ function errorMessage(data, status) {
       .filter(Boolean)
       .join(" ");
   }
-  return `Greška ${status}`;
+  return `Error ${status}`;
 }
 
 export async function apiFetch(path, { method = "GET", body, csrfToken } = {}) {

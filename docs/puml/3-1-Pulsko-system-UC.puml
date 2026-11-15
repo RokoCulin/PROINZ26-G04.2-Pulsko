@@ -8,11 +8,14 @@
 '           nisu obuhvaćeni.
 ' Autor:    Roko, tim G04.2
 ' AI:       Autor je naveo aktere, obrasce uporabe i njihove odnose; AI je korišten kao pomoć za lakše pisanje PlantUML koda i komentara.
-' Zahtjevi: UC-001 do UC-017
+' Zahtjevi: F-001 do F-020 (obrasci uporabe UC-1 do UC-10)
 '
 ' Diagram level: System Requirements
 ' Diagram type:  Use Case Diagram
-' Version:       1.0 (status: K)
+' Version:       2.0 (status: K)
+' Promjene 2.0: dodan akter Administrator i UC-10 (F-019); uklonjeni UC-3.1,
+'               UC-5.3.1 i UC-5.3.2; UC-6.2 i UC-6.4 imaju samo jedan odnos;
+'               AI usluga povezana s UC-1.2.1; UC-4.4 preimenovan.
 ' ==============================================================================
 @startuml
 
@@ -45,10 +48,12 @@ skinparam usecase {
 actor User as "Korisnik"
 actor Patient as "Pacijent"
 actor Doctor as "Liječnik"
+actor Admin as "Administrator"
 actor Timer as "Timer"
 
 Patient -|> User
 Doctor -|> User
+Admin -|> User
 
 actor "Pružatelj identiteta\n(OAuth 2.0)" as IdP <<external system>>
 actor "AI usluga" as AI <<external system>>
@@ -72,6 +77,7 @@ rectangle "Sustav Pulsko" {
     (UC-7\nUpravljanje terapijom) as UC_TherapyManagement <<abstract>>
     (UC-8\nUpravljanje terminima) as UC_AppointmentManagement <<abstract>>
     (UC-9\nPrijava u sustav) as UC_SignIn
+    (UC-10\nOdobravanje liječničkog računa) as UC_ApproveDoctor
 
 
     ' ======================================================
@@ -93,7 +99,6 @@ rectangle "Sustav Pulsko" {
 
     ' UC-3 – Povezivanje
 
-    (UC-3.1\nPronalaženje liječnika) as UC_FindDoctor
     (UC-3.2\nSlanje zahtjeva za povezivanje) as UC_SendRequest
     (UC-3.3\nPregled statusa zahtjeva) as UC_ViewRequestStatus
 
@@ -102,15 +107,13 @@ rectangle "Sustav Pulsko" {
     (UC-4.1\nEvidentiranje uzimanja lijeka) as UC_LogMedication
     (UC-4.2\nPregled rasporeda terapije) as UC_ViewTherapy
     (UC-4.3\nPregled termina pregleda) as UC_ViewAppointments
-    (UC-4.4\nPrimanje podsjetnika za lijek) as UC_Reminder
+    (UC-4.4\nPrimanje podsjetnika) as UC_Reminder
 
     ' UC-5 – Upravljanje pacijentima
 
     (UC-5.1\nPregled povezanih pacijenata) as UC_ViewPatients
     (UC-5.2\nPregled zdravstvenog profila pacijenta) as UC_ViewPatientProfile
     (UC-5.3\nObrada zahtjeva za povezivanje) as UC_HandleRequest
-    (UC-5.3.1\nPrihvaćanje zahtjeva) as UC_AcceptRequest
-    (UC-5.3.2\nOdbijanje zahtjeva) as UC_DeclineRequest
 
     ' UC-6 – Obrada zdravstvenih podataka
 
@@ -149,7 +152,6 @@ Patient -- UC_MessageAI
 Patient -- UC_Messages
 
 ' Pacijent – povezivanje
-Patient -- UC_FindDoctor
 Patient -- UC_SendRequest
 Patient -- UC_ViewRequestStatus
 
@@ -181,6 +183,9 @@ Doctor -- UC_ManageAppointments
 ' Zajednička komunikacija
 Doctor -- UC_Messages
 
+' Administrator
+Admin -- UC_ApproveDoctor
+
 
 ' ==========================================================
 ' GENERALIZATION
@@ -197,7 +202,6 @@ UC_MessageAI -|> UC_CommunicationSupport
 UC_Messages -|> UC_CommunicationSupport
 
 ' UC-3
-UC_FindDoctor -|> UC_DoctorConnection
 UC_SendRequest -|> UC_DoctorConnection
 UC_ViewRequestStatus -|> UC_DoctorConnection
 
@@ -211,12 +215,9 @@ UC_Reminder -|> UC_TherapyAndAppointments
 UC_ViewPatients -|> UC_PatientManagement
 UC_ViewPatientProfile -|> UC_PatientManagement
 UC_HandleRequest -|> UC_PatientManagement
-UC_AcceptRequest -|> UC_HandleRequest
-UC_DeclineRequest -|> UC_HandleRequest
 
 ' UC-6
 UC_ConfirmLab -|> UC_MedDataProcessing
-UC_CorrectLab -|> UC_MedDataProcessing
 UC_ViewPatientTrends -|> UC_MedDataProcessing
 UC_GenerateAISummary -|> UC_MedDataProcessing
 
@@ -240,18 +241,6 @@ UC_LabResult ..> UC_ExtractLab : <<include>>
 ' EXTEND
 ' ==========================================================
 
-UC_AcceptRequest ..> UC_HandleRequest : <<extend>>
-
-note on link
-    uvjet: liječnik prihvati zahtjev
-end note
-
-UC_DeclineRequest ..> UC_HandleRequest : <<extend>>
-
-note on link
-    uvjet: liječnik odbije zahtjev
-end note
-
 UC_CorrectLab ..> UC_ConfirmLab : <<extend>>
 
 note on link
@@ -259,11 +248,6 @@ note on link
     laboratorijskih vrijednosti
 end note
 
-UC_GenerateAISummary ..> UC_ViewPatientProfile : <<extend>>
-
-note on link
-    uvjet: liječnik zatraži AI sažetak
-end note
 
 
 ' ==========================================================
@@ -272,6 +256,7 @@ end note
 
 UC_SignIn -- IdP
 
+UC_ExtractLab -- AI
 UC_MessageAI -- AI
 UC_GenerateAISummary -- AI
 
@@ -292,5 +277,6 @@ UC_PatientManagement -[hidden]down-> UC_MedDataProcessing
 UC_MedDataProcessing -[hidden]down-> UC_TherapyManagement
 UC_TherapyManagement -[hidden]down-> UC_AppointmentManagement
 UC_AppointmentManagement -[hidden]down-> UC_SignIn
+UC_SignIn -[hidden]down-> UC_ApproveDoctor
 
 @enduml
