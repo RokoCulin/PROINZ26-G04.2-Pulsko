@@ -90,8 +90,8 @@ E-mail se uspoređuje bez obzira na velika i mala slova i razmake. Odgovor **201
 
 | Kod | Kada | `detail` |
 |---|---|---|
-| 404 | liječnik s tim e-mailom ne postoji ili nije odobren (ista poruka u oba slučaja) | `Liječnik nije pronađen` |
-| 409 | za ovaj par već postoji veza `pending` ili `accepted` | `Zahtjev za ovog liječnika već čeka odgovor ili ste već povezani` |
+| 404 | liječnik s tim e-mailom ne postoji ili nije odobren (ista poruka u oba slučaja) | `Doctor not found` |
+| 409 | za ovaj par već postoji veza `pending` ili `accepted` | `A request to this doctor is already pending or you are already connected` |
 | 422 | e-mail bez `@`, prazan ili predug | popis grešaka |
 
 ### `GET /patient/doctors` – pacijent vidi svoje veze
@@ -131,12 +131,20 @@ Bez tijela. Odgovor **200** je veza s novim stanjem i postavljenim `responded_at
 
 | Kod | Kada | `detail` |
 |---|---|---|
-| 404 | zahtjev ne postoji ili je upućen drugom liječniku | `Zahtjev nije pronađen` |
-| 409 | zahtjev više nije na čekanju | `Zahtjev je već obrađen` |
-| 409 | baza odbija prihvaćanje (npr. 2125 pacijenata) | `Zahtjev nije moguće prihvatiti` |
+| 404 | zahtjev ne postoji ili je upućen drugom liječniku | `Request not found` |
+| 409 | zahtjev više nije na čekanju | `Request has already been handled` |
+| 409 | baza odbija prihvaćanje (npr. 2125 pacijenata) | `Request cannot be accepted` |
 
 ### `GET /doctor/patients` – liječnik vidi povezane pacijente
 Veze u stanju `accepted`, od najnovije prihvaćene. Oblik je isti kao kod `GET /doctor/requests`.
+
+### `GET /doctor/patients/{patient_id}/checkins?limit=14` – liječnik vidi check-inove pacijenta
+Samo odobreni liječnik povezan s pacijentom (veza `accepted`). Zadnjih `limit` unosa (1–90, zadano 14), od najnovijeg. Odgovor je popis objekata kao kod `GET /patient/checkins`.
+
+| Kod | Kada | `detail` |
+|---|---|---|
+| 403 | račun liječnika nije odobren | `Doctor account is not approved` |
+| 403 | liječnik nije povezan s pacijentom | `Access denied` |
 
 ---
 
