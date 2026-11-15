@@ -6,7 +6,7 @@
 '           vrijednosti, terapija i doze, termini, poruke, obavijesti i
 '           podsjetnici, AI sadržaj, revizijski zapis), njihove ključeve,
 '           reprezentativne atribute i kardinalnosti.
-' Autor:    <upisati ime autora modela podataka>, kolegij Programsko inženjerstvo
+' Autor:    Dora Marusevec, kolegij Programsko inženjerstvo
 ' AI:       Dijagram i SQL shemu pripremio je Claude (AI) na temelju poglavlja 1-3
 '           dokumentacije; autor ih je pregledao i odgovara za konačni sadržaj.
 ' Praćenje: Entiteti, atributi i veze moraju ostati usklađeni sa shemom
@@ -292,3 +292,4 @@ DoctorProfile  ||--o{ Summary : "odobrava ►"
 
 User |o--o{ Audit : "izvršava ►"
 @enduml
+
