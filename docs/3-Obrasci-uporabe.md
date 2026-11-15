@@ -1,6 +1,6 @@
 # 3. Obrasci uporabe
 
-Ovo poglavlje prikazuje glavne interakcije aktera sa sustavom Pulsko. Prikazani su akteri, njihove uloge, obrasci uporabe te odnosi između općenitijih i konkretnijih obrazaca uporabe. Obrasci uporabe grupirani su u glavna funkcionalna područja (UC-1 do UC-8) s konkretnim obrascima (UC-x.y), kako je dogovoreno na kontrolnoj točki M0.
+Ovo poglavlje prikazuje glavne interakcije aktera sa sustavom Pulsko. Prikazani su akteri, njihove uloge, obrasci uporabe i njihovi odnosi. Obrasci uporabe grupirani su u skupine (UC-1 do UC-8), a unutar svake skupine nalaze se konkretni obrasci uporabe (UC-x.y), kako je dogovoreno na kontrolnoj točki M0.
 
 ## 3.1 Dijagram obrazaca uporabe
 
@@ -23,9 +23,9 @@ Ovo poglavlje prikazuje glavne interakcije aktera sa sustavom Pulsko. Prikazani 
 | AI usluga                        | Sekundarni | Sudjeluje u izdvajanju laboratorijskih vrijednosti, razgovoru s pacijentom i generiranju sažetka za liječnika. |
 | Usluga e-pošte                   | Sekundarni                  | Dostavlja podsjetnike putem e-pošte.                                                                                                                                                                                  |
 
-### Glavni obrasci uporabe
+### Skupine obrazaca uporabe
 
-Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dijagramu su označeni kao apstraktni, a konkretni obrasci uporabe prikazani su kao njihove specijalizacije.
+Skupine UC-1 do UC-8 predstavljaju funkcionalna područja sustava i na dijagramu su prikazane kao okviri unutar granice sustava. Skupina nije zaseban obrazac uporabe; akter ostvaruje cilj kroz konkretne obrasce uporabe unutar skupine. UC-9 i UC-10 samostalni su obrasci uporabe.
 
 | Oznaka | Naziv                             | Uloga u sustavu                                                                                              |
 | ------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
@@ -43,12 +43,11 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 ### Odnosi
 
 - Pacijent, Liječnik i Administrator specijalizacije su općenitog aktera Korisnik.
-- Konkretni obrasci uporabe povezani su s odgovarajućim glavnim obrascima uporabom UML generalizacije. Svaki obrazac uporabe ima samo jedan odnos prema drugim obrascima.
+- Konkretni obrasci uporabe smješteni su u okvir svoje skupine (UC-1 do UC-8); okvir služi samo za preglednost i ne predstavlja UML odnos.
 - UC-1.2 uključuje (include) UC-1.2.1 jer se pri svakoj predaji laboratorijskog nalaza izdvajaju laboratorijske vrijednosti.
 - UC-6.2 proširuje (extend) UC-6.1 kada liječnik pri potvrdi utvrdi netočnu vrijednost.
 - Prihvaćanje i odbijanje zahtjeva za povezivanje nisu zasebni obrasci uporabe, nego glavni i alternativni tijek UC-5.3.
 - Pružatelj identiteta sudjeluje u UC-9, AI usluga u UC-1.2.1, UC-2.1 i UC-6.4, a Usluga e-pošte u UC-4.4. Timer pokreće UC-4.4.
-- Skrivene veze u PlantUML kodu služe isključivo za vizualno poravnanje elemenata i ne predstavljaju UML odnose.
 
 ## 3.2 Specifikacije obrazaca uporabe
 
@@ -459,5 +458,5 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 | Akteri | Akteri odgovaraju popisu u odjeljku 2.3 (A-01 do A-07): Pacijent, Liječnik, Administrator, Pružatelj identiteta, AI usluga, Usluga e-pošte i Timer. Korisnik je općeniti akter za prijavu. |
 | Pokrivenost zahtjeva | Svaki funkcionalni zahtjev pokriven je barem jednim obrascem uporabe: F-001 i F-002 (UC-9), F-003 (UC-3.2, UC-3.3, UC-5.1, UC-5.3), F-004 (UC-1.3), F-005 i F-009 (UC-1.1), F-006 (UC-1.1, UC-1.2), F-007 (UC-1.2, UC-1.2.1), F-008 (UC-6.1, UC-6.2), F-010 (UC-1.3, UC-1.4, UC-6.3), F-011 (UC-2.2), F-012 (UC-4.3, UC-8.1, UC-8.2), F-013 (UC-4.2, UC-7.1, UC-7.2), F-014 (UC-4.4), F-015 (UC-2.1), F-016 (UC-6.4), F-017 (UC-6.1, UC-7.2), F-018 (UC-4.1), F-019 (UC-10), F-020 (UC-2.2, UC-5.3). |
 | Oznake | Iste oznake obrazaca uporabe (UC-x.y) koriste se u tablici sljedivosti 2.6, u kodu i u komentarima sheme baze. |
-| UML odnosi | Svaki obrazac uporabe ima najviše jedan odnos prema drugom obrascu (generalizacija, include ili extend). Alternativni ishodi (npr. odbijanje zahtjeva) opisani su kao alternativni tijekovi, a ne kao zasebni obrasci. |
+| UML odnosi | Između obrazaca uporabe postoje samo dva odnosa: include (UC-1.2 → UC-1.2.1) i extend (UC-6.2 → UC-6.1). Alternativni ishodi (npr. odbijanje zahtjeva) opisani su kao alternativni tijekovi, a ne kao zasebni obrasci. |
 | Dijagram i tekst | Akteri, obrasci uporabe i veze s vanjskim sustavima na slici 3.1 jednaki su onima u specifikacijama 3.2. |
