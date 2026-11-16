@@ -60,11 +60,11 @@ def request_doctor(
     try:
         return LinkService(db).request(patient.user_id, body.doctor_email)
     except DoctorNotFound as error:
-        raise HTTPException(status_code=404, detail="Liječnik nije pronađen") from error
+        raise HTTPException(status_code=404, detail="Doctor not found") from error
     except LinkAlreadyExists as error:
         raise HTTPException(
             status_code=409,
-            detail="Zahtjev za ovog liječnika već čeka odgovor ili ste već povezani",
+            detail="A request to this doctor is already pending or you are already connected",
         ) from error
 
 

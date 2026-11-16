@@ -121,6 +121,25 @@ button { cursor: pointer; }
   font-size: 13px;
 }
 
+.dpat-toggle {
+  border: 1px solid #cfd9c8;
+  background: #f3f6ef;
+  color: #263b32;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dpat-table-wrap { overflow-x: auto; margin-top: 10px; }
+
+.dpat-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.dpat-table th,
+.dpat-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #edf1e9; }
+
+.dpat-table th { color: #718460; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+
 @media (max-width: 850px) {
   .dpat-shell { padding-left: 20px; padding-right: 20px; }
   .dpat-header { flex-wrap: wrap; margin-left: -20px; margin-right: -20px; }

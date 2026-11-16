@@ -28,7 +28,7 @@ class RegistrationService:
         license_number: str | None = None,
     ) -> AppUser:
         if role not in ("patient", "doctor"):
-            raise InvalidRegistration("Neispravna uloga")
+            raise InvalidRegistration("Invalid role")
 
         provider = (identity.get("provider") or "").strip()
         subject = (identity.get("subject") or "").strip()
@@ -36,13 +36,13 @@ class RegistrationService:
         display_name = (identity.get("display_name") or "").strip() or email
 
         if not provider or not subject or not email:
-            raise InvalidRegistration("Nedostaju podatci o korisniku")
+            raise InvalidRegistration("Missing user data")
 
         if role == "doctor":
             institution = (institution or "").strip()
             license_number = (license_number or "").strip()
             if not institution or not license_number:
-                raise InvalidRegistration("Nedostaju podatci o lijecniku")
+                raise InvalidRegistration("Missing doctor data")
 
         existing = self.db.scalar(
             select(AppUser).where(
@@ -51,7 +51,7 @@ class RegistrationService:
             )
         )
         if existing is not None:
-            raise RegistrationConflict("Korisnik vec postoji")
+            raise RegistrationConflict("User already exists")
 
         user = AppUser(
             oidc_provider=provider,
@@ -82,7 +82,7 @@ class RegistrationService:
             self.db.refresh(user)
         except IntegrityError as error:
             self.db.rollback()
-            raise RegistrationConflict("Registracija nije uspjela") from error
+            raise RegistrationConflict("Registration failed") from error
         except Exception:
             self.db.rollback()
             raise

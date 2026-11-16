@@ -1,6 +1,6 @@
 # 3. Obrasci uporabe
 
-Ovo poglavlje prikazuje glavne interakcije aktera sa sustavom Pulsko. Prikazani su akteri, njihove uloge, obrasci uporabe te odnosi između općenitijih i konkretnijih obrazaca uporabe. Struktura je usklađena s dostavljenim PlantUML dijagramom.
+Ovo poglavlje prikazuje glavne interakcije aktera sa sustavom Pulsko. Prikazani su akteri, njihove uloge, obrasci uporabe i njihovi odnosi. Obrasci uporabe grupirani su u skupine (UC-1 do UC-8), a unutar svake skupine nalaze se konkretni obrasci uporabe (UC-x.y), kako je dogovoreno na kontrolnoj točki M0.
 
 ## 3.1 Dijagram obrazaca uporabe
 
@@ -14,40 +14,40 @@ Ovo poglavlje prikazuje glavne interakcije aktera sa sustavom Pulsko. Prikazani 
 
 | Akter                            | Vrsta                       | Uloga u sustavu                                                                                                                                                                                                       |
 | -------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Korisnik                         | Primarni (općeniti)         | Općeniti akter čije uloge nasljeđuju Pacijent i Liječnik. Sudjeluje u prijavi u sustav.                                                                                                                               |
+| Korisnik                         | Primarni (općeniti)         | Općeniti akter čije uloge nasljeđuju Pacijent, Liječnik i Administrator. Sudjeluje u prijavi u sustav.                                                                                                                               |
 | Pacijent                         | Primarni                    | Unosi i pregledava vlastite zdravstvene podatke, predaje laboratorijske nalaze, komunicira s AI agentom i liječnikom, povezuje se s liječnikom te prati terapiju i termine.                                           |
 | Liječnik                         | Primarni                    | Pregledava povezane pacijente i njihove podatke, obrađuje zahtjeve za povezivanje, potvrđuje i ispravlja laboratorijske vrijednosti, izrađuje AI sažetke, upravlja terapijom i terminima te komunicira s pacijentima. |
+| Administrator | Primarni | Odobrava ili odbija zahtjeve za liječničku ulogu. Ne pristupa zdravstvenim podacima pacijenata. |
 | Timer                            | Primarni (vremenski okidač) | Pokreće postupak slanja podsjetnika.                                                                                                                                                                                  |
 | Pružatelj identiteta (OAuth 2.0) | Sekundarni                  | Provodi autentikaciju korisnika pri prijavi u sustav.                                                                                                                                                                 |
-| AI usluga                        | Sekundarni                  | Sudjeluje u razgovoru s pacijentom i generiranju sažetka za liječnika.                                                                                                                                                |
+| AI usluga                        | Sekundarni | Sudjeluje u izdvajanju laboratorijskih vrijednosti, razgovoru s pacijentom i generiranju sažetka za liječnika. |
 | Usluga e-pošte                   | Sekundarni                  | Dostavlja podsjetnike putem e-pošte.                                                                                                                                                                                  |
 
-### Glavni obrasci uporabe
+### Skupine obrazaca uporabe
 
-Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dijagramu su označeni kao apstraktni, a konkretni obrasci uporabe prikazani su kao njihove specijalizacije.
+Skupine UC-1 do UC-8 predstavljaju funkcionalna područja sustava i na dijagramu su prikazane kao okviri unutar granice sustava. Skupina nije zaseban obrazac uporabe; akter ostvaruje cilj kroz konkretne obrasce uporabe unutar skupine. UC-9 i UC-10 samostalni su obrasci uporabe.
 
 | Oznaka | Naziv                             | Uloga u sustavu                                                                                              |
 | ------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | UC-1   | Upravljanje zdravstvenim podacima | Obuhvaća unos, predaju i pregled zdravstvenih podataka te pregled trendova.                                  |
 | UC-2   | Komunikacija i podrška            | Obuhvaća razgovor pacijenta s AI agentom i razmjenu poruka s liječnikom.                                     |
-| UC-3   | Povezivanje s liječnikom          | Obuhvaća pronalaženje liječnika, slanje zahtjeva i pregled njegova statusa.                                  |
+| UC-3 | Povezivanje s liječnikom | Obuhvaća slanje zahtjeva liječniku (unosom njegove adrese e-pošte) i pregled statusa zahtjeva. |
 | UC-4   | Praćenje terapije i termina       | Obuhvaća evidentiranje uzimanja lijeka, pregled terapije i termina te primanje podsjetnika.                  |
 | UC-5   | Upravljanje pacijentima           | Obuhvaća pregled povezanih pacijenata, njihovih profila i obradu zahtjeva za povezivanje.                    |
 | UC-6   | Obrada zdravstvenih podataka      | Obuhvaća potvrđivanje i ispravljanje laboratorijskih vrijednosti, pregled trendova i generiranje AI sažetka. |
 | UC-7   | Upravljanje terapijom             | Obuhvaća određivanje terapije i upravljanje rasporedom terapije.                                             |
 | UC-8   | Upravljanje terminima             | Obuhvaća zakazivanje i upravljanje postojećim terminima.                                                     |
-| UC-9   | Prijava u sustav                  | Omogućuje korisniku prijavu u sustav putem vanjskog pružatelja identiteta.                                   |
+| UC-9 | Prijava u sustav | Omogućuje korisniku prijavu u sustav putem vanjskog pružatelja identiteta. |
+| UC-10 | Odobravanje liječničkog računa | Omogućuje administratoru odobravanje ili odbijanje zahtjeva za liječničku ulogu. |
 
 ### Odnosi
 
-- Pacijent i Liječnik specijalizacije su općenitog aktera Korisnik.
-- Konkretni obrasci uporabe povezani su s odgovarajućim glavnim obrascima uporabom UML generalizacije.
-- UC-1.2 uključuje UC-1.2.1 jer se pri predaji laboratorijskog nalaza izdvajaju laboratorijske vrijednosti.
-- UC-5.3 može se proširiti prihvaćanjem ili odbijanjem zahtjeva, ovisno o odluci liječnika.
-- UC-6.1 može se proširiti ispravljanjem laboratorijskih vrijednosti kada liječnik utvrdi netočnost.
-- UC-6.4 proširuje pregled zdravstvenog profila kada liječnik zatraži AI sažetak.
-- Pružatelj identiteta sudjeluje u UC-9, AI usluga u UC-2.1 i UC-6.4, a Usluga e-pošte i Timer u UC-4.4.
-- Skrivene veze u PlantUML kodu služe isključivo za vizualno poravnanje elemenata i ne predstavljaju UML odnose.
+- Pacijent, Liječnik i Administrator specijalizacije su općenitog aktera Korisnik.
+- Konkretni obrasci uporabe smješteni su u okvir svoje skupine (UC-1 do UC-8); okvir služi samo za preglednost i ne predstavlja UML odnos.
+- UC-1.2 uključuje (include) UC-1.2.1 jer se pri svakoj predaji laboratorijskog nalaza izdvajaju laboratorijske vrijednosti.
+- UC-6.2 proširuje (extend) UC-6.1 kada liječnik pri potvrdi utvrdi netočnu vrijednost.
+- Prihvaćanje i odbijanje zahtjeva za povezivanje nisu zasebni obrasci uporabe, nego glavni i alternativni tijek UC-5.3.
+- Pružatelj identiteta sudjeluje u UC-9, AI usluga u UC-1.2.1, UC-2.1 i UC-6.4, a Usluga e-pošte u UC-4.4. Timer pokreće UC-4.4.
 
 ## 3.2 Specifikacije obrazaca uporabe
 
@@ -65,14 +65,17 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 
 #### UC-1.1: Unos dnevnog check-ina
 
-| Element specifikacije         | Opis                                                                                                                                                                                                        |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Primarni akter                | Pacijent                                                                                                                                                                                                    |
-| Povezani zahtjevi             | F-005, F-006, F-009                                                                                                                                                                                         |
-| Preduvjeti                    | Pacijent je prijavljen.                                                                                                                                                                                     |
-| Glavni uspješni tok           | Pacijent otvara dnevni check-in, unosi dostupne podatke o općem stanju, snu, koracima, pulsu i tjelesnoj aktivnosti te sprema zapis. Sustav provjerava vrijednosti, sprema dnevni zapis i ažurira trendove. |
-| Alternativni tokovi / Iznimke | Pacijent može spremiti djelomičan unos. Ako je vrijednost nevaljana, sustav označava polje i traži ispravak. Ako zapis za taj dan već postoji, sustav nudi izmjenu postojećeg zapisa.                       |
-| Ishod                         | Dnevni zapis spremljen je i vidljiv pacijentu i povezanim liječnicima.                                                                                                                                      |
+| Element specifikacije | Opis |
+| --- | --- |
+| ID / status / verzija | UC-1.1 / implementirano / 2.0 |
+| Primarni akter | Pacijent |
+| Povezani zahtjevi | F-005, F-006, F-009 |
+| Okidač | Pacijent želi zabilježiti današnje stanje. |
+| Preduvjeti | Pacijent je prijavljen. |
+| Glavni uspješni tijek | 1. Pacijent otvara dnevni check-in.<br>2. Sustav prikazuje obrazac: opće stanje (1–5), san (sati), koraci, puls i tjelesna aktivnost.<br>3. Pacijent unosi podatke i sprema ih.<br>4. Sustav provjerava vrijednosti i sprema zapis za današnji dan.<br>5. Sustav prikazuje spremljeni zapis u povijesti check-inova. |
+| Alternativni tijekovi | **3a — Djelomičan unos:** pacijent može spremiti samo neka polja; barem jedno mora biti popunjeno.<br>**3b — Prazan obrazac:** sustav javlja „Enter at least one value” i ništa ne sprema.<br>**4a — Nevaljana vrijednost** (npr. puls izvan 30–220): sustav prikazuje grešku, zadržava unos i ništa ne sprema dok se ne ispravi.<br>**4b — Zapis za danas već postoji:** novi unos zamjenjuje današnji zapis; postoji najviše jedan zapis po danu. |
+| Postuvjeti (uspjeh) | Današnji zapis je spremljen i vidljiv pacijentu i povezanim liječnicima (UC-5.2). |
+| Minimalno jamstvo | Nevaljani podaci se ne spremaju; zapisi drugih dana ostaju nepromijenjeni. |
 
 #### UC-1.2: Predaja laboratorijskih nalaza
 
@@ -157,17 +160,39 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 
 ### UC-3: Povezivanje s liječnikom
 
-**Svrha:** Omogućiti pacijentu pronalaženje liječnika i slanje zahtjeva za povezivanje te pregled statusa zahtjeva.
+**Svrha:** Omogućiti pacijentu slanje zahtjeva za povezivanje liječniku čiju adresu e-pošte zna te praćenje statusa zahtjeva.
 
-| Element specifikacije         | Opis                                                                                                                                                                      |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Primarni akter                | Pacijent                                                                                                                                                                  |
-| Povezani zahtjevi             | F-003                                                                                                                                                                     |
-| Konkretni obrasci uporabe     | UC-3.1 Pronalaženje liječnika; UC-3.2 Slanje zahtjeva za povezivanje; UC-3.3 Pregled statusa zahtjeva                                                                     |
-| Preduvjeti                    | Pacijent je prijavljen.                                                                                                                                                   |
-| Glavni uspješni tok           | Pacijent pretražuje popis odobrenih liječnika, odabire liječnika i šalje zahtjev. Sustav sprema zahtjev sa statusom na čekanju.                                           |
-| Alternativni tokovi / Iznimke | Ako nema rezultata, sustav obavještava pacijenta. Ako je pacijent već povezan ili je zahtjev već poslan, sustav prikazuje postojeći status umjesto slanja novog zahtjeva. |
-| Ishod                         | Zahtjev čeka odgovor liječnika. Nakon prihvaćanja uspostavlja se veza između pacijenta i liječnika.                                                                       |
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Pacijent |
+| Povezani zahtjevi | F-003 |
+| Konkretni obrasci uporabe | UC-3.2 Slanje zahtjeva za povezivanje; UC-3.3 Pregled statusa zahtjeva |
+| Ishod | Zahtjev čeka odgovor liječnika (UC-5.3). Nakon prihvaćanja uspostavlja se veza između pacijenta i liječnika. |
+
+#### UC-3.2: Slanje zahtjeva za povezivanje
+
+| Element specifikacije | Opis |
+| --- | --- |
+| ID / status / verzija | UC-3.2 / implementirano / 2.0 |
+| Primarni akter | Pacijent |
+| Povezani zahtjevi | F-003 |
+| Okidač | Pacijent se želi povezati sa svojim liječnikom. |
+| Preduvjeti | Pacijent je prijavljen i zna adresu e-pošte liječnika. |
+| Glavni uspješni tijek | 1. Pacijent otvara odjeljak „My doctors”.<br>2. Pacijent upisuje adresu e-pošte liječnika i šalje zahtjev.<br>3. Sustav pronalazi odobrenog liječnika s tom adresom.<br>4. Sustav sprema zahtjev sa statusom *na čekanju* i prikazuje ga na popisu zahtjeva pacijenta. |
+| Alternativni tijekovi | **3a — Liječnik ne postoji ili nije odobren:** sustav javlja „Doctor not found” i ne stvara zahtjev.<br>**3b — Zahtjev već čeka ili su već povezani:** sustav javlja da zahtjev već postoji i ne stvara novi. |
+| Postuvjeti (uspjeh) | Postoji zahtjev *na čekanju* koji liječnik vidi u UC-5.3. |
+| Minimalno jamstvo | Ne nastaje dvostruki zahtjev; pacijent ne dobiva pristup podacima liječnika niti liječnik pacijentovim podacima prije prihvaćanja. |
+
+#### UC-3.3: Pregled statusa zahtjeva
+
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Pacijent |
+| Povezani zahtjevi | F-003 |
+| Preduvjeti | Pacijent je prijavljen. |
+| Glavni uspješni tijek | Pacijent otvara odjeljak „My doctors”. Sustav prikazuje poslane zahtjeve s imenom liječnika i statusom (na čekanju, prihvaćeno, odbijeno). |
+| Alternativni tokovi / Iznimke | Ako pacijent nije poslao nijedan zahtjev, sustav prikazuje prazan popis i obrazac za slanje zahtjeva (UC-3.2). |
+| Ishod | Pacijent zna je li povezan s liječnikom; podaci se ne mijenjaju. |
 
 ### UC-4: Praćenje terapije i termina
 
@@ -177,7 +202,7 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | Primarni akter            | Pacijent                                                                                                                                       |
 | Povezani zahtjevi         | F-012, F-013, F-014, F-018                                                                                                                     |
-| Konkretni obrasci uporabe | UC-4.1 Evidentiranje uzimanja lijeka; UC-4.2 Pregled rasporeda terapije; UC-4.3 Pregled termina pregleda; UC-4.4 Primanje podsjetnika za lijek |
+| Konkretni obrasci uporabe | UC-4.1 Evidentiranje uzimanja lijeka; UC-4.2 Pregled rasporeda terapije; UC-4.3 Pregled termina pregleda; UC-4.4 Primanje podsjetnika |
 | Sekundarni akteri         | Timer i Usluga e-pošte za slanje podsjetnika                                                                                                   |
 | Ishod                     | Pacijent ima pregled terapije i termina te može evidentirati status doze.                                                                      |
 
@@ -214,17 +239,17 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 | Alternativni tokovi / Iznimke | Ako nema zakazanih termina, sustav prikazuje odgovarajuću obavijest.                                    |
 | Ishod                         | Pacijent vidi svoje termine pregleda.                                                                   |
 
-#### UC-4.4: Primanje podsjetnika za lijek
+#### UC-4.4: Primanje podsjetnika
 
-| Element specifikacije         | Opis                                                                                                                                                      |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Primarni akter                | Timer                                                                                                                                                     |
-| Sekundarni akter              | Usluga e-pošte                                                                                                                                            |
-| Povezani zahtjevi             | F-014                                                                                                                                                     |
-| Preduvjeti                    | Postoji aktivna terapija s definiranim podsjetnikom.                                                                                                      |
-| Glavni uspješni tok           | Timer pokreće provjeru dospjelih podsjetnika. Sustav pronalazi podsjetnike, prikazuje obavijest pacijentu u aplikaciji, šalje e-poštu i bilježi slanje.   |
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Timer |
+| Sekundarni akteri | Pacijent (prima podsjetnik), Usluga e-pošte |
+| Povezani zahtjevi | F-014 |
+| Preduvjeti | Postoji aktivna terapija ili zakazani termin s definiranim podsjetnikom. |
+| Glavni uspješni tok | Timer pokreće provjeru dospjelih podsjetnika. Sustav pronalazi dospjele podsjetnike za lijek ili termin, prikazuje obavijest pacijentu u aplikaciji, šalje e-poštu i bilježi slanje. |
 | Alternativni tokovi / Iznimke | Ako nema dospjelih podsjetnika, ništa se ne šalje. Ako usluga e-pošte nije dostupna, obavijest u aplikaciji ostaje, a slanje e-pošte ponavlja se kasnije. |
-| Ishod                         | Pacijent je obaviješten, a slanje podsjetnika je zabilježeno.                                                                                             |
+| Ishod | Pacijent je obaviješten, a slanje podsjetnika je zabilježeno. |
 
 ### UC-5: Upravljanje pacijentima
 
@@ -261,14 +286,17 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 
 #### UC-5.3: Obrada zahtjeva za povezivanje
 
-| Element specifikacije         | Opis                                                                                                                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Primarni akter                | Liječnik                                                                                                                                                                       |
-| Povezani zahtjevi             | F-003, F-020                                                                                                                                                                   |
-| Preduvjeti                    | Liječnik je prijavljen i odobren. Postoji barem jedan zahtjev na čekanju.                                                                                                      |
-| Glavni uspješni tok           | Liječnik otvara popis zahtjeva na čekanju, pregledava osnovne podatke pacijenata i prihvaća odabrani zahtjev. Sustav povezuje pacijenta i liječnika te obavještava pacijenta.  |
-| Alternativni tokovi / Iznimke | Liječnik može odbiti zahtjev. Ako je pacijent povukao zahtjev, sustav obavještava liječnika. Ako je dosegnut najveći dopušteni broj pacijenata, sustav ne dopušta prihvaćanje. |
-| Ishod                         | Pacijent i liječnik povezani su ili je zahtjev odbijen.                                                                                                                        |
+| Element specifikacije | Opis |
+| --- | --- |
+| ID / status / verzija | UC-5.3 / implementirano / 2.0 |
+| Primarni akter | Liječnik |
+| Povezani zahtjevi | F-003, F-020 |
+| Okidač | Liječnik je primio zahtjev pacijenta za povezivanje (UC-3.2). |
+| Preduvjeti | Liječnik je prijavljen i odobren. Postoji barem jedan zahtjev na čekanju. |
+| Glavni uspješni tijek | 1. Liječnik otvara popis zahtjeva na čekanju.<br>2. Sustav prikazuje zahtjeve s imenom i adresom e-pošte pacijenta.<br>3. Liječnik prihvaća odabrani zahtjev.<br>4. Sustav mijenja status zahtjeva u *prihvaćeno* i dodaje pacijenta na popis povezanih pacijenata (UC-5.1). |
+| Alternativni tijekovi | **2a — Nema zahtjeva na čekanju:** sustav prikazuje prazan popis.<br>**3a — Liječnik odbija zahtjev:** sustav mijenja status u *odbijeno*; pacijent ne dobiva vezu i vidi status u UC-3.3.<br>**3b — Dosegnut najveći broj pacijenata** (2.125 po liječniku, NF-01): sustav ne dopušta prihvaćanje i javlja da zahtjev nije moguće prihvatiti.<br>**4a — Zahtjev je već obrađen ili ne postoji:** sustav javlja grešku i ne mijenja status. |
+| Postuvjeti (uspjeh) | Pacijent i liječnik su povezani, a liječnik može otvoriti podatke pacijenta (UC-5.2). |
+| Minimalno jamstvo | Status zahtjeva mijenja se samo jednom; liječnik može obraditi samo zahtjeve upućene njemu. |
 
 ### UC-6: Obrada zdravstvenih podataka
 
@@ -331,49 +359,104 @@ Glavni obrasci uporabe predstavljaju šira funkcionalna područja sustava. U dij
 
 **Svrha:** Omogućiti liječniku određivanje terapije pacijentu i upravljanje postojećim rasporedom terapije.
 
-| Element specifikacije         | Opis                                                                                                                                                                                       |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Primarni akter                | Liječnik                                                                                                                                                                                   |
-| Povezani zahtjevi             | F-002, F-013, F-014, F-017                                                                                                                                                                 |
-| Konkretni obrasci uporabe     | UC-7.1 Određivanje terapije; UC-7.2 Upravljanje rasporedom terapije                                                                                                                        |
-| Preduvjeti                    | Liječnik je prijavljen i odobren te ima pristup profilu povezanog pacijenta.                                                                                                               |
-| Glavni uspješni tok           | Liječnik odabire pacijenta, otvara terapiju i unosi lijek, dozu, raspored uzimanja i trajanje. Sustav provjerava obavezna polja, sprema terapiju, bilježi promjenu i zakazuje podsjetnike. |
-| Alternativni tokovi / Iznimke | Liječnik može izmijeniti dozu ili završiti postojeću terapiju. Ako nedostaje obavezno polje, sustav ga označava i ne sprema unos.                                                          |
-| Ishod                         | Terapija je spremljena i vidljiva pacijentu, promjena je zabilježena, a podsjetnici su ažurirani.                                                                                          |
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Liječnik |
+| Povezani zahtjevi | F-002, F-013, F-014, F-017 |
+| Konkretni obrasci uporabe | UC-7.1 Određivanje terapije; UC-7.2 Upravljanje rasporedom terapije |
+| Ishod | Terapija je spremljena i vidljiva pacijentu, promjena je zabilježena, a podsjetnici su ažurirani. |
+
+#### UC-7.1: Određivanje terapije
+
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Liječnik |
+| Povezani zahtjevi | F-002, F-013, F-014, F-017 |
+| Preduvjeti | Liječnik je prijavljen i odobren te je povezan s pacijentom. |
+| Glavni uspješni tok | Liječnik odabire pacijenta, otvara terapiju i unosi lijek, dozu, raspored uzimanja i trajanje. Sustav provjerava obavezna polja, sprema terapiju, bilježi promjenu i zakazuje podsjetnike. |
+| Alternativni tokovi / Iznimke | Ako nedostaje obavezno polje, sustav ga označava i ne sprema unos. |
+| Ishod | Nova terapija vidljiva je pacijentu (UC-4.2), a podsjetnici su zakazani (UC-4.4). |
+
+#### UC-7.2: Upravljanje rasporedom terapije
+
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Liječnik |
+| Povezani zahtjevi | F-013, F-014, F-017 |
+| Preduvjeti | Liječnik je prijavljen i odobren, a pacijent ima aktivnu terapiju koju je odredio liječnik. |
+| Glavni uspješni tok | Liječnik otvara aktivnu terapiju pacijenta i mijenja dozu ili raspored uzimanja, ili završava terapiju. Sustav sprema promjenu, bilježi tko ju je i kada napravio te ažurira podsjetnike. |
+| Alternativni tokovi / Iznimke | Ako izmjena nema obavezna polja, sustav je ne sprema. Ako pacijent nema aktivnu terapiju, sustav upućuje na UC-7.1. |
+| Ishod | Raspored terapije je ažuriran, a promjena je zabilježena. |
 
 ### UC-8: Upravljanje terminima
 
 **Svrha:** Omogućiti liječniku zakazivanje termina pregleda i upravljanje postojećim terminima.
 
-| Element specifikacije         | Opis                                                                                                                                                                                                                               |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Primarni akter                | Liječnik                                                                                                                                                                                                                           |
-| Povezani zahtjevi             | F-002, F-012, F-014, F-020                                                                                                                                                                                                         |
-| Konkretni obrasci uporabe     | UC-8.1 Zakazivanje termina; UC-8.2 Upravljanje postojećim terminima                                                                                                                                                                |
-| Preduvjeti                    | Liječnik je prijavljen i odobren te ima pristup profilu povezanog pacijenta.                                                                                                                                                       |
-| Glavni uspješni tok           | Liječnik odabire pacijenta i unosi datum, vrijeme, mjesto i napomenu. Sustav provjerava podatke, sprema termin, prikazuje ga pacijentu i zakazuje podsjetnik.                                                                      |
-| Alternativni tokovi / Iznimke | Ako je termin u prošlosti ili se preklapa s drugim terminom liječnika, sustav upozorava i ne sprema ga dok se ne ispravi. Liječnik može pomaknuti ili otkazati postojeći termin; pacijent je obaviješten, a podsjetnik se ažurira. |
-| Ishod                         | Termin je spremljen i vidljiv pacijentu, a podsjetnik je zakazan.                                                                                                                                                                  |
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Liječnik |
+| Povezani zahtjevi | F-002, F-012, F-014, F-020 |
+| Konkretni obrasci uporabe | UC-8.1 Zakazivanje termina; UC-8.2 Upravljanje postojećim terminima |
+| Ishod | Termin je spremljen i vidljiv pacijentu, a podsjetnik je zakazan. |
+
+#### UC-8.1: Zakazivanje termina
+
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Liječnik |
+| Povezani zahtjevi | F-012, F-014 |
+| Preduvjeti | Liječnik je prijavljen i odobren te je povezan s pacijentom. |
+| Glavni uspješni tok | Liječnik odabire pacijenta i unosi datum, vrijeme, mjesto i napomenu. Sustav provjerava podatke, sprema termin, prikazuje ga pacijentu (UC-4.3) i zakazuje podsjetnik. |
+| Alternativni tokovi / Iznimke | Ako nedostaje datum ili vrijeme, ako je termin u prošlosti ili se preklapa s drugim zakazanim terminom liječnika ili pacijenta, sustav upozorava i ne sprema termin dok se ne ispravi. |
+| Ishod | Termin je spremljen i vidljiv pacijentu, a podsjetnik je zakazan. |
+
+#### UC-8.2: Upravljanje postojećim terminima
+
+| Element specifikacije | Opis |
+| --- | --- |
+| Primarni akter | Liječnik |
+| Povezani zahtjevi | F-012, F-014, F-020 |
+| Preduvjeti | Liječnik je prijavljen i odobren, a pacijent ima zakazan termin. |
+| Glavni uspješni tok | Liječnik otvara termin i mijenja datum, vrijeme ili mjesto, ili ga otkazuje. Sustav sprema promjenu, obavještava pacijenta i ažurira podsjetnik. |
+| Alternativni tokovi / Iznimke | Ako novi datum nije valjan, sustav ne sprema promjenu. Otkazani termin ostaje vidljiv u povijesti termina. |
+| Ishod | Pacijent vidi ažurirani ili otkazani termin, a podsjetnik je ažuriran. |
 
 ### UC-9: Prijava u sustav
 
-| Element specifikacije         | Opis                                                                                                                                                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Primarni akter                | Korisnik (Pacijent ili Liječnik)                                                                                                                                                                        |
-| Sekundarni akter              | Pružatelj identiteta (OAuth 2.0)                                                                                                                                                                        |
-| Povezani zahtjevi             | F-001, F-002                                                                                                                                                                                            |
-| Preduvjeti                    | Korisnik ima račun kod pružatelja identiteta.                                                                                                                                                           |
-| Glavni uspješni tok           | Korisnik odabire prijavu. Sustav ga preusmjerava na pružatelja identiteta. Korisnik se autentificira i odobrava pristup. Sustav prima potvrdu identiteta i otvara nadzornu ploču prema ulozi korisnika. |
-| Alternativni tokovi / Iznimke | Ako korisnik odustane ili autentikacija ne uspije, ostaje neprijavljen i može pokušati ponovno.<br>**Račun registriran s drugom ulogom:** korisnik je prije prijave odabrao ulogu (npr. liječnik), a njegov je račun kod pružatelja identiteta već registriran s drugom ulogom (npr. pacijent). Sustav ga ne prijavljuje, vraća ga na stranicu prijave s porukom „Ovaj račun je registriran kao pacijent” (odnosno „…kao liječnik”) i ne mijenja mu ulogu. Korisnik se može ponovno prijaviti odabirom ispravne uloge. |
-| Ograničenja                   | Jedan račun kod pružatelja identiteta ima točno jednu ulogu (pacijent ili liječnik). Sustav nikad ne mijenja ulogu automatski; pravilo provodi poslužitelj, ne korisničko sučelje.                     |
-| Ishod                         | Korisnik je prijavljen i pristupa funkcijama svoje uloge.                                                                                                                                               |
+| Element specifikacije | Opis |
+| --- | --- |
+| ID / status / verzija | UC-9 / implementirano / 2.0 |
+| Primarni akteri | Pacijent, Liječnik, Administrator (kao Korisnik) |
+| Sekundarni akter | Pružatelj identiteta (OAuth 2.0) |
+| Povezani zahtjevi | F-001, F-002 |
+| Okidač | Korisnik želi koristiti aplikaciju (aplikacija ne dopušta rad bez prijave). |
+| Preduvjeti | Korisnik ima račun kod pružatelja identiteta (Google). |
+| Glavni uspješni tijek | 1. Korisnik na stranici prijave odabire ulogu (pacijent ili liječnik) i prijavu putem Googlea.<br>2. Sustav ga preusmjerava na pružatelja identiteta.<br>3. Korisnik se autentificira i odobrava pristup.<br>4. Sustav prima potvrdu identiteta i pronalazi korisnički račun.<br>5. Sustav otvara nadzornu ploču prema ulozi korisnika. |
+| Alternativni tijekovi | **3a — Odustajanje ili neuspjela autentikacija:** korisnik ostaje neprijavljen i može pokušati ponovno.<br>**4a — Prva prijava:** sustav traži dovršetak registracije za odabranu ulogu. Pacijent odmah dobiva pristup. Liječnik unosi ustanovu i broj licence, a račun mu ostaje *na čekanju* dok ga administrator ne odobri (UC-10).<br>**4b — Račun registriran s drugom ulogom:** sustav ga ne prijavljuje, vraća ga na stranicu prijave s porukom „This account is registered as a patient” (odnosno „…as a doctor”) i ne mijenja mu ulogu.<br>**4c — Administrator:** sustav zanemaruje odabranu ulogu i otvara administratorsko sučelje (/admin). Administratorski račun stvara se samo za adrese navedene u konfiguraciji sustava.<br>**5a — Liječnik na čekanju ili odbijen:** sustav ne otvara liječničke funkcije i prikazuje poruku „Your account is awaiting administrator approval” odnosno „Your doctor account request was rejected”. |
+| Ograničenja | Jedan račun kod pružatelja identiteta ima točno jednu ulogu (pacijent, liječnik ili administrator). Sustav nikad ne mijenja ulogu automatski; pravilo provodi poslužitelj, ne korisničko sučelje. |
+| Postuvjeti (uspjeh) | Korisnik je prijavljen i pristupa funkcijama svoje uloge. |
+| Minimalno jamstvo | Neprijavljeni korisnik ne vidi nikakve podatke; uloga postojećeg računa ostaje nepromijenjena. |
+
+### UC-10: Odobravanje liječničkog računa
+
+| Element specifikacije | Opis |
+| --- | --- |
+| ID / status / verzija | UC-10 / implementirano / 1.0 |
+| Primarni akter | Administrator |
+| Povezani zahtjevi | F-019, F-002 |
+| Okidač | Novi liječnik registrirao se i čeka odobrenje (UC-9, 4a). |
+| Preduvjeti | Administrator je prijavljen. Postoji barem jedan liječnički račun na čekanju. |
+| Glavni uspješni tijek | 1. Administrator otvara administratorsko sučelje.<br>2. Sustav prikazuje liječnike na čekanju s imenom, adresom e-pošte, ustanovom i brojem licence.<br>3. Administrator provjerava podatke i odobrava liječnika.<br>4. Sustav mijenja status računa u *odobren* i bilježi tko je i kada odobrio račun.<br>5. Liječnik pri sljedećoj prijavi dobiva pristup liječničkim funkcijama. |
+| Alternativni tijekovi | **2a — Nema liječnika na čekanju:** sustav prikazuje prazan popis.<br>**3a — Administrator odbija zahtjev:** administrator upisuje razlog; sustav mijenja status u *odbijen* i sprema razlog. Liječnik ne dobiva pristup (UC-9, 5a).<br>**4a — Račun je već obrađen:** sustav javlja da je liječnik već pregledan i ne mijenja status. |
+| Postuvjeti (uspjeh) | Liječnik je odobren i može koristiti liječničke funkcije. |
+| Minimalno jamstvo | Liječnik bez odobrenja nikad ne pristupa podacima pacijenata; odluka se ne može promijeniti dvaput. |
 
 ## 3.3 Provjera dosljednosti obrazaca uporabe
 
-| Provjera                           | Stanje                                                                                                                                                                                                      |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Akteri                             | Akteri u ovom prikazu odgovaraju akterima navedenima u PlantUML kodu: Korisnik, Pacijent, Liječnik, Timer, Pružatelj identiteta, AI usluga i Usluga e-pošte.                                                |
-| Glavni i konkretni obrasci uporabe | Konkretni obrasci uporabe grupirani su pod glavnim obrascima UC-1 do UC-8. UC-9 predstavlja zaseban obrazac prijave u sustav.                                                                               |
-| Vanjski sustavi                    | Pružatelj identiteta povezan je s prijavom, AI usluga s razgovorom i generiranjem sažetka, a Timer i Usluga e-pošte s podsjetnicima.                                                                        |
-| UML odnosi                         | Generalizacija, include i extend odnosi prikazani su prema dostavljenom PlantUML kodu. Skrivene veze koriste se samo za raspored elemenata.                                                                 |
-| Napomena o opsegu                  | Administrator nije prikazan kao akter u dostavljenom PlantUML kodu pa nije uključen u ovaj dokument. Pojedinosti koje nisu definirane u kodu ili dostavljenim specifikacijama nisu dodatno pretpostavljene. |
+| Provjera | Stanje |
+| --- | --- |
+| Akteri | Akteri odgovaraju popisu u odjeljku 2.3 (A-01 do A-07): Pacijent, Liječnik, Administrator, Pružatelj identiteta, AI usluga, Usluga e-pošte i Timer. Korisnik je općeniti akter za prijavu. |
+| Pokrivenost zahtjeva | Svaki funkcionalni zahtjev pokriven je barem jednim obrascem uporabe: F-001 i F-002 (UC-9), F-003 (UC-3.2, UC-3.3, UC-5.1, UC-5.3), F-004 (UC-1.3), F-005 i F-009 (UC-1.1), F-006 (UC-1.1, UC-1.2), F-007 (UC-1.2, UC-1.2.1), F-008 (UC-6.1, UC-6.2), F-010 (UC-1.3, UC-1.4, UC-6.3), F-011 (UC-2.2), F-012 (UC-4.3, UC-8.1, UC-8.2), F-013 (UC-4.2, UC-7.1, UC-7.2), F-014 (UC-4.4), F-015 (UC-2.1), F-016 (UC-6.4), F-017 (UC-6.1, UC-7.2), F-018 (UC-4.1), F-019 (UC-10), F-020 (UC-2.2, UC-5.3). |
+| Oznake | Iste oznake obrazaca uporabe (UC-x.y) koriste se u tablici sljedivosti 2.6, u kodu i u komentarima sheme baze. |
+| UML odnosi | Između obrazaca uporabe postoje samo dva odnosa: include (UC-1.2 → UC-1.2.1) i extend (UC-6.2 → UC-6.1). Alternativni ishodi (npr. odbijanje zahtjeva) opisani su kao alternativni tijekovi, a ne kao zasebni obrasci. |
+| Dijagram i tekst | Akteri, obrasci uporabe i veze s vanjskim sustavima na slici 3.1 jednaki su onima u specifikacijama 3.2. |

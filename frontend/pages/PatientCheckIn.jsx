@@ -83,7 +83,7 @@ export default function PatientCheckIn() {
       } else if (error instanceof ApiError) {
         setStatus({ type: "error", message: error.message });
       } else {
-        setStatus({ type: "error", message: "Backend nije dostupan." });
+        setStatus({ type: "error", message: "The server is not available." });
       }
     }
   }

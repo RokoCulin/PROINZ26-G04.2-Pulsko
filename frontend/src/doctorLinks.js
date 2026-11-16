@@ -6,7 +6,7 @@ import { useAuth } from "./auth";
 // (sekcija na /doctor, /doctor/requests i /doctor/patients).
 
 export const formatDate = (iso) =>
-  new Date(iso).toLocaleDateString("hr-HR", { day: "numeric", month: "numeric", year: "numeric" });
+  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "numeric", year: "numeric" });
 
 export const initials = (name) =>
   name

@@ -17,9 +17,9 @@ def _handle(action):
     try:
         return action()
     except DoctorNotFound:
-        raise HTTPException(status_code=404, detail="Lijecnik ne postoji")
+        raise HTTPException(status_code=404, detail="Doctor does not exist")
     except DoctorAlreadyReviewed:
-        raise HTTPException(status_code=409, detail="Lijecnik je vec pregledan")
+        raise HTTPException(status_code=409, detail="Doctor has already been reviewed")
 
 
 @router.get("/doctors", response_model=list[DoctorOut])

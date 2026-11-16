@@ -15,12 +15,12 @@ def require_patient_access(
     if user.role == "patient":
         if user.user_id == patient_id:
             return user
-        raise HTTPException(status_code=403, detail="Pristup nije dopusten")
+        raise HTTPException(status_code=403, detail="Access denied")
 
     if user.role == "doctor":
         doctor = db.get(DoctorProfile, user.user_id)
         if doctor is None or doctor.approval_status != "approved":
-            raise HTTPException(status_code=403, detail="Lijecnicki racun nije odobren")
+            raise HTTPException(status_code=403, detail="Doctor account is not approved")
 
         link = db.execute(
             text(
@@ -38,4 +38,4 @@ def require_patient_access(
         if link is not None:
             return user
 
-    raise HTTPException(status_code=403, detail="Pristup nije dopusten")
+    raise HTTPException(status_code=403, detail="Access denied")

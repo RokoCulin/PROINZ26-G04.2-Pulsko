@@ -4,7 +4,7 @@ import logo from "../logo/logopulsko.png";
 import { apiFetch, ApiError, getMe, homePathFor, loginUrl } from "../src/api";
 import "../css/SignIn.css";
 
-const ROLE_LABEL = { patient: "pacijent", doctor: "liječnik" };
+const ROLE_LABEL = { patient: "a patient", doctor: "a doctor" };
 
 // Poruke za ?error=... koje backend šalje nakon Google prijave.
 function messageFromQuery(params) {
@@ -12,17 +12,17 @@ function messageFromQuery(params) {
   if (error === "role_mismatch") {
     const role = ROLE_LABEL[params.get("registered_as")];
     return role
-      ? `Ovaj račun je registriran kao ${role}. Odaberite tu ulogu za prijavu.`
-      : "Ovaj račun je registriran s drugom ulogom.";
+      ? `This account is registered as ${role}. Choose that role to sign in.`
+      : "This account is registered with a different role.";
   }
   if (error === "no_account") {
-    return "Za ovaj Google račun ne postoji korisnički račun. Odaberite ulogu za registraciju.";
+    return "There is no account for this Google account. Choose a role to register.";
   }
   if (error === "oauth_cancelled") {
-    return "Prijava je otkazana.";
+    return "Sign-in was cancelled.";
   }
   if (error === "oauth_failed") {
-    return "Prijava nije uspjela, pokušaj ponovno.";
+    return "Sign-in failed, please try again.";
   }
   return "";
 }
@@ -30,14 +30,14 @@ function messageFromQuery(params) {
 function registrationError(error) {
   if (error instanceof ApiError) {
     if (error.status === 409) {
-      return "Registracija nije uspjela: račun ili broj licence već postoji.";
+      return "Registration failed: the account or licence number already exists.";
     }
     if (error.status === 401) {
-      return "Prijava je istekla. Odaberite ulogu i prijavite se ponovno.";
+      return "Your sign-in has expired. Choose a role and sign in again.";
     }
     return error.message;
   }
-  return "Backend nije dostupan.";
+  return "The server is not available.";
 }
 
 export default function SignIn() {
@@ -89,7 +89,7 @@ export default function SignIn() {
     }
 
     checkSession()
-      .catch(() => setError("Backend nije dostupan."))
+      .catch(() => setError("The server is not available."))
       .finally(() => setChecking(false));
   }, [navigate]);
 
@@ -131,31 +131,31 @@ export default function SignIn() {
 
         {doctorForm ? (
           <form onSubmit={submitDoctor}>
-            <p className="eyebrow">REGISTRACIJA LIJEČNIKA</p>
-            <h1>Podaci o liječniku</h1>
+            <p className="eyebrow">DOCTOR REGISTRATION</p>
+            <h1>Doctor details</h1>
             <p className="muted">
-              Administrator će provjeriti ustanovu i broj licence prije nego
-              što odobri vaš račun.
+              An administrator will check your institution and licence number
+              before approving your account.
             </p>
 
             <label className="auth-field">
-              Ustanova
+              Institution
               <input
                 value={institution}
                 onChange={(event) => setInstitution(event.target.value)}
                 maxLength={200}
-                placeholder="npr. KBC Zagreb"
+                placeholder="e.g. KBC Zagreb"
                 required
               />
             </label>
 
             <label className="auth-field">
-              Broj licence
+              Licence number
               <input
                 value={licenseNumber}
                 onChange={(event) => setLicenseNumber(event.target.value)}
                 maxLength={100}
-                placeholder="npr. HLK-12345"
+                placeholder="e.g. HLK-12345"
                 required
               />
             </label>
@@ -165,23 +165,23 @@ export default function SignIn() {
               type="submit"
               disabled={submitting || !institution.trim() || !licenseNumber.trim()}
             >
-              {submitting ? "Šaljem…" : "Pošalji zahtjev →"}
+              {submitting ? "Sending…" : "Send request →"}
             </button>
 
             {error && <p className="auth-error" role="alert">{error}</p>}
           </form>
         ) : (
           <>
-            <p className="eyebrow">DOBRO DOŠLI</p>
-            <h1>Prijava u Pulsko</h1>
+            <p className="eyebrow">WELCOME</p>
+            <h1>Sign in to Pulsko</h1>
             <p className="muted">
-              Odaberite ulogu, zatim se prijavite Google računom. Jedan račun
-              ima jednu ulogu.
+              Choose your role, then sign in with your Google account. One
+              account has one role.
             </p>
 
             <div className="auth-divider">
               <span />
-              VAŠA ULOGA
+              YOUR ROLE
               <span />
             </div>
 
@@ -193,8 +193,8 @@ export default function SignIn() {
                 onClick={() => setRole("patient")}
               >
                 <span className="role-symbol">♡</span>
-                <b>Pacijent</b>
-                <small>Pratite svoje zdravlje i budite povezani.</small>
+                <b>Patient</b>
+                <small>Track your health and stay connected.</small>
               </button>
 
               <button
@@ -204,8 +204,8 @@ export default function SignIn() {
                 onClick={() => setRole("doctor")}
               >
                 <span className="role-symbol">⚕</span>
-                <b>Liječnik</b>
-                <small>Upravljajte pacijentima i koordinirajte skrb.</small>
+                <b>Doctor</b>
+                <small>Manage patients and coordinate care.</small>
               </button>
             </div>
 
@@ -215,15 +215,15 @@ export default function SignIn() {
               disabled={!role || checking}
               onClick={continueLogin}
             >
-              <b className="google-mark">G</b> Prijava putem Googlea
+              <b className="google-mark">G</b> Sign in with Google
             </button>
 
             {error && <p className="auth-error" role="alert">{error}</p>}
 
             <p className="demo-hint">
-              Prijava putem Google računa (OAuth 2.0 / OpenID Connect).
-              Administrator može odabrati bilo koju ulogu; sustav ga prepozna
-              i otvori administratorsku stranicu.
+              Sign-in uses your Google account (OAuth 2.0 / OpenID Connect).
+              An administrator can choose any role; the system recognises them
+              and opens the administrator page.
             </p>
           </>
         )}

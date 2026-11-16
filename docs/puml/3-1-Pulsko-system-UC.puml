@@ -1,296 +1,143 @@
-
 ' ==============================================================================
 ' 3-1-pulsko-system-UC.puml
 '
 ' Svrha:    Prikazuje tko i s kojim ciljem koristi sustav Pulsko (pacijenti,
 '           liječnici, administrator) te koje vanjske sustave sustav koristi.
-'           Interna logika, pohrana podataka i korisničko sučelje namjerno
-'           nisu obuhvaćeni.
+'           Obrasci uporabe grupirani su u skupine UC-1 do UC-8 (okviri), a
+'           UC-9 i UC-10 stoje samostalno.
 ' Autor:    Roko, tim G04.2
 ' AI:       Autor je naveo aktere, obrasce uporabe i njihove odnose; AI je korišten kao pomoć za lakše pisanje PlantUML koda i komentara.
-' Zahtjevi: UC-001 do UC-017
+' Zahtjevi: F-001 do F-020 (obrasci uporabe UC-1 do UC-10)
 '
 ' Diagram level: System Requirements
 ' Diagram type:  Use Case Diagram
-' Version:       1.0 (status: K)
+' Version:       2.0 (status: K)
+' Promjene 2.0: dodan akter Administrator i UC-10 (F-019); skupine UC-1 do UC-8
+'               prikazane kao okviri umjesto apstraktnih obrazaca s poopćenjem;
+'               uklonjeni UC-3.1, UC-5.3.1 i UC-5.3.2; AI usluga povezana s
+'               UC-1.2.1; UC-4.4 preimenovan; raspored lijevo-desno (primarni
+'               akteri lijevo, vanjski sustavi desno).
 ' ==============================================================================
 @startuml
-
-title Sustav Pulsko – obrasci uporabe
-top to bottom direction
-
+title uc UCD-1 Sustav Pulsko – obrasci uporabe (v2.0, K)
+left to right direction
 skinparam shadowing false
 skinparam defaultFontName Arial
-skinparam ArrowColor #212529
-skinparam linetype ortho
-skinparam nodesep 35
-skinparam ranksep 50
-
+skinparam ArrowColor #495057
+skinparam packageStyle rectangle
 skinparam actor {
     BackgroundColor #F8F9FA
     BorderColor #212529
     BackgroundColor<<external system>> #FFF3CD
     BorderColor<<external system>> #856404
 }
-
 skinparam usecase {
     BackgroundColor #E7F1FF
     BorderColor #0D6EFD
+    BackgroundColor<<abstract>> #F1F3F5
+    BorderColor<<abstract>> #868E96
 }
+skinparam rectangle {
+    BorderColor #ADB5BD
+    FontColor #495057
+}
+skinparam rectangle {
+    BackgroundColor #FAFBFC
+    BorderColor #ADB5BD
+    FontColor #495057
+    FontStyle bold
+}
+actor "Korisnik" as User
+actor "Pacijent" as Patient
+actor "Liječnik" as Doctor
+actor "Administrator" as Admin
+actor "Timer" as Timer
+User <|-- Patient
+User <|-- Doctor
+User <|-- Admin
 
-' ==========================================================
-' AKTERI
-' ==========================================================
-
-actor User as "Korisnik"
-actor Patient as "Pacijent"
-actor Doctor as "Liječnik"
-actor Timer as "Timer"
-
-Patient -|> User
-Doctor -|> User
-
+rectangle "Sustav Pulsko" {
+  usecase "UC-9 Prijava u sustav" as UC_SignIn
+  rectangle "UC-1 Upravljanje zdravstvenim podacima" {
+    usecase "UC-1.1 Unos dnevnog check-ina" as UC_CheckIn
+    usecase "UC-1.2 Predaja laboratorijskih nalaza" as UC_LabResult
+    usecase "UC-1.2.1 Izdvajanje\nlaboratorijskih vrijednosti" as UC_ExtractLab
+    usecase "UC-1.3 Pregled zdravstvenih podataka" as UC_ViewMedData
+    usecase "UC-1.4 Pregled trendova i grafova" as UC_ViewGraph
+  }
+  rectangle "UC-2 Komunikacija i podrška" {
+    usecase "UC-2.1 Razgovor s AI agentom" as UC_MessageAI
+    usecase "UC-2.2 Razmjena poruka s liječnikom" as UC_Messages
+  }
+  rectangle "UC-3 Povezivanje s liječnikom" {
+    usecase "UC-3.2 Slanje zahtjeva za povezivanje" as UC_SendRequest
+    usecase "UC-3.3 Pregled statusa zahtjeva" as UC_ViewRequestStatus
+  }
+  rectangle "UC-4 Praćenje terapije i termina" {
+    usecase "UC-4.1 Evidentiranje uzimanja lijeka" as UC_LogMedication
+    usecase "UC-4.2 Pregled rasporeda terapije" as UC_ViewTherapy
+    usecase "UC-4.3 Pregled termina pregleda" as UC_ViewAppointments
+    usecase "UC-4.4 Primanje podsjetnika" as UC_Reminder
+  }
+  rectangle "UC-5 Upravljanje pacijentima" {
+    usecase "UC-5.1 Pregled povezanih pacijenata" as UC_ViewPatients
+    usecase "UC-5.2 Pregled zdravstvenog\nprofila pacijenta" as UC_ViewPatientProfile
+    usecase "UC-5.3 Obrada zahtjeva za povezivanje" as UC_HandleRequest
+  }
+  rectangle "UC-6 Obrada zdravstvenih podataka" {
+    usecase "UC-6.1 Potvrda\nlaboratorijskih vrijednosti" as UC_ConfirmLab
+    usecase "UC-6.2 Ispravljanje\nlaboratorijskih vrijednosti" as UC_CorrectLab
+    usecase "UC-6.3 Pregled zdravstvenih trendova" as UC_ViewPatientTrends
+    usecase "UC-6.4 Generiranje AI sažetka" as UC_GenerateAISummary
+  }
+  rectangle "UC-7 Upravljanje terapijom" {
+    usecase "UC-7.1 Određivanje terapije" as UC_SetTherapy
+    usecase "UC-7.2 Upravljanje rasporedom terapije" as UC_ManageTherapy
+  }
+  rectangle "UC-8 Upravljanje terminima" {
+    usecase "UC-8.1 Zakazivanje termina" as UC_ScheduleAppointment
+    usecase "UC-8.2 Upravljanje postojećim terminima" as UC_ManageAppointments
+  }
+  usecase "UC-10 Odobravanje liječničkog računa" as UC_ApproveDoctor
+}
 actor "Pružatelj identiteta\n(OAuth 2.0)" as IdP <<external system>>
 actor "AI usluga" as AI <<external system>>
 actor "Usluga e-pošte" as Email <<external system>>
 
-
-' ==========================================================
-' SUSTAV PULSKO
-' ==========================================================
-
-rectangle "Sustav Pulsko" {
-
-    ' GLAVNI OBRASCI UPORABE
-
-    (UC-1\nUpravljanje zdravstvenim podacima) as UC_MedData <<abstract>>
-    (UC-2\nKomunikacija i podrška) as UC_CommunicationSupport <<abstract>>
-    (UC-3\nPovezivanje s liječnikom) as UC_DoctorConnection <<abstract>>
-    (UC-4\nPraćenje terapije i termina) as UC_TherapyAndAppointments <<abstract>>
-    (UC-5\nUpravljanje pacijentima) as UC_PatientManagement <<abstract>>
-    (UC-6\nObrada zdravstvenih podataka) as UC_MedDataProcessing <<abstract>>
-    (UC-7\nUpravljanje terapijom) as UC_TherapyManagement <<abstract>>
-    (UC-8\nUpravljanje terminima) as UC_AppointmentManagement <<abstract>>
-    (UC-9\nPrijava u sustav) as UC_SignIn
-
-
-    ' ======================================================
-    ' KONKRETNI OBRASCI UPORABE
-    ' ======================================================
-
-    ' UC-1 – Zdravstveni podaci
-
-    (UC-1.1\nUnos dnevnog check-ina) as UC_CheckIn
-    (UC-1.2\nPredaja laboratorijskih nalaza) as UC_LabResult
-    (UC-1.3\nPregled zdravstvenih podataka) as UC_ViewMedData
-    (UC-1.4\nPregled trendova i grafova) as UC_ViewGraph
-    (UC-1.2.1\nIzdvajanje laboratorijskih vrijednosti) as UC_ExtractLab
-
-    ' UC-2 – Komunikacija
-
-    (UC-2.1\nRazgovor s AI agentom) as UC_MessageAI
-    (UC-2.2\nRazmjena poruka s liječnikom) as UC_Messages
-
-    ' UC-3 – Povezivanje
-
-    (UC-3.1\nPronalaženje liječnika) as UC_FindDoctor
-    (UC-3.2\nSlanje zahtjeva za povezivanje) as UC_SendRequest
-    (UC-3.3\nPregled statusa zahtjeva) as UC_ViewRequestStatus
-
-    ' UC-4 – Terapija i termini
-
-    (UC-4.1\nEvidentiranje uzimanja lijeka) as UC_LogMedication
-    (UC-4.2\nPregled rasporeda terapije) as UC_ViewTherapy
-    (UC-4.3\nPregled termina pregleda) as UC_ViewAppointments
-    (UC-4.4\nPrimanje podsjetnika za lijek) as UC_Reminder
-
-    ' UC-5 – Upravljanje pacijentima
-
-    (UC-5.1\nPregled povezanih pacijenata) as UC_ViewPatients
-    (UC-5.2\nPregled zdravstvenog profila pacijenta) as UC_ViewPatientProfile
-    (UC-5.3\nObrada zahtjeva za povezivanje) as UC_HandleRequest
-    (UC-5.3.1\nPrihvaćanje zahtjeva) as UC_AcceptRequest
-    (UC-5.3.2\nOdbijanje zahtjeva) as UC_DeclineRequest
-
-    ' UC-6 – Obrada zdravstvenih podataka
-
-    (UC-6.1\nPotvrda laboratorijskih vrijednosti) as UC_ConfirmLab
-    (UC-6.2\nIspravljanje laboratorijskih vrijednosti) as UC_CorrectLab
-    (UC-6.3\nPregled zdravstvenih trendova) as UC_ViewPatientTrends
-    (UC-6.4\nGeneriranje AI sažetka) as UC_GenerateAISummary
-
-    ' UC-7 – Terapija
-
-    (UC-7.1\nOdređivanje terapije) as UC_SetTherapy
-    (UC-7.2\nUpravljanje rasporedom terapije) as UC_ManageTherapy
-
-    ' UC-8 – Termini
-
-    (UC-8.1\nZakazivanje termina) as UC_ScheduleAppointment
-    (UC-8.2\nUpravljanje postojećim terminima) as UC_ManageAppointments
-}
-
-
-' ==========================================================
-' ASOCIJACIJE AKTERA
-' ==========================================================
-
-' Zajedničko
 User -- UC_SignIn
-
-' Pacijent – zdravstveni podaci
 Patient -- UC_CheckIn
 Patient -- UC_LabResult
 Patient -- UC_ViewMedData
 Patient -- UC_ViewGraph
-
-' Pacijent – komunikacija
 Patient -- UC_MessageAI
 Patient -- UC_Messages
-
-' Pacijent – povezivanje
-Patient -- UC_FindDoctor
 Patient -- UC_SendRequest
 Patient -- UC_ViewRequestStatus
-
-' Pacijent – terapija i termini
 Patient -- UC_LogMedication
 Patient -- UC_ViewTherapy
 Patient -- UC_ViewAppointments
 Patient -- UC_Reminder
-
-' Liječnik – pacijenti
+Timer -- UC_Reminder
+Doctor -- UC_Messages
 Doctor -- UC_ViewPatients
 Doctor -- UC_ViewPatientProfile
 Doctor -- UC_HandleRequest
-
-' Liječnik – zdravstveni podaci
 Doctor -- UC_ConfirmLab
 Doctor -- UC_CorrectLab
 Doctor -- UC_ViewPatientTrends
 Doctor -- UC_GenerateAISummary
-
-' Liječnik – terapija
 Doctor -- UC_SetTherapy
 Doctor -- UC_ManageTherapy
-
-' Liječnik – termini
 Doctor -- UC_ScheduleAppointment
 Doctor -- UC_ManageAppointments
-
-' Zajednička komunikacija
-Doctor -- UC_Messages
-
-
-' ==========================================================
-' GENERALIZATION
-' ==========================================================
-
-' UC-1
-UC_CheckIn -|> UC_MedData
-UC_LabResult -|> UC_MedData
-UC_ViewMedData -|> UC_MedData
-UC_ViewGraph -|> UC_MedData
-
-' UC-2
-UC_MessageAI -|> UC_CommunicationSupport
-UC_Messages -|> UC_CommunicationSupport
-
-' UC-3
-UC_FindDoctor -|> UC_DoctorConnection
-UC_SendRequest -|> UC_DoctorConnection
-UC_ViewRequestStatus -|> UC_DoctorConnection
-
-' UC-4
-UC_LogMedication -|> UC_TherapyAndAppointments
-UC_ViewTherapy -|> UC_TherapyAndAppointments
-UC_ViewAppointments -|> UC_TherapyAndAppointments
-UC_Reminder -|> UC_TherapyAndAppointments
-
-' UC-5
-UC_ViewPatients -|> UC_PatientManagement
-UC_ViewPatientProfile -|> UC_PatientManagement
-UC_HandleRequest -|> UC_PatientManagement
-UC_AcceptRequest -|> UC_HandleRequest
-UC_DeclineRequest -|> UC_HandleRequest
-
-' UC-6
-UC_ConfirmLab -|> UC_MedDataProcessing
-UC_CorrectLab -|> UC_MedDataProcessing
-UC_ViewPatientTrends -|> UC_MedDataProcessing
-UC_GenerateAISummary -|> UC_MedDataProcessing
-
-' UC-7
-UC_SetTherapy -|> UC_TherapyManagement
-UC_ManageTherapy -|> UC_TherapyManagement
-
-' UC-8
-UC_ScheduleAppointment -|> UC_AppointmentManagement
-UC_ManageAppointments -|> UC_AppointmentManagement
-
-
-' ==========================================================
-' INCLUDE
-' ==========================================================
+Admin -- UC_ApproveDoctor
 
 UC_LabResult ..> UC_ExtractLab : <<include>>
-
-
-' ==========================================================
-' EXTEND
-' ==========================================================
-
-UC_AcceptRequest ..> UC_HandleRequest : <<extend>>
-
-note on link
-    uvjet: liječnik prihvati zahtjev
-end note
-
-UC_DeclineRequest ..> UC_HandleRequest : <<extend>>
-
-note on link
-    uvjet: liječnik odbije zahtjev
-end note
-
-UC_CorrectLab ..> UC_ConfirmLab : <<extend>>
-
-note on link
-    uvjet: liječnik utvrdi netočnost
-    laboratorijskih vrijednosti
-end note
-
-UC_GenerateAISummary ..> UC_ViewPatientProfile : <<extend>>
-
-note on link
-    uvjet: liječnik zatraži AI sažetak
-end note
-
-
-' ==========================================================
-' VANJSKI SUSTAVI
-' ==========================================================
+UC_ConfirmLab <.. UC_CorrectLab : <<extend>>
 
 UC_SignIn -- IdP
-
+UC_ExtractLab -- AI
 UC_MessageAI -- AI
 UC_GenerateAISummary -- AI
-
-Timer -- UC_Reminder
 UC_Reminder -- Email
-
-
-' ==========================================================
-' SKRIVENE VEZE – VIZUALNO PORAVNANJE
-' NE PREDSTAVLJAJU UML ODNOSE
-' ==========================================================
-
-UC_MedData -[hidden]down-> UC_CommunicationSupport
-UC_CommunicationSupport -[hidden]down-> UC_DoctorConnection
-UC_DoctorConnection -[hidden]down-> UC_TherapyAndAppointments
-UC_TherapyAndAppointments -[hidden]down-> UC_PatientManagement
-UC_PatientManagement -[hidden]down-> UC_MedDataProcessing
-UC_MedDataProcessing -[hidden]down-> UC_TherapyManagement
-UC_TherapyManagement -[hidden]down-> UC_AppointmentManagement
-UC_AppointmentManagement -[hidden]down-> UC_SignIn
-
 @enduml

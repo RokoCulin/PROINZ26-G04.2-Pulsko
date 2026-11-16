@@ -3,7 +3,7 @@
 
 **Kolegij:** [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz), Fakultet elektrotehnike i računarstva Sveučilišta u Zagrebu  
 **Akademska godina:** 2026./2027.  
-**Tim:** G04 
+**Tim:** G04.2 
 **Nastavnik:** Vlado Sruk  
 **Asistent / demonstrator:** Eda Jovičić
 
@@ -15,7 +15,7 @@ Pulsko je aplikacija namijenjena pacijentima i liječnicima, s ciljem jednostavn
 
 Problem koji aplikacija nastoji riješiti jest nepreglednost zdravstvene dokumentacije koja se često nalazi na različitim mjestima i u različitim formatima. Objedinjavanjem podataka na jednom mjestu korisnicima se želi olakšati praćenje promjena zdravstvenog stanja kroz vrijeme te razmjena informacija između pacijenata i liječnika.
 
-Projekt se trenutačno nalazi u početnoj fazi. Predviđene funkcionalnosti bit će detaljnije definirane tijekom analize zahtjeva i implementirane u narednim fazama razvoja.
+Projekt je u prvom razvojnom ciklusu (predaja 20. 11. 2026.). Zahtjevi i obrasci uporabe definirani su u poglavljima 2 i 3, a implementirani su prijava putem Googlea s ulogama pacijenta, liječnika i administratora, odobravanje liječničkih računa, povezivanje pacijenta i liječnika te dnevni check-in koji vide pacijent i povezani liječnik.
 
 <details>
 <summary><strong>Sažet pregled projekta</strong></summary>
@@ -41,11 +41,11 @@ Aplikacija je namijenjena dvjema glavnim skupinama korisnika:
 
 Pomoć pri razumijevanju laboratorijskih nalaza zamišljena je kao informativna funkcionalnost i ne zamjenjuje stručno liječničko mišljenje, dijagnozu ili preporuku.
 
-Detaljan popis funkcionalnih i nefunkcionalnih zahtjeva bit će naveden u dokumentu **Analiza zahtjeva**.
+Detaljan popis funkcionalnih i nefunkcionalnih zahtjeva naveden je u dokumentu [Analiza zahtjeva](2-Analiza-zahtjeva.md).
 
 ### Trenutačno stanje projekta
 
-Projekt je u fazi početnog planiranja. Razvoj aplikacije još nije započeo, a konačna arhitektura, tehnologije i način implementacije bit će određeni tijekom rada na projektu.
+Aplikacija se razvija kao React web-klijent i Python FastAPI poslužitelj s PostgreSQL bazom podataka; prijava koristi Google (OpenID Connect / OAuth 2.0). Opseg prvog ciklusa (MVP) i plan drugog ciklusa opisani su u odjeljku 2.1.1.
 
 </details>
 
@@ -56,7 +56,15 @@ Projekt je u fazi početnog planiranja. Razvoj aplikacije još nije započeo, a 
 
 Ažurirani popis članova, njihovih GitHub profila i glavnih uloga ili doprinosa nalazit će se u [README-u repozitorija](../README.md#team-members).
 
-Raspodjela odgovornosti unutar tima bit će određena tijekom početne organizacije projekta.
+| Član | Glavna uloga |
+| --- | --- |
+| Roko Čulin | Voditelj tima, administratorski modul, jezgra backenda i ugovor API-ja |
+| Jakov Troje | Baza podataka (shema, skripte, ER i dijagram razreda) |
+| Hrvoje Štivić | Autentikacija (OAuth 2.0, uloge, sigurnost) |
+| Dora Maruševec | Frontend pacijenta i liječnika, korisničko sučelje |
+| Antonio Nović | Frontend pacijenta i liječnika, korisničko sučelje |
+| Borna Oršulić | Integracije i DevOps (vanjske usluge, CI, javno postavljanje) |
+| Borna Flegar | Backend i pisanje testova |
 
 ## Kazalo dokumentacije
 
@@ -84,30 +92,18 @@ Dokumentacija se kontinuirano ažurira kako se aplikacija razvija.
 
 ## Organizacija projekta i razvojni proces
 
-**Način rada:** Projekt će se razvijati kroz faze analize zahtjeva, oblikovanja sustava, implementacije i ispitivanja. Konačan način organizacije rada i trajanje razvojnih iteracija bit će definirani dogovorom članova tima.
+**Način rada:** Tim radi u tjednim koracima prema planu kolegija i dva razvojna ciklusa (predaje 20. 11. 2026. i 22. 1. 2027.). Svaki zadatak ima GitHub issue, radi se na zasebnoj grani i u `main` ulazi putem pull requesta.
 
-**Praćenje trenutačnih zadataka i nedostataka:** Planirano je korištenje GitHuba za pohranu izvornog koda i praćenje promjena. Poveznica na sustav za praćenje zadataka bit će dodana nakon njegova uspostavljanja.
+**Praćenje trenutačnih zadataka i nedostataka:** [GitHub Issues](https://github.com/RokoCulin/PROINZ26-G04.2-Pulsko/issues). Plan rada po tjednima i doprinosi članova nalaze se u [Pregledu aktivnosti grupe](A-Pregled-aktivnosti-grupe.md).
 
 <details>
 <summary><strong>Opis načina rada tima</strong></summary>
 
-Razvoj aplikacije Pulsko bit će organiziran kroz nekoliko međusobno povezanih faza.
+Rad je podijeljen na analizu zahtjeva i obrazaca uporabe (tjedni 1–4, kontrolna točka M0 26. 10. 2026.), oblikovanje arhitekture i baze podataka te implementaciju po ulogama (tjedni 5–7). Članovi tima rade prema ulogama navedenima gore; zadatci se otvaraju kao GitHub issues, a promjene se pregledavaju kroz pull requeste prije spajanja u `main`.
 
-U početnoj fazi tim će analizirati problem koji aplikacija nastoji riješiti, definirati funkcionalne i nefunkcionalne zahtjeve te odrediti opseg projekta.
+Posebna pozornost posvećuje se usklađenosti dokumentacije i koda, sigurnosti zdravstvenih podataka (provjera uloga i povezanosti na poslužitelju) i jednostavnosti korištenja aplikacije.
 
-Nakon analize zahtjeva slijedi oblikovanje arhitekture sustava, modeliranje podataka i izrada potrebnih UML dijagrama.
-
-Implementacija će obuhvatiti razvoj korisničkog sučelja, poslužiteljskog dijela i funkcionalnosti potrebnih za rad aplikacije.
-
-Tijekom razvoja planira se redovito provjeravanje implementiranih funkcionalnosti te evidentiranje i otklanjanje pronađenih nedostataka.
-
-Za organizaciju izvornog koda i međusobnu suradnju koristit će se GitHub. Zadaci će se raspodjeljivati među članovima tima u skladu s njihovim odgovornostima i trenutačnim potrebama projekta.
-
-Posebna pozornost posvetit će se međusobnoj usklađenosti različitih dijelova sustava, sigurnosti zdravstvenih podataka i jednostavnosti korištenja aplikacije.
-
-Konačan način organizacije rada, raspodjela odgovornosti i učestalost sastanaka bit će definirani nakon dogovora članova tima.
-
-Ovaj opis predstavlja planirani tijek razvoja. Stvarni način rada bit će dokumentiran nakon početka projekta.
+Sastanci, odluke i doprinosi evidentiraju se u [Pregledu aktivnosti grupe](A-Pregled-aktivnosti-grupe.md).
 
 </details>
 
@@ -124,20 +120,20 @@ Dokumentacija će se ažurirati tijekom razvoja, osobito nakon promjena zahtjeva
 <details>
 <summary><strong>Izvori dijagrama i nastavni primjeri</strong></summary>
 
-UML dijagrami bit će izrađeni tijekom analize zahtjeva i oblikovanja sustava.
+UML dijagrami izrađuju se u PlantUML-u tijekom analize zahtjeva i oblikovanja sustava. Izvori su u mapi `docs/puml`, a slike (SVG) automatski se generiraju u `docs/assets/diagrams`.
 
-Planirani dijagrami uključuju:
+Dijagrami projekta uključuju:
 
 - Dijagram obrazaca uporabe za prikaz interakcija pacijenata i liječnika sa sustavom.
 - Dijagram klasa za prikaz strukture sustava i odnosa između glavnih entiteta.
 - Sekvencijske dijagrame za prikaz komunikacije između dijelova sustava tijekom izvođenja važnijih funkcionalnosti.
 - Ostale dijagrame potrebne za opis arhitekture i ponašanja aplikacije.
 
-Izvorne PlantUML datoteke čuvat će se u repozitoriju projekta, uz odgovarajuće prikaze u dokumentaciji.
+Izvorne PlantUML datoteke čuvaju se u repozitoriju projekta, uz odgovarajuće prikaze u dokumentaciji.
 
-Primjeri iz nastavnih materijala koristit će se isključivo kao smjernice za izradu vlastitih modela i neće se prikazivati kao rezultati projekta Pulsko.
+Primjeri iz nastavnih materijala koriste se isključivo kao smjernice za izradu vlastitih modela i ne prikazuju se kao rezultati projekta Pulsko.
 
-Tehnologije koje će se koristiti za implementaciju aplikacije još nisu konačno određene. Nakon odabira bit će navedene i obrazložene u dokumentaciji arhitekture i oblikovanja.
+Korištene tehnologije (React, Python FastAPI, PostgreSQL, Google OpenID Connect) obrazložene su u poglavlju [4. Arhitektura i oblikovanje](4-Arhitektura-i-oblikovanje.md).
 
 </details>
 

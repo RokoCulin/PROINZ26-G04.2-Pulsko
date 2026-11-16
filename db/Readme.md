@@ -61,6 +61,6 @@ Greške koje baza vraća (npr. `Doctor % already has the maximum of 2125 patient
 ## Što nije u bazi (odluke aplikacije)
 
 - sami PDF-ovi: u `lab_report_file.storage_path` je samo putanja do object storagea
-- provjera da termin nije u prošlosti i da je liječnik povezan s pacijentom prije čitanja podataka (UC-016)
+- provjera da termin nije u prošlosti i da je liječnik povezan s pacijentom prije čitanja podataka (UC-5.2)
 - generiranje redaka `dose_event` iz `therapy_schedule`
 - slanje e-pošte i izrada podsjetnika
