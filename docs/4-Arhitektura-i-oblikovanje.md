@@ -1,3 +1,4 @@
+
 # 4. Arhitektura i oblikovanje
 
 **Cilj:** Definirati arhitekturni stil, dekompoziciju programa na podsustave i module, organizaciju podataka te dinamičko ponašanje tijekom izvođenja. Arhitektura predstavlja temelj za implementaciju i ažurira se pri svakoj važnijoj promjeni projektnih odluka.
@@ -61,53 +62,35 @@ Započnite crtanjem granice oko predloženog sustava. Unutar nje prepoznajte dij
 
 ## 4.3 Model podataka i oblikovanje razreda
 
-**Cilj:** Objasniti važne informacije koje aplikacija pohranjuje i jedno reprezentativno područje oblikovanja na razini razreda. Model podataka i UML dijagram razreda odgovaraju na različita pitanja; jedno ne zamjenjuje drugo.
-
 ### 4.3.1 ER dijagram i model podataka
 
-**Cilj:** Prikazati važne pohranjene entitete, njihove identifikatore i veze te dovoljno atributa za razumijevanje podataka aplikacije. ER dijagram odvojen je od reprezentativnog UML dijagrama razreda u nastavku.
+**ER dijagram:**
 
-**ER dijagram:** [Ugradite čitljiv dijagram projekta.]  
-**Izvor dijagrama:** [Poveznica na njegov izvor.]  
-**Implementacija:** [Navedite gdje je odgovarajući model podataka definiran u projektu.]
+![ER dijagram podataka sustava Pulsko](./assets/diagrams/4-2-pulsko-data-ERD.svg)
 
-<details>
-<summary><strong>Jedna prijava poplave i povezani podaci</strong></summary>
+**Slika 4.2. Logički podatkovni model sustava Pulsko**
 
-**Primjer — CrisisMap:** Ana putem svojeg korisničkog računa podnosi prijavu poplave `R-104`. Odabire lokaciju na karti i označava razinu ozbiljnosti kao visoku. Građanin može podnijeti više prijava; svaka prijava pripada jednoj kategoriji kriznog događaja, primjerice *Poplava*. Aplikacija pohranjuje prijavu i njezine koordinate. Kartografske pločice dolaze od vanjskog pružatelja i nisu entiteti u modelu podataka aplikacije.
+**Izvor dijagrama:** [PlantUML izvor](./puml/4-2-pulsko-data-ERD.puml)  
+**Implementacija:** [SQL shema](../db/001_create_schema.sql) i modeli u direktoriju [`backend/app/models/`](../backend/app/models/)
 
-![ER dijagram podataka sustava CrisisMap](./assets/diagrams/4-2-crisismap-data-ERD.svg)
+Model obuhvaća korisnike i njihove profile, veze pacijenata s liječnicima te podatke o check-inovima, laboratorijskim nalazima i vrijednostima, terapijama, terminima i komunikaciji. Uključuje i podatke za obavijesti, podsjetnike, AI funkcionalnosti i revizijske zapise.
 
-**Slika 4.2. ER dijagram podataka sustava CrisisMap**
-
-**PlantUML izvor:** [izvor](./puml/4-2-crisismap-data-ERD.puml)
-
-**Analiza primjera:** `R-104` ima jednog autora i jednu kategoriju; Ana i kategorija *Poplava* mogu biti povezane s više prijava. Dijagram prikazuje veze bez prepisivanja svih stupaca baze podataka ili pisanja drugog tabličnog opisa za svaki entitet. Ako aplikacija prihvaća i **anonimne** prijave, tu mogućnost prikažite u vezi s entitetom `Citizen`. Ako su kategorije fiksne vrijednosti, a ne pohranjeni zapisi, nemojte izmišljati tablicu kategorija. Završni ER dijagram usporedite s modelom trajne pohrane i objasnite samo razlike važne za razumijevanje projekta.
-
-</details>
+Veza pacijenta i liječnika zaseban je entitet jer bilježi status zahtjeva i vrijeme odgovora. Laboratorijske vrijednosti povezane su s nalazom, pacijentom i biomarkerom, a liječnikova provjera nalaza bilježi se uz podatke o pregledu. PDF datoteke pohranjuju se izvan baze; u bazi se čuvaju njihovi metapodaci i putanja. Shema sadrži ograničenja za važna pravila, poput jednog check-ina po pacijentu dnevno i ograničenja pristupa liječnika povezanim pacijentima.
 
 ### 4.3.2 Reprezentativni UML dijagram razreda
 
-**Cilj:** Prije implementacije reprezentativnog dijela sustava modelirati i prikazati razrede ili sučelja potrebna za dodjelu odgovornosti, operacija i veza. Oblikovanje ažurirajte kada se te odluke promijene.
+**Dijagram razreda:**
 
-**Dijagram razreda:** [Ugradite čitljiv UML dijagram razreda za reprezentativni dio oblikovanja.]  
-**PlantUML izvor:** [Poveznica na odgovarajuću `.puml` datoteku.]  
-**Referenca na kod pri završnom pregledu:** [Poveznica na odgovarajuću implementaciju.]
+![Dijagram razreda za povezivanje pacijenta i liječnika u sustavu Pulsko](./assets/diagrams/4-3-pulsko-doctor-link-CD_v1.svg)
 
-<details>
-<summary><strong>Oblikovanje odgovornosti prijave i dopuštenih promjena</strong></summary>
+**Slika 4.3. Dijagram razreda za povezivanje pacijenta i liječnika**
 
-**Primjer — CrisisMap:** Prijava sadrži pravila za promjenu vlastitog statusa. Razred tijeka rada koordinira podnošenje i pregled, dok sučelje repozitorija opisuje potrebne operacije trajne pohrane. Dijagram predlaže te odgovornosti prije implementacije.
+**PlantUML izvor:** [izvor dijagrama](./puml/4-3-pulsko-doctor-link-CD_v1.puml)  
+**Referenca na implementaciju:** [usmjernik pacijenta](../backend/app/routers/patient.py), [usmjernik liječnika](../backend/app/routers/doctor.py), [servis povezivanja](../backend/app/services/link_service.py), [modeli](../backend/app/models/link.py) i [sheme zahtjeva i odgovora](../backend/app/schemas/link.py)
 
-![Dijagram razreda za obradu prijava kriznih događaja](./assets/diagrams/4-3-crisismap-domain-CD.svg)
+Dijagram prikazuje kako pacijent šalje zahtjev za povezivanje s odobrenim liječnikom, a liječnik pregledava zahtjev i prihvaća ga ili odbija. Usmjernici obrađuju HTTP zahtjeve, dok `LinkService` provodi pravila povezivanja i priprema podatke za odgovor. Model `DoctorPatientLink` pohranjuje status te vrijeme slanja zahtjeva i odgovora.
 
-**Slika 4.3. Dijagram razreda za obradu prijava kriznih događaja**
-
-**PlantUML izvor:** [izvor](./puml/4-3-crisismap-domain-CD.puml)
-
-**Analiza primjera:** `DisasterReport` sadrži dopuštena pravila promjene stanja pa tijek rada ne može prešutno odobriti već odbijenu prijavu. `ReportWorkflow` koordinira operaciju bez preuzimanja pravila prijelaza stanja same prijave; `ReportRepository` definira potrebne operacije pohrane. Kompozicija `Location` i odabrani tipovi prikazuju veze korisne za oblikovanje. Dijagram namjerno izostavlja stupce baze podataka i nepovezane razrede: ER model objašnjava pohranjene podatke, dok ovaj dijagram dodjeljuje programske odgovornosti i operacije. Ti su razredi odluka oblikovanja, a ne obavezni slojevi za svaki tim. Završnu implementaciju usporedite s početnim oblikovanjem i ažurirajte dijagram tamo gdje su se odluke promijenile; generiranje dijagrama iz koda tek na kraju ne može zamijeniti ovo početno modeliranje.
-
-</details>
+Zahtjev započinje u statusu `pending`, a zatim se prihvaća (`accepted`) ili odbija (`rejected`). Sustav sprječava više aktivnih zahtjeva za isti par pacijent–liječnik. Samo odobreni liječnik može obraditi zahtjev upućen njemu; zahtjev koji pripada drugom liječniku tretira se kao nepostojeći. Pristup pacijentovim zdravstvenim podacima dopušta se tek nakon prihvaćanja veze.
 
 ## 4.4 Ponašanje tijekom izvođenja
 
