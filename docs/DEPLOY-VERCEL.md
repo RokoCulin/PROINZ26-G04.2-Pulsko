@@ -12,9 +12,22 @@ Directory, framework, install/build/output postavke, Node verziju te samo nazive
 postojećih environment varijabli. Zapisati ID/URL i commit zadnjeg uspješnog
 production deploymenta. Vrijednosti tajni ne slati u chat ili stavljati u ovaj zapis.
 
-Postavke projekta i objavljeni commit nisu očitani iz agentove Vercel veze: ona
-nema dostupan Rokov projekt. Čeka se njegov zapis. Nije potvrđeno da trenutačni
-production deployment odgovara lokalnom `main` commitu.
+Djelomični Rokov zapis, dostavljen 18. 11. 2026. (nije neovisno očitan iz API-ja):
+
+- Root Directory: `frontend`.
+- Navedeni deployment: `proinz-26-g04-2-pulsko-59az4teb8-pulsko.vercel.app`.
+- Environment varijable: Roko navodi da još nisu dodane.
+- Node.js: `26.x`; zasad ostaviti postojeću verziju.
+- Fluid Compute: enabled; Deployment Protection: Standard Protection.
+- Build machine: Basic, 2 vCPU / 8 GB; Function CPU: Standard.
+- Skew Protection i Cold Start Prevention: disabled.
+- Prioritize Production Builds: enabled.
+
+Još treba potvrditi povezani repo, Production Branch, Framework Preset, stvarne
+install/build/output overrideove (ili da su zadani), uspješan status navedenog
+deploymenta i njegov Git commit. Nije potvrđeno da odgovara lokalnom `main` commitu.
+Agentova Vercel veza zasad nema dostupan Rokov projekt, pa se ove postavke ne
+mijenjaju automatski. Zadržati postojeći frontend dok preduvjeti nisu spremni.
 
 Read-only opažanja javne adrese 18. 11. 2026. prije promjena:
 
@@ -140,8 +153,8 @@ varijabli te Google callbacka, Roko:
 3. Prepušta framework Services konfiguraciji; ne ostavlja root projekt na Vite.
 4. Isključuje stare globalne install/build/output overrideove. Naredbe sada
    pripadaju servisima; ne pokreće `npm run build` iz korijena bez `package.json`.
-5. Potvrđuje Node verziju koju podržava postojeći Vite (22.12+ ili 24); backend
-   zasebno koristi Python 3.13.
+5. Zadržava trenutačni Node `26.x` ako Services build s postojećim lockom prolazi;
+   backend zasebno koristi Python 3.13. Promjena Node verzije nije uvjet ovog PR-a.
 6. Objavljuje dogovoreni commit i čita build logove prije provjere rada.
 
 Ne prebacivati root niti spajati PR u produkciju dok preduvjeti nisu spremni.
