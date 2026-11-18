@@ -3,7 +3,7 @@
 Cilj je objaviti postojeći React/Vite frontend i FastAPI backend iz istog `main`
 na `https://progi-pulsko.vercel.app`. Ova priprema ne objavljuje backend, ne mijenja
 Vercel projekt ni javnu domenu i ne dodaje PDF, AI, e-poštu ili podsjetnike.
-Vercel Services je Beta; projektna dostupnost i stvarni cloud build još čekaju Roka.
+Vercel Services je Beta; konačni cloud build i javni tijek provjeravaju se nakon Rokova prebacivanja projekta.
 
 ## 1. Roko bilježi postojeći projekt prije bilo kakve promjene
 
@@ -12,22 +12,26 @@ Directory, framework, install/build/output postavke, Node verziju te samo nazive
 postojećih environment varijabli. Zapisati ID/URL i commit zadnjeg uspješnog
 production deploymenta. Vrijednosti tajni ne slati u chat ili stavljati u ovaj zapis.
 
-Djelomični Rokov zapis, dostavljen 18. 11. 2026. (nije neovisno očitan iz API-ja):
+Rokov zapis, dopunjen 18. 11. 2026. (nije neovisno očitan iz API-ja):
 
-- Root Directory: `frontend`.
+- Povezani repo: `RokoCulin/PROINZ26-G04.2-Pulsko`; Production Branch: `main`.
+- Root Directory: `frontend`; Framework Preset: Vite.
+- Install / Build / Output: zadane postavke.
+- Zadnji uspješni frontend deploy: commit `90b837a`.
 - Navedeni deployment: `proinz-26-g04-2-pulsko-59az4teb8-pulsko.vercel.app`.
-- Environment varijable: Roko navodi da još nisu dodane.
+- Početni frontend nije imao env varijable; Roko je naknadno potvrdio da su sve
+  potrebne Production varijable sada postavljene i `DATABASE_URL` povezan.
 - Node.js: `26.x`; zasad ostaviti postojeću verziju.
 - Fluid Compute: enabled; Deployment Protection: Standard Protection.
 - Build machine: Basic, 2 vCPU / 8 GB; Function CPU: Standard.
 - Skew Protection i Cold Start Prevention: disabled.
 - Prioritize Production Builds: enabled.
 
-Još treba potvrditi povezani repo, Production Branch, Framework Preset, stvarne
-install/build/output overrideove (ili da su zadani), uspješan status navedenog
-deploymenta i njegov Git commit. Nije potvrđeno da odgovara lokalnom `main` commitu.
-Agentova Vercel veza zasad nema dostupan Rokov projekt, pa se ove postavke ne
-mijenjaju automatski. Zadržati postojeći frontend dok preduvjeti nisu spremni.
+Roko je potvrdio Neon bazu sa shemom `001` i seedom `002`. Borna je naknadno
+potvrdio da je Hrvoje dovršio svoj dio Google konfiguracije. To su potvrde tima,
+a ne rezultat agentova testa stvarne baze ili Google prijave; taj test čeka
+objedinjeni deploy. Agentova Vercel veza nema dostupan Rokov projekt, pa se njegove
+postavke ne mijenjaju automatski.
 
 Read-only opažanja javne adrese 18. 11. 2026. prije promjena:
 
@@ -41,7 +45,13 @@ Postojeći frontend ostaje online tijekom pripreme. Ne brisati projekt ni domenu
 
 ## 2. Borna priprema PR i lokalne provjere
 
-Korijenski `vercel.json` odabire Services i definira dva zasebno građena servisa:
+Korijenski `vercel.json` definira dva zasebno građena servisa kroz `services`.
+`framework` pripada pojedinom servisu; globalni `"framework": "services"` nije
+dopušten uz `services`. Ta kombinacija prošla je JSON shemu, ali je srušila
+prethodni Preview prije builda. Popravak uklanja samo globalni framework;
+frontendov `vite` i backendov `fastapi` ostaju na svojim mjestima.
+
+Servisi:
 
 - `frontend/`: Vite, `npm ci`, `npm run build`, izlaz `dist`; servisni SPA fallback
   vraća `index.html` za frontend putanje.
@@ -109,8 +119,8 @@ Zabilježene lokalne provjere 18. 11. 2026.: `npm ci`, produkcijski build s
 `VITE_API_URL=/api`, build bez te varijable radi provjere fallbacka i dodatni build
 na Node `26.13.1` uspješni su. Službena Vercel JSON shema prihvaća konfiguraciju;
 lokalni SPA preview vraća 200 za `/signin`, `/patient` i `/patient/check-in`.
-Oba offline backend testa prolaze. Stvarni Services cloud build, baza i OAuth i
-dalje čekaju vlasnika projekta i stvarnu konfiguraciju.
+Dva offline backend testa i regresijska provjera zabrane globalnog frameworka prolaze. Stvarni Services cloud build i javni test baze/OAutha čekaju Rokovo
+prebacivanje projekta; postavke su u međuvremenu potvrđene porukom tima.
 
 ## 4. Član za bazu priprema stvarni PostgreSQL
 

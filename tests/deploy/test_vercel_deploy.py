@@ -3,6 +3,7 @@
 No database connection, Google request, Vercel project or migration is created.
 Run: python -m unittest discover -s tests/deploy -v
 """
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -65,6 +66,16 @@ print(prefix or "local-unprefixed")
     if result.returncode:
         raise AssertionError(result.stdout + result.stderr)
     return result.stdout.strip()
+
+
+class VercelConfigTests(unittest.TestCase):
+    def test_services_cannot_have_an_ambiguous_global_framework(self):
+        # Regression: JSON Schema accepted this combination, but Vercel's
+        # deployment validator rejected it before the preview could build.
+        config = json.loads((ROOT / 'vercel.json').read_text())
+        self.assertIn('services', config)
+        self.assertNotIn('framework', config,
+                         'Framework must be defined on its owning service, not globally.')
 
 
 class BackendRoutingTests(unittest.TestCase):
