@@ -105,6 +105,13 @@ pogrešku pri stvaranju SQLAlchemy enginea. To ostaje namjerno vidljivo; ne unos
 lažne produkcijske vrijednosti radi zelenog builda. Stvarna baza, OAuth prijava i
 Vercel cloud build još nisu verificirani.
 
+Zabilježene lokalne provjere 18. 11. 2026.: `npm ci`, produkcijski build s
+`VITE_API_URL=/api`, build bez te varijable radi provjere fallbacka i dodatni build
+na Node `26.13.1` uspješni su. Službena Vercel JSON shema prihvaća konfiguraciju;
+lokalni SPA preview vraća 200 za `/signin`, `/patient` i `/patient/check-in`.
+Oba offline backend testa prolaze. Stvarni Services cloud build, baza i OAuth i
+dalje čekaju vlasnika projekta i stvarnu konfiguraciju.
+
 ## 4. Član za bazu priprema stvarni PostgreSQL
 
 Najprije potvrditi postoji li dopuštena zajednička baza i ima li aktualnu shemu,
