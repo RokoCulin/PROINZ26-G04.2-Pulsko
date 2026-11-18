@@ -1,5 +1,7 @@
 # 6. Postavljanje, instalacija i konfiguracija
 
+**Pulsko Vercel priprema:** [koraci i podjela odgovornosti](DEPLOY-VERCEL.md). Objedinjeni deploy još čeka stvarnu bazu, OAuth i potvrdu Rokovih projektnih postavki.
+
 **Cilj:** Detaljno dokumentirati topologiju izvođenja, postupak lokalne instalacije i konfiguracije iz izvornog koda te način javnog postavljanja i administracije programa. [README](../README.md) navodi javnu adresu i sažeti postupak lokalnog pokretanja; ova stranica donosi potpun inženjerski postupak koji osigurava točnu ponovljivost na drugom računalu.
 
 Zamijenite oglednu topologiju, naredbe i postavke onima koje vaš tim stvarno koristi (u primjeru se koristi Render; dokumentirajte platformu odabranu za vaš projekt).

@@ -86,3 +86,7 @@ out
 
 .DS_Store
 backend/tests/
+
+# Vercel local project metadata and pulled environment files
+.vercel/
+__pycache__/

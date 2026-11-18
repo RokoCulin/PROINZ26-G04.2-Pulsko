@@ -1,7 +1,9 @@
 // Adresa backenda. Lokalno: http://localhost:8000; na deployu se postavlja
-// varijablom VITE_API_URL (vidi .env.example).
+// varijablom VITE_API_URL=/api (vidi .env.example).
+// Produkcijski fallback ostaje na istoj domeni; lokalni Vite dev koristi port 8000.
 export const API_URL = (
-  import.meta.env.VITE_API_URL || "http://localhost:8000"
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? "/api" : "http://localhost:8000")
 ).replace(/\/$/, "");
 
 export class ApiError extends Error {
