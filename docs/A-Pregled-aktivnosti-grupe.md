@@ -10,10 +10,12 @@
 
 | Datum i sudionici | Glavna tema | Donesena odluka ili zadatak | Poveznica na zadatak ili rezultat, ako postoji |
 | --- | --- | --- | --- |
+| 12. 10. 2026.; RČ, DM, AN, HŠ, JT | Uvodni sastanak | Održan je početni sastanak na kojem su dogovorene osnovne smjernice za rad na projektu. | / |
 | 14. 10. 2026.; RČ, BF, DM, AN, BO, HŠ, JT | Odabir i razrada ideje za projekt | Definirane su glavne funkcionalnosti i izrađen službeni prijedlog projekta | / |
 | 24. 10. 2026.; RČ, BF, DM, AN, BO, HŠ | Podjela zadataka za dokumentaciju | Dogovorena je podjela i preuzimanje zadataka za popunjavanje projektne dokumentacije. RČ preuzima #1 i #6, BF #2, AN #3, BO #4 i #5, DM #7, a HŠ #9. | Zadatci #1-#7 i #9 |
-| 26. 10. 2026.; RČ, BF, DM, AN, BO, HŠ, JT | Podjela zadataka za implementaciju sustava | Dogovorena je raspodjela poslova za razvoj aplikacije. RČ preuzima razvoj backenda i administratorskog modula, JT izradu baze podataka, HŠ preuzima implementaciju prijave i registracije korisnika putem OAuth 2.0, AN i DM razvoj frontenda za pacijente i liječnike te oblikovanje korisničkog sučelja, a BO integracije i postavljanje sustava. | Zadaci #17–#20, #22–#25, #28, #30–#33 |
+| 26. 10. 2026.; RČ, BF, DM, AN, HŠ, JT | Podjela zadataka za implementaciju sustava | Dogovorena je raspodjela poslova za razvoj aplikacije. RČ preuzima razvoj backenda i administratorskog modula, JT izradu baze podataka, HŠ preuzima implementaciju prijave i registracije korisnika putem OAuth 2.0, AN i DM razvoj frontenda za pacijente i liječnike te oblikovanje korisničkog sučelja, a BO integracije i postavljanje sustava. | Zadaci #17–#20, #22–#25, #28, #30–#33 |
 | 13. 11. 2026.; RČ, BF, DM, AN, BO, HŠ, JT | Pregled napretka implementacije i priprema za demonstraciju | Pregledan je napredak razvoja aplikacije i dogovoreno dovršavanje preostalih funkcionalnosti za demonstraciju. Za doradu dokumentacije BO preuzima ispravak prioriteta funkcijskih zahtjeva, HŠ ažuriranje pregleda aktivnosti, BF izradu UML dijagrama, AN preuzima dopunu arhitekturne dokumentacije i modela podataka, a DM izradu domenskog UML dijagrama. | Zadatci #16, #32, #49–#51, #53–#56 |
+| 16. 11. 2026.; RČ, BF, DM, AN, HŠ, JT | Demonstracija napretka projekta | Demonstrirano je trenutačno stanje aplikacije. Asistentica je potvrdila da je prikazani opseg funkcionalnosti dovoljan za laboratorijsku provjeru te je dogovorena dorada UML dijagrama obrazaca uporabe. | Zadatak #65 |
 
 ## A.2 Plan rada
 
