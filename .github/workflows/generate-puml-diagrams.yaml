@@ -107,13 +107,17 @@ jobs:
             echo "${PLANTUML_SHA256}  plantuml.jar" | sha256sum -c -
           fi
 
-      # Step 7: Render every .puml file to SVG, mirroring the docs/puml folder structure
-      # so files with the same name in different subfolders do not overwrite each other.
+      # Step 7: Render diagrams, preserving the reviewed use-case SVG layout (#65).
+      # Its embedded source must match the .puml file before the SVG is reused.
       - name: Generate SVG diagrams
         shell: bash
         run: |
           set -euo pipefail
           out="$PWD/docs/assets/diagrams"
+          preserved="3-1-Pulsko-system-UC"
+          preserved_svg="$(mktemp)"
+          trap 'rm -f "$preserved_svg"' EXIT
+          cp "$out/$preserved.svg" "$preserved_svg"
           rm -rf "$out"
           mkdir -p "$out"
 
@@ -121,7 +125,18 @@ jobs:
             rel="${file#docs/puml/}"
             dest="$out/$(dirname "$rel")"
             mkdir -p "$dest"
-            java -jar plantuml.jar -tsvg -failonerror -o "$dest" "$file"
+            if [ "$rel" = "$preserved.puml" ]; then
+              java -jar plantuml.jar -checkonly -failonerror "$file"
+              expected_source="$(java -jar plantuml.jar -charset UTF-8 -encodeurl "$file" | tr -d '[:space:]')"
+              embedded_source="$(sed -n 's/.*<!--SRC=\[\([^]]*\)\]-->.*/\1/p' "$preserved_svg" | tr -d '[:space:]')"
+              if [ "$expected_source" != "$embedded_source" ]; then
+                echo "::error file=$file::Update the preserved SVG and its embedded PlantUML source together."
+                exit 1
+              fi
+              cp "$preserved_svg" "$dest/$preserved.svg"
+            else
+              java -jar plantuml.jar -tsvg -failonerror -o "$dest" "$file"
+            fi
           done
 
       # Step 8: Commit and push changes if updated SVGs are detected

@@ -17,6 +17,10 @@
 '               uklonjeni UC-3.1, UC-5.3.1 i UC-5.3.2; AI usluga povezana s
 '               UC-1.2.1; UC-4.4 preimenovan; raspored lijevo-desno (primarni
 '               akteri lijevo, vanjski sustavi desno).
+' Ispravak #65: Timer prikazan kao vanjska usluga desno; uklonjena izravna
+'               veza liječnika s UC-6.2 (proširenje UC-6.1).
+' Raspored u SVG-u zadržan je iz izvornika. Generator provjerava njegov
+' ugrađeni PlantUML izvor; ovaj dijagram uređuje se zajedno sa SVG-om.
 ' ==============================================================================
 @startuml
 title uc UCD-1 Sustav Pulsko – obrasci uporabe (v2.0, K)
@@ -51,7 +55,6 @@ actor "Korisnik" as User
 actor "Pacijent" as Patient
 actor "Liječnik" as Doctor
 actor "Administrator" as Admin
-actor "Timer" as Timer
 User <|-- Patient
 User <|-- Doctor
 User <|-- Admin
@@ -103,6 +106,7 @@ rectangle "Sustav Pulsko" {
 actor "Pružatelj identiteta\n(OAuth 2.0)" as IdP <<external system>>
 actor "AI usluga" as AI <<external system>>
 actor "Usluga e-pošte" as Email <<external system>>
+actor "Timer" as Timer <<external system>>
 
 User -- UC_SignIn
 Patient -- UC_CheckIn
@@ -117,13 +121,11 @@ Patient -- UC_LogMedication
 Patient -- UC_ViewTherapy
 Patient -- UC_ViewAppointments
 Patient -- UC_Reminder
-Timer -- UC_Reminder
 Doctor -- UC_Messages
 Doctor -- UC_ViewPatients
 Doctor -- UC_ViewPatientProfile
 Doctor -- UC_HandleRequest
 Doctor -- UC_ConfirmLab
-Doctor -- UC_CorrectLab
 Doctor -- UC_ViewPatientTrends
 Doctor -- UC_GenerateAISummary
 Doctor -- UC_SetTherapy
@@ -140,4 +142,6 @@ UC_ExtractLab -- AI
 UC_MessageAI -- AI
 UC_GenerateAISummary -- AI
 UC_Reminder -- Email
+' Dulja veza smješta Timer desno od granice sustava.
+UC_Reminder --- Timer
 @enduml
