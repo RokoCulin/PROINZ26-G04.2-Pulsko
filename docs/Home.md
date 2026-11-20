@@ -191,33 +191,4 @@ Sadržaj nastao uz pomoć umjetne inteligencije provjeren je prije prihvaćanja 
 
 | Problem | Kako je pronađen | Rješenje |
 | --- | --- | --- |
-| Prijedlog je uklonio ograničenje broja pacijenata i zabranu preklapanja termina iz obrazaca uporabe, iako ih baza podataka provodi | Usporedba sa shemom baze (`db/001_create_schema.sql`) | Ograničenja su zadržana u UC-5.3 i UC-8.1 |
-| Automatska obrada datoteka promijenila je završetke redaka (CRLF u LF) u nekoliko backend datoteka | Pregled razlika prije commita | Izvorni završeci redaka vraćeni su |
-
-### Primjer zapisa uporabe umjetne inteligencije
-
-<details>
-<summary><strong>Primjer dokumentiranja korištenja AI alata</strong></summary>
-
-Sljedeći primjer prikazuje kako će se tijekom razvoja evidentirati značajnije korištenje umjetne inteligencije. Primjer je ilustrativan i ne predstavlja već implementiranu funkcionalnost.
-
-**Primjer - Pulsko:**
-
-| Stranica ili artefakt | Vrsta pomoći | Što je alat predložio | Što tim treba provjeriti | Lokacija |
-| --- | --- | --- | --- | --- |
-| Obrasci uporabe, unos nalaza | Izrada nacrta | Glavni i alternativni tijek unosa zdravstvenog nalaza | Usklađenost koraka sa stvarnim zahtjevima | 3-Obrasci-uporabe.md |
-| Sekvencijski dijagram unosa nalaza | Izvor dijagrama | Prijedlog PlantUML dijagrama | Usklađenost sudionika i komunikacije s arhitekturom sustava | 4-Arhitektura-i-oblikovanje.md |
-
-**Primjeri mogućih pogrešaka:**
-
-| Problem | Kako ga je moguće pronaći | Predviđeno rješenje |
-| --- | --- | --- |
-| Generirani opis uključuje funkcionalnost koja nije predviđena zahtjevima | Usporedba s analizom zahtjeva | Uklanjanje ili prilagodba netočne tvrdnje |
-| Generirani dijagram prikazuje nepostojeće komponente | Usporedba s arhitekturom sustava | Ispravak dijagrama prema stvarnoj strukturi aplikacije |
-| Generirani programski kod ne obrađuje određene rubne slučajeve | Jedinično i integracijsko ispitivanje | Ispravak implementacije i ponavljanje testova |
-
-**Analiza primjera:** Svaki zapis o korištenju umjetne inteligencije treba jasno prikazati gdje je alat korišten, što je predložio i koje je provjere ili izmjene proveo tim.
-
-Takav pristup omogućuje praćenje doprinosa AI alata i razlikovanje automatski generiranih prijedloga od provjerenih i implementiranih rezultata.
-
-</details>
+|  |  |  |
