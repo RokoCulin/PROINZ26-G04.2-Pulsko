@@ -151,62 +151,48 @@ Pristupni podaci, lozinke i druge povjerljive informacije neće se objavljivati 
 
 ## Izjava o uporabi umjetne inteligencije
 
-Tijekom razvoja aplikacije Pulsko planira se korištenje alata generativne umjetne inteligencije kao pomoć pri analizi zahtjeva, izradi projektne dokumentacije, oblikovanju arhitekture sustava, pisanju i provjeri programskog koda te ispitivanju funkcionalnosti.
+Tijekom prvog ciklusa tim je koristio alate generativne umjetne inteligencije (Claude i ChatGPT) prvenstveno za učenje i objašnjenje gradiva, za savjete o tome kako nešto bolje implementirati te za usklađivanje dokumentacije među različitim datotekama.
 
-Umjetna inteligencija koristit će se prvenstveno za predlaganje mogućih rješenja, objašnjavanje tehničkih problema, optimizaciju programskog koda i izradu pomoćnih materijala potrebnih za razvoj aplikacije.
+Odluke o opsegu, akterima, zahtjevima i arhitekturi donio je tim. Zahtjeve, obrasce uporabe, dokumentaciju i programski kod pisali su članovi tima. Svaki prijedlog umjetne inteligencije član tima je pregledao, prilagodio i provjerio prije nego što je ušao u projekt, a svatko može objasniti svoj doprinos.
 
-AI alati neće samostalno donositi projektne odluke. Za odabir konačnih rješenja, njihovu implementaciju i provjeru ispravnosti bit će odgovorni članovi tima.
+Korištenje umjetne inteligencije dokumentira se u skladu s [pravilima FER-a o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
 
-Svi generirani prijedlozi provjeravat će se, prilagođavati stvarnim zahtjevima projekta i po potrebi dodatno ispitivati.
-
-Korištenje umjetne inteligencije dokumentirat će se tijekom razvoja, u skladu s [pravilima FER-a o primjerenoj uporabi umjetne inteligencije](https://www.fer.unizg.hr/_download/repository/Policy%20on%20the%20appropriate%20use%20of%20artificial%20intelligence%20at%20the%20faculty%20of%20electrical%20engineering%20and%20computing%5B1%5D.pdf).
-
-Kratak sažetak uporabe umjetne inteligencije bit će dostupan i u [README-u repozitorija](../README.md#ai-usage).
+Kratak sažetak uporabe umjetne inteligencije dostupan je i u [README-u repozitorija](../README.md#ai-usage).
 
 ### Korišteni alati
 
-U nastavku su navedeni alati čija se uporaba planira tijekom razvoja projekta. Popis će se ažurirati prema stvarnom korištenju.
-
-| Alat | Inačica ili model | Koristio/la | Glavna svrha |
-| --- | --- | --- | --- |
-| ChatGPT (OpenAI) | Model će se evidentirati pri uporabi | Članovi tima prema potrebi | Analiza zahtjeva, pomoć pri programiranju, dokumentacija i objašnjavanje tehničkih problema |
-| Ostali AI alati | Još nije određeno | Članovi tima prema potrebi | Moguća pomoć pri implementaciji, izradi dijagrama i ispitivanju |
+| Alat | Koristio/la | Glavna svrha |
+| --- | --- | --- |
+| Claude (Anthropic) | Članovi tima | Objašnjenje gradiva, savjeti o implementaciji, usklađivanje dokumentacije |
+| ChatGPT (OpenAI) | Članovi tima | Objašnjenje gradiva i tehničkih problema, savjeti o implementaciji |
 
 ### Opseg doprinosa umjetne inteligencije
 
-Sljedeća tablica prikazuje područja u kojima se planira korištenje umjetne inteligencije. Konkretni doprinosi dodat će se nakon njihove realizacije.
-
-| Stranica, datoteka ili artefakt | Vrsta pomoći | Planirani doprinos | Odgovornost tima | Lokacija |
-| --- | --- | --- | --- | --- |
-| Analiza zahtjeva | Analiza i strukturiranje | Prijedlozi funkcionalnih i nefunkcionalnih zahtjeva | Definiranje i provjera stvarnih zahtjeva | 2-Analiza-zahtjeva.md |
-| Obrasci uporabe | Izrada nacrta | Prijedlozi scenarija i tijekova interakcije | Provjera i prilagodba obrazaca uporabe | 3-Obrasci-uporabe.md |
-| Arhitektura i oblikovanje | Tehnički prijedlozi | Prijedlozi arhitekture, modela podataka i UML dijagrama | Odabir i provjera arhitekturnih rješenja | 4-Arhitektura-i-oblikovanje.md |
-| Programski kod | Pomoć pri implementaciji | Prijedlozi koda, optimizacije i rješenja problema | Pregled, prilagodba i ispitivanje koda | Repozitorij projekta |
-| Ispitivanje | Priprema testova | Prijedlozi testnih slučajeva i provjera | Provedba ispitivanja i analiza rezultata | 5-Ispitivanje.md |
-
-Navedeni doprinosi predstavljaju planirane načine korištenja umjetne inteligencije, a ne već ostvarene rezultate. Tijekom razvoja evidentirat će se stvarno korišteni alati, njihove inačice i konkretni doprinosi pojedinim dijelovima projekta.
+| Područje | Kako je umjetna inteligencija korištena | Što je napravio tim |
+| --- | --- | --- |
+| Učenje gradiva | Objašnjenje pojmova (UML, MoSCoW, OAuth 2.0, FastAPI, SQLAlchemy) na općenitim primjerima | Tim je sam pisao zahtjeve, obrasce uporabe i programski kod |
+| Savjeti o implementaciji | Savjeti kako nešto bolje riješiti i upozorenja na moguće pogreške pri pregledu koda | Tim je odabrao rješenje, implementirao ga i provjerio |
+| Usklađivanje dokumentacije | Provjera dosljednosti ID-jeva zahtjeva i obrazaca uporabe, naziva i dijagrama među datotekama | Tim je pregledao i odobrio svaku ispravku |
+| Pomoć pri pisanju dijela koda | Na izričit zahtjev člana tima, za ograničene dijelove koda | Tim je kod pregledao, razumije ga i ispitao je |
 
 ### Provjera generiranog sadržaja
 
-Za svaki sadržaj izrađen uz pomoć umjetne inteligencije provodit će se odgovarajuća provjera prije njegova prihvaćanja u projekt.
+Sadržaj nastao uz pomoć umjetne inteligencije provjeren je prije prihvaćanja u projekt.
 
 | Provjera | Način provjere | Dokaz |
 | --- | --- | --- |
-| Činjenična točnost | Usporedba generiranih tvrdnji sa stvarnim zahtjevima, izvornim kodom i ponašanjem aplikacije | Pregled dokumentacije i pripadajućih promjena |
-| Nema tvrdnji o neostvarenim funkcionalnostima | Provjera odgovaraju li opisane funkcionalnosti implementiranom sustavu | Dokumentacija zahtjeva i rezultati ispitivanja |
-| Dosljednost s drugim stranicama | Usporedba naziva, zahtjeva i dijagrama između različitih dijelova dokumentacije | Pregled povezanih dokumenata |
-| Izvori dijagrama | Provjera PlantUML izvora i odgovarajućih grafičkih prikaza | Izvorne `.puml` datoteke i slike |
-| Povjerljivi sadržaj | Provjera da se u AI alate ne unose lozinke, pristupni podaci i osjetljivi zdravstveni podaci | Pregled korištenih primjera i projektnih datoteka |
-
-Provjere povezane s implementacijom, arhitekturom i ispitivanjem provest će se nakon izrade odgovarajućih dijelova aplikacije.
+| Činjenična točnost | Usporedba s dogovorenim zahtjevima, izvornim kodom i ponašanjem aplikacije | Pregled dokumentacije i pripadajućih promjena |
+| Nema tvrdnji o neostvarenim funkcionalnostima | Provjera odgovaraju li opisane funkcionalnosti implementiranom sustavu | Dokumentacija zahtjeva i README (poznata ograničenja) |
+| Dosljednost s drugim stranicama | Usporedba naziva, zahtjeva i dijagrama između dijelova dokumentacije | Pregled povezanih dokumenata |
+| Izvori dijagrama | Provjera PlantUML izvora i generiranih prikaza | Izvorne `.puml` datoteke i slike |
+| Povjerljivi sadržaj | U AI alate nisu unošene lozinke, pristupni ključevi ni stvarni zdravstveni podaci | Pregled korištenih primjera i projektnih datoteka |
 
 ### Pogreške pronađene u izlazu umjetne inteligencije
 
-Tijekom razvoja evidentirat će se pogreške u generiranim prijedlozima, njihovi uzroci i načini ispravljanja.
-
 | Problem | Kako je pronađen | Rješenje |
 | --- | --- | --- |
-| Još nema evidentiranih pogrešaka povezanih s implementacijom aplikacije. | Razvoj još nije započeo. | Tablica će se nadopunjavati tijekom razvoja. |
+| Prijedlog je uklonio ograničenje broja pacijenata i zabranu preklapanja termina iz obrazaca uporabe, iako ih baza podataka provodi | Usporedba sa shemom baze (`db/001_create_schema.sql`) | Ograničenja su zadržana u UC-5.3 i UC-8.1 |
+| Automatska obrada datoteka promijenila je završetke redaka (CRLF u LF) u nekoliko backend datoteka | Pregled razlika prije commita | Izvorni završeci redaka vraćeni su |
 
 ### Primjer zapisa uporabe umjetne inteligencije
 
